@@ -1,4 +1,4 @@
-import { Builder } from 'ton'
+import { Builder, Cell } from 'ton'
 import { Slice } from 'ton'
 import { beginCell } from 'ton'
 import { BitString } from 'ton'
@@ -314,7 +314,7 @@ export interface VarUInteger {
     readonly kind: 'VarUInteger';
     readonly n: number;
     readonly len: number;
-    readonly value: number;
+    readonly value: bigint;
 }
 
 export interface VarInteger {
@@ -1141,7 +1141,7 @@ export interface Block {
     readonly global_id: number;
     readonly info: BlockInfo;
     readonly value_flow: ValueFlow;
-    // readonly state_update: MERKLE_UPDATE<ShardState>;
+    readonly state_update: Cell;
     readonly extra: BlockExtra;
 }
 
@@ -3666,7 +3666,7 @@ export function storeMsgAddress(msgAddress: MsgAddress): (builder: Builder) => v
 
 export function loadVarUInteger(slice: Slice, n: number): VarUInteger {
     let len: number = slice.loadUint(bitLen((n - 1)));
-    let value: number = slice.loadUint((len * 8));
+    let value: bigint = slice.loadUintBig((len * 8));
     return {
         kind: 'VarUInteger',
         n: n,
@@ -3679,7 +3679,9 @@ export function loadVarUInteger(slice: Slice, n: number): VarUInteger {
 export function storeVarUInteger(varUInteger: VarUInteger): (builder: Builder) => void {
     return ((builder: Builder) => {
         builder.storeUint(varUInteger.len, bitLen((varUInteger.n - 1)));
-        builder.storeUint(varUInteger.value, (varUInteger.len * 8));
+        if (varUInteger.len > 0) {
+            builder.storeUint(varUInteger.value, (varUInteger.len * 8));
+        }
     })
 
 }
@@ -4352,7 +4354,7 @@ export function storeMsgEnvelope(msgEnvelope: MsgEnvelope): (builder: Builder) =
         let cell1 = beginCell();
         storeMessage<Slice>(msgEnvelope.msg, ((arg: Slice) => {
             return ((builder: Builder) => {
-                cell1.storeSlice(arg);
+                builder.storeSlice(arg);
             })
 
         }))(cell1);
@@ -5361,7 +5363,7 @@ export function storeTransaction(transaction: Transaction): (builder: Builder) =
                 let cell1 = beginCell();
                 storeMessage<Slice>(arg, ((arg: Slice) => {
                     return ((builder: Builder) => {
-                        cell1.storeSlice(arg);
+                        builder.storeSlice(arg);
                     })
 
                 }))(cell1);
@@ -5375,7 +5377,7 @@ export function storeTransaction(transaction: Transaction): (builder: Builder) =
                 let cell1 = beginCell();
                 storeMessage<Slice>(arg, ((arg: Slice) => {
                     return ((builder: Builder) => {
-                        cell1.storeSlice(arg);
+                        builder.storeSlice(arg);
                     })
 
                 }))(cell1);
@@ -6347,7 +6349,7 @@ export function storeOutAction(outAction: OutAction): (builder: Builder) => void
             let cell1 = beginCell();
             storeMessageRelaxed<Slice>(outAction.out_msg, ((arg: Slice) => {
                 return ((builder: Builder) => {
-                    cell1.storeSlice(arg);
+                    builder.storeSlice(arg);
                 })
 
             }))(cell1);
@@ -6885,8 +6887,7 @@ export function loadBlock(slice: Slice): Block {
         let slice2 = slice.loadRef().beginParse();
         let value_flow: ValueFlow = loadValueFlow(slice2);
         let cell3 = slice.loadRef();
-        // let slice3 = slice.loadRef().beginParse();
-        // let state_update: MERKLE_UPDATE<ShardState> = loadMERKLE_UPDATE<ShardState>(slice3, loadShardState);
+        let state_update: Cell = cell3;
         let slice4 = slice.loadRef().beginParse();
         let extra: BlockExtra = loadBlockExtra(slice4);
         return {
@@ -6894,7 +6895,7 @@ export function loadBlock(slice: Slice): Block {
             global_id: global_id,
             info: info,
             value_flow: value_flow,
-            // state_update: state_update,
+            state_update: state_update,
             extra: extra,
         }
 
@@ -6912,9 +6913,7 @@ export function storeBlock(block: Block): (builder: Builder) => void {
         let cell2 = beginCell();
         storeValueFlow(block.value_flow)(cell2);
         builder.storeRef(cell2);
-        let cell3 = beginCell();
-        // storeMERKLE_UPDATE<ShardState>(block.state_update, storeShardState)(cell3);
-        builder.storeRef(cell3);
+        builder.storeRef(block.state_update);
         let cell4 = beginCell();
         storeBlockExtra(block.extra)(cell4);
         builder.storeRef(cell4);
