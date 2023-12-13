@@ -436,16 +436,16 @@ export interface FalseAnonField {
     readonly value: number;
 }
 
-export type ConstructorOrder = ConstructorOrder__ | ConstructorOrder_a;
-
-export interface ConstructorOrder__ {
-    readonly kind: 'ConstructorOrder__';
-    readonly anon0: Simple;
-}
+export type ConstructorOrder = ConstructorOrder_a | ConstructorOrder__;
 
 export interface ConstructorOrder_a {
     readonly kind: 'ConstructorOrder_a';
     readonly a: Simple;
+}
+
+export interface ConstructorOrder__ {
+    readonly kind: 'ConstructorOrder__';
+    readonly anon0: Simple;
 }
 
 export type CheckCrc32 = CheckCrc32_a | CheckCrc32_b;
@@ -1509,21 +1509,16 @@ export function storeMathExprAsCombArg(mathExprAsCombArg: MathExprAsCombArg): (b
 }
 
 export function loadEmptyTag(slice: Slice): EmptyTag {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x26285f32))) {
-        slice.loadUint(32);
-        let a: number = slice.loadUint(32);
-        return {
-            kind: 'EmptyTag',
-            a: a,
-        }
-
+    let a: number = slice.loadUint(32);
+    return {
+        kind: 'EmptyTag',
+        a: a,
     }
-    throw new Error('');
+
 }
 
 export function storeEmptyTag(emptyTag: EmptyTag): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0x26285f32, 32);
         builder.storeUint(emptyTag.a, 32);
     })
 
@@ -1846,23 +1841,18 @@ export function storeHashmapEUser(hashmapEUser: HashmapEUser): (builder: Builder
 }
 
 export function loadConditionalField(slice: Slice): ConditionalField {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x74a0d067))) {
-        slice.loadUint(32);
-        let a: number = slice.loadUint(1);
-        let b: number | undefined = (a ? slice.loadUint(32) : undefined);
-        return {
-            kind: 'ConditionalField',
-            a: a,
-            b: b,
-        }
-
+    let a: number = slice.loadUint(1);
+    let b: number | undefined = (a ? slice.loadUint(32) : undefined);
+    return {
+        kind: 'ConditionalField',
+        a: a,
+        b: b,
     }
-    throw new Error('');
+
 }
 
 export function storeConditionalField(conditionalField: ConditionalField): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0x74a0d067, 32);
         builder.storeUint(conditionalField.a, 1);
         if ((conditionalField.b != undefined)) {
             builder.storeUint(conditionalField.b, 32);
@@ -1872,23 +1862,18 @@ export function storeConditionalField(conditionalField: ConditionalField): (buil
 }
 
 export function loadBitSelection(slice: Slice): BitSelection {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x1528067f))) {
-        slice.loadUint(32);
-        let a: number = slice.loadUint(6);
-        let b: number | undefined = ((a & (1 << 2)) ? slice.loadUint(32) : undefined);
-        return {
-            kind: 'BitSelection',
-            a: a,
-            b: b,
-        }
-
+    let a: number = slice.loadUint(6);
+    let b: number | undefined = ((a & (1 << 2)) ? slice.loadUint(32) : undefined);
+    return {
+        kind: 'BitSelection',
+        a: a,
+        b: b,
     }
-    throw new Error('');
+
 }
 
 export function storeBitSelection(bitSelection: BitSelection): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0x1528067f, 32);
         builder.storeUint(bitSelection.a, 6);
         if ((bitSelection.b != undefined)) {
             builder.storeUint(bitSelection.b, 32);
@@ -1898,24 +1883,19 @@ export function storeBitSelection(bitSelection: BitSelection): (builder: Builder
 }
 
 export function loadImplicitCondition(slice: Slice): ImplicitCondition {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x353d8910))) {
-        slice.loadUint(32);
-        let flags: number = slice.loadUint(10);
-        if ((!(flags <= 100))) {
-            throw new Error('');
-        }
-        return {
-            kind: 'ImplicitCondition',
-            flags: flags,
-        }
-
+    let flags: number = slice.loadUint(10);
+    if ((!(flags <= 100))) {
+        throw new Error('');
     }
-    throw new Error('');
+    return {
+        kind: 'ImplicitCondition',
+        flags: flags,
+    }
+
 }
 
 export function storeImplicitCondition(implicitCondition: ImplicitCondition): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0x353d8910, 32);
         builder.storeUint(implicitCondition.flags, 10);
         if ((!(implicitCondition.flags <= 100))) {
             throw new Error('');
@@ -1925,8 +1905,7 @@ export function storeImplicitCondition(implicitCondition: ImplicitCondition): (b
 }
 
 export function loadMultipleEmptyConstructor(slice: Slice, arg0: number): MultipleEmptyConstructor {
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x366f94f) && (arg0 == 0)))) {
-        slice.loadUint(32);
+    if ((arg0 == 0)) {
         let a: number = slice.loadUint(32);
         return {
             kind: 'MultipleEmptyConstructor__',
@@ -1934,8 +1913,7 @@ export function loadMultipleEmptyConstructor(slice: Slice, arg0: number): Multip
         }
 
     }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x6e936965) && (arg0 == 1)))) {
-        slice.loadUint(32);
+    if ((arg0 == 1)) {
         let b: number = slice.loadUint(5);
         return {
             kind: 'MultipleEmptyConstructor__1',
@@ -1957,14 +1935,12 @@ export function loadMultipleEmptyConstructor(slice: Slice, arg0: number): Multip
 export function storeMultipleEmptyConstructor(multipleEmptyConstructor: MultipleEmptyConstructor): (builder: Builder) => void {
     if ((multipleEmptyConstructor.kind == 'MultipleEmptyConstructor__')) {
         return ((builder: Builder) => {
-            builder.storeUint(0x366f94f, 32);
             builder.storeUint(multipleEmptyConstructor.a, 32);
         })
 
     }
     if ((multipleEmptyConstructor.kind == 'MultipleEmptyConstructor__1')) {
         return ((builder: Builder) => {
-            builder.storeUint(0x6e936965, 32);
             builder.storeUint(multipleEmptyConstructor.b, 5);
         })
 
@@ -2164,15 +2140,6 @@ export function storeFalseAnonField(falseAnonField: FalseAnonField): (builder: B
 }
 
 export function loadConstructorOrder(slice: Slice): ConstructorOrder {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x4fb00127))) {
-        slice.loadUint(32);
-        let anon0: Simple = loadSimple(slice);
-        return {
-            kind: 'ConstructorOrder__',
-            anon0: anon0,
-        }
-
-    }
     if (((slice.remainingBits >= 1) && (slice.preloadUint(1) == 0b0))) {
         slice.loadUint(1);
         let a: Simple = loadSimple(slice);
@@ -2182,21 +2149,28 @@ export function loadConstructorOrder(slice: Slice): ConstructorOrder {
         }
 
     }
+    if (true) {
+        let anon0: Simple = loadSimple(slice);
+        return {
+            kind: 'ConstructorOrder__',
+            anon0: anon0,
+        }
+
+    }
     throw new Error('');
 }
 
 export function storeConstructorOrder(constructorOrder: ConstructorOrder): (builder: Builder) => void {
-    if ((constructorOrder.kind == 'ConstructorOrder__')) {
-        return ((builder: Builder) => {
-            builder.storeUint(0x4fb00127, 32);
-            storeSimple(constructorOrder.anon0)(builder);
-        })
-
-    }
     if ((constructorOrder.kind == 'ConstructorOrder_a')) {
         return ((builder: Builder) => {
             builder.storeUint(0b0, 1);
             storeSimple(constructorOrder.a)(builder);
+        })
+
+    }
+    if ((constructorOrder.kind == 'ConstructorOrder__')) {
+        return ((builder: Builder) => {
+            storeSimple(constructorOrder.anon0)(builder);
         })
 
     }

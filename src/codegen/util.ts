@@ -364,18 +364,23 @@ export function calculateVariables(constructor: TLBConstructor) {
 
 export function getConstructorTag(declaration: Declaration, input: string[]): TLBConstructorTag {
     let tag = declaration.constructorDef.tag;
+    if (declaration.combinator.name == 'InMsgDescr') {
+        console.log(tag)
+        console.log(declaration.constructorDef)
+
+    }
+    if (tag == null && declaration.constructorDef.name == '_' || tag && tag.length > 1 && tag[1] == '_') {
+      return {
+        bitLen: 0,
+        binary: ''
+      };
+    }
     if (tag == null) {
         let opCode = calculateOpcode(declaration, input)
         return {
             bitLen: 32,
             binary: '0x' + opCode
         }
-    }
-    if (tag == undefined || tag && tag.length > 1 && tag[1] == '_') {
-      return {
-        bitLen: 0,
-        binary: ''
-      };
     }
     if (tag[0] == '$') {
       return {

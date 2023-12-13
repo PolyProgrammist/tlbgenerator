@@ -1075,17 +1075,17 @@ export interface ShardStateUnsplit {
     readonly custom: Maybe<McStateExtra>;
 }
 
-export type ShardState = ShardState__ | ShardState_split_state;
-
-export interface ShardState__ {
-    readonly kind: 'ShardState__';
-    readonly anon0: ShardStateUnsplit;
-}
+export type ShardState = ShardState_split_state | ShardState__;
 
 export interface ShardState_split_state {
     readonly kind: 'ShardState_split_state';
     readonly left: ShardStateUnsplit;
     readonly right: ShardStateUnsplit;
+}
+
+export interface ShardState__ {
+    readonly kind: 'ShardState__';
+    readonly anon0: ShardStateUnsplit;
 }
 
 export interface LibDescr {
@@ -1380,17 +1380,17 @@ export interface CryptoSignatureSimple {
     readonly s: BitString;
 }
 
-export type CryptoSignature = CryptoSignature__ | CryptoSignature_chained_signature;
-
-export interface CryptoSignature__ {
-    readonly kind: 'CryptoSignature__';
-    readonly anon0: CryptoSignatureSimple;
-}
+export type CryptoSignature = CryptoSignature_chained_signature | CryptoSignature__;
 
 export interface CryptoSignature_chained_signature {
     readonly kind: 'CryptoSignature_chained_signature';
     readonly signed_cert: SignedCertificate;
     readonly temp_key_signature: CryptoSignatureSimple;
+}
+
+export interface CryptoSignature__ {
+    readonly kind: 'CryptoSignature__';
+    readonly anon0: CryptoSignatureSimple;
 }
 
 export interface CryptoSignaturePair {
@@ -1464,7 +1464,7 @@ export interface ValidatorSet_validators_ext {
     readonly list: HashmapE<ValidatorDescr>;
 }
 
-export type ConfigParam = ConfigParam__ | ConfigParam__1 | ConfigParam__2 | ConfigParam__3 | ConfigParam__4 | ConfigParam__5 | ConfigParam__6 | ConfigParam__7 | ConfigParam__8 | ConfigParam__9 | ConfigParam__10 | ConfigParam__11 | ConfigParam__12 | ConfigParam__13 | ConfigParam__14 | ConfigParam__15 | ConfigParam__16 | ConfigParam__17 | ConfigParam__18 | ConfigParam__19 | ConfigParam__26 | ConfigParam__27 | ConfigParam__28 | ConfigParam__29 | ConfigParam__30 | ConfigParam__31 | ConfigParam__32 | ConfigParam__33 | ConfigParam__34 | ConfigParam__35 | ConfigParam__36 | ConfigParam__37 | ConfigParam__38 | ConfigParam__39 | ConfigParam__40 | ConfigParam__41 | ConfigParam__42 | ConfigParam__43 | ConfigParam__44 | ConfigParam_config_mc_gas_prices | ConfigParam_config_gas_prices | ConfigParam_config_mc_block_limits | ConfigParam_config_block_limits | ConfigParam_config_mc_fwd_prices | ConfigParam_config_fwd_prices;
+export type ConfigParam = ConfigParam__ | ConfigParam__1 | ConfigParam__2 | ConfigParam__3 | ConfigParam__4 | ConfigParam__5 | ConfigParam__6 | ConfigParam__7 | ConfigParam__8 | ConfigParam__9 | ConfigParam__10 | ConfigParam__11 | ConfigParam__12 | ConfigParam__13 | ConfigParam__14 | ConfigParam__15 | ConfigParam__16 | ConfigParam__17 | ConfigParam__18 | ConfigParam__19 | ConfigParam_config_mc_gas_prices | ConfigParam_config_gas_prices | ConfigParam_config_mc_block_limits | ConfigParam_config_block_limits | ConfigParam_config_mc_fwd_prices | ConfigParam_config_fwd_prices | ConfigParam__26 | ConfigParam__27 | ConfigParam__28 | ConfigParam__29 | ConfigParam__30 | ConfigParam__31 | ConfigParam__32 | ConfigParam__33 | ConfigParam__34 | ConfigParam__35 | ConfigParam__36 | ConfigParam__37 | ConfigParam__38 | ConfigParam__39 | ConfigParam__40 | ConfigParam__41 | ConfigParam__42 | ConfigParam__43 | ConfigParam__44;
 
 export interface ConfigParam__ {
     readonly kind: 'ConfigParam__';
@@ -1575,6 +1575,36 @@ export interface ConfigParam__19 {
     readonly global_id: number;
 }
 
+export interface ConfigParam_config_mc_gas_prices {
+    readonly kind: 'ConfigParam_config_mc_gas_prices';
+    readonly anon0: GasLimitsPrices;
+}
+
+export interface ConfigParam_config_gas_prices {
+    readonly kind: 'ConfigParam_config_gas_prices';
+    readonly anon0: GasLimitsPrices;
+}
+
+export interface ConfigParam_config_mc_block_limits {
+    readonly kind: 'ConfigParam_config_mc_block_limits';
+    readonly anon0: BlockLimits;
+}
+
+export interface ConfigParam_config_block_limits {
+    readonly kind: 'ConfigParam_config_block_limits';
+    readonly anon0: BlockLimits;
+}
+
+export interface ConfigParam_config_mc_fwd_prices {
+    readonly kind: 'ConfigParam_config_mc_fwd_prices';
+    readonly anon0: MsgForwardPrices;
+}
+
+export interface ConfigParam_config_fwd_prices {
+    readonly kind: 'ConfigParam_config_fwd_prices';
+    readonly anon0: MsgForwardPrices;
+}
+
 export interface ConfigParam__26 {
     readonly kind: 'ConfigParam__26';
     readonly anon0: CatchainConfig;
@@ -1668,36 +1698,6 @@ export interface ConfigParam__43 {
 export interface ConfigParam__44 {
     readonly kind: 'ConfigParam__44';
     readonly anon0: JettonBridgeParams;
-}
-
-export interface ConfigParam_config_mc_gas_prices {
-    readonly kind: 'ConfigParam_config_mc_gas_prices';
-    readonly anon0: GasLimitsPrices;
-}
-
-export interface ConfigParam_config_gas_prices {
-    readonly kind: 'ConfigParam_config_gas_prices';
-    readonly anon0: GasLimitsPrices;
-}
-
-export interface ConfigParam_config_mc_block_limits {
-    readonly kind: 'ConfigParam_config_mc_block_limits';
-    readonly anon0: BlockLimits;
-}
-
-export interface ConfigParam_config_block_limits {
-    readonly kind: 'ConfigParam_config_block_limits';
-    readonly anon0: BlockLimits;
-}
-
-export interface ConfigParam_config_mc_fwd_prices {
-    readonly kind: 'ConfigParam_config_mc_fwd_prices';
-    readonly anon0: MsgForwardPrices;
-}
-
-export interface ConfigParam_config_fwd_prices {
-    readonly kind: 'ConfigParam_config_fwd_prices';
-    readonly anon0: MsgForwardPrices;
 }
 
 export interface BurningConfig {
@@ -3051,22 +3051,17 @@ export function storeHashmapE<X>(hashmapE: HashmapE<X>, storeX: (x: X) => (build
 }
 
 export function loadBitstringSet(slice: Slice, n: number): BitstringSet {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x13b7747e))) {
-        slice.loadUint(32);
-        let _: Hashmap<True> = loadHashmap<True>(slice, n, loadTrue);
-        return {
-            kind: 'BitstringSet',
-            n: n,
-            _: _,
-        }
-
+    let _: Hashmap<True> = loadHashmap<True>(slice, n, loadTrue);
+    return {
+        kind: 'BitstringSet',
+        n: n,
+        _: _,
     }
-    throw new Error('');
+
 }
 
 export function storeBitstringSet(bitstringSet: BitstringSet): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0x13b7747e, 32);
         storeHashmap<True>(bitstringSet._, storeTrue)(builder);
     })
 
@@ -3634,8 +3629,7 @@ export function storeMsgAddressInt(msgAddressInt: MsgAddressInt): (builder: Buil
 }
 
 export function loadMsgAddress(slice: Slice): MsgAddress {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x606aa05e))) {
-        slice.loadUint(32);
+    if (true) {
         let _: MsgAddressInt = loadMsgAddressInt(slice);
         return {
             kind: 'MsgAddress__',
@@ -3643,8 +3637,7 @@ export function loadMsgAddress(slice: Slice): MsgAddress {
         }
 
     }
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x21d0382b))) {
-        slice.loadUint(32);
+    if (true) {
         let _: MsgAddressExt = loadMsgAddressExt(slice);
         return {
             kind: 'MsgAddress__1',
@@ -3658,14 +3651,12 @@ export function loadMsgAddress(slice: Slice): MsgAddress {
 export function storeMsgAddress(msgAddress: MsgAddress): (builder: Builder) => void {
     if ((msgAddress.kind == 'MsgAddress__')) {
         return ((builder: Builder) => {
-            builder.storeUint(0x606aa05e, 32);
             storeMsgAddressInt(msgAddress._)(builder);
         })
 
     }
     if ((msgAddress.kind == 'MsgAddress__1')) {
         return ((builder: Builder) => {
-            builder.storeUint(0x21d0382b, 32);
             storeMsgAddressExt(msgAddress._)(builder);
         })
 
@@ -3730,21 +3721,16 @@ export function storeGrams(grams: Grams): (builder: Builder) => void {
 }
 
 export function loadCoins(slice: Slice): Coins {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x258097e8))) {
-        slice.loadUint(32);
-        let grams: Grams = loadGrams(slice);
-        return {
-            kind: 'Coins',
-            grams: grams,
-        }
-
+    let grams: Grams = loadGrams(slice);
+    return {
+        kind: 'Coins',
+        grams: grams,
     }
-    throw new Error('');
+
 }
 
 export function storeCoins(coins: Coins): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0x258097e8, 32);
         storeGrams(coins.grams)(builder);
     })
 
@@ -3987,44 +3973,39 @@ export function storeTickTock(tickTock: TickTock): (builder: Builder) => void {
 }
 
 export function loadStateInit(slice: Slice): StateInit {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x6fb8b949))) {
-        slice.loadUint(32);
-        let split_depth: Maybe<number> = loadMaybe<number>(slice, ((slice: Slice) => {
-            return slice.loadUint(5)
+    let split_depth: Maybe<number> = loadMaybe<number>(slice, ((slice: Slice) => {
+        return slice.loadUint(5)
 
-        }));
-        let special: Maybe<TickTock> = loadMaybe<TickTock>(slice, loadTickTock);
-        let code: Maybe<Slice> = loadMaybe<Slice>(slice, ((slice: Slice) => {
-            let slice1 = slice.loadRef().beginParse();
-            return slice1
+    }));
+    let special: Maybe<TickTock> = loadMaybe<TickTock>(slice, loadTickTock);
+    let code: Maybe<Slice> = loadMaybe<Slice>(slice, ((slice: Slice) => {
+        let slice1 = slice.loadRef().beginParse();
+        return slice1
 
-        }));
-        let data: Maybe<Slice> = loadMaybe<Slice>(slice, ((slice: Slice) => {
-            let slice1 = slice.loadRef().beginParse();
-            return slice1
+    }));
+    let data: Maybe<Slice> = loadMaybe<Slice>(slice, ((slice: Slice) => {
+        let slice1 = slice.loadRef().beginParse();
+        return slice1
 
-        }));
-        let library: Maybe<Slice> = loadMaybe<Slice>(slice, ((slice: Slice) => {
-            let slice1 = slice.loadRef().beginParse();
-            return slice1
+    }));
+    let library: Maybe<Slice> = loadMaybe<Slice>(slice, ((slice: Slice) => {
+        let slice1 = slice.loadRef().beginParse();
+        return slice1
 
-        }));
-        return {
-            kind: 'StateInit',
-            split_depth: split_depth,
-            special: special,
-            code: code,
-            data: data,
-            library: library,
-        }
-
+    }));
+    return {
+        kind: 'StateInit',
+        split_depth: split_depth,
+        special: special,
+        code: code,
+        data: data,
+        library: library,
     }
-    throw new Error('');
+
 }
 
 export function storeStateInit(stateInit: StateInit): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0x6fb8b949, 32);
         storeMaybe<number>(stateInit.split_depth, ((arg: number) => {
             return ((builder: Builder) => {
                 builder.storeUint(arg, 5);
@@ -4064,40 +4045,35 @@ export function storeStateInit(stateInit: StateInit): (builder: Builder) => void
 }
 
 export function loadStateInitWithLibs(slice: Slice): StateInitWithLibs {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x458004e3))) {
-        slice.loadUint(32);
-        let split_depth: Maybe<number> = loadMaybe<number>(slice, ((slice: Slice) => {
-            return slice.loadUint(5)
+    let split_depth: Maybe<number> = loadMaybe<number>(slice, ((slice: Slice) => {
+        return slice.loadUint(5)
 
-        }));
-        let special: Maybe<TickTock> = loadMaybe<TickTock>(slice, loadTickTock);
-        let code: Maybe<Slice> = loadMaybe<Slice>(slice, ((slice: Slice) => {
-            let slice1 = slice.loadRef().beginParse();
-            return slice1
+    }));
+    let special: Maybe<TickTock> = loadMaybe<TickTock>(slice, loadTickTock);
+    let code: Maybe<Slice> = loadMaybe<Slice>(slice, ((slice: Slice) => {
+        let slice1 = slice.loadRef().beginParse();
+        return slice1
 
-        }));
-        let data: Maybe<Slice> = loadMaybe<Slice>(slice, ((slice: Slice) => {
-            let slice1 = slice.loadRef().beginParse();
-            return slice1
+    }));
+    let data: Maybe<Slice> = loadMaybe<Slice>(slice, ((slice: Slice) => {
+        let slice1 = slice.loadRef().beginParse();
+        return slice1
 
-        }));
-        let library: HashmapE<SimpleLib> = loadHashmapE<SimpleLib>(slice, 256, loadSimpleLib);
-        return {
-            kind: 'StateInitWithLibs',
-            split_depth: split_depth,
-            special: special,
-            code: code,
-            data: data,
-            library: library,
-        }
-
+    }));
+    let library: HashmapE<SimpleLib> = loadHashmapE<SimpleLib>(slice, 256, loadSimpleLib);
+    return {
+        kind: 'StateInitWithLibs',
+        split_depth: split_depth,
+        special: special,
+        code: code,
+        data: data,
+        library: library,
     }
-    throw new Error('');
+
 }
 
 export function storeStateInitWithLibs(stateInitWithLibs: StateInitWithLibs): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0x458004e3, 32);
         storeMaybe<number>(stateInitWithLibs.split_depth, ((arg: number) => {
             return ((builder: Builder) => {
                 builder.storeUint(arg, 5);
@@ -4259,24 +4235,19 @@ export function storeMessageRelaxed<X>(messageRelaxed: MessageRelaxed<X>, storeX
 }
 
 export function loadMessageAny(slice: Slice): MessageAny {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x2ac89f2a))) {
-        slice.loadUint(32);
-        let anon0: Message<Slice> = loadMessage<Slice>(slice, ((slice: Slice) => {
-            return slice
+    let anon0: Message<Slice> = loadMessage<Slice>(slice, ((slice: Slice) => {
+        return slice
 
-        }));
-        return {
-            kind: 'MessageAny',
-            anon0: anon0,
-        }
-
+    }));
+    return {
+        kind: 'MessageAny',
+        anon0: anon0,
     }
-    throw new Error('');
+
 }
 
 export function storeMessageAny(messageAny: MessageAny): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0x2ac89f2a, 32);
         storeMessage<Slice>(messageAny.anon0, ((arg: Slice) => {
             return ((builder: Builder) => {
                 builder.storeSlice(arg);
@@ -4633,21 +4604,16 @@ export function storeImportFees(importFees: ImportFees): (builder: Builder) => v
 }
 
 export function loadInMsgDescr(slice: Slice): InMsgDescr {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x59519ebf))) {
-        slice.loadUint(32);
-        let anon0: HashmapAugE<InMsg, ImportFees> = loadHashmapAugE<InMsg, ImportFees>(slice, 256, loadInMsg, loadImportFees);
-        return {
-            kind: 'InMsgDescr',
-            anon0: anon0,
-        }
-
+    let anon0: HashmapAugE<InMsg, ImportFees> = loadHashmapAugE<InMsg, ImportFees>(slice, 256, loadInMsg, loadImportFees);
+    return {
+        kind: 'InMsgDescr',
+        anon0: anon0,
     }
-    throw new Error('');
+
 }
 
 export function storeInMsgDescr(inMsgDescr: InMsgDescr): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0x59519ebf, 32);
         storeHashmapAugE<InMsg, ImportFees>(inMsgDescr.anon0, storeInMsg, storeImportFees)(builder);
     })
 
@@ -4873,24 +4839,19 @@ export function storeOutMsg(outMsg: OutMsg): (builder: Builder) => void {
 }
 
 export function loadEnqueuedMsg(slice: Slice): EnqueuedMsg {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x1006a25f))) {
-        slice.loadUint(32);
-        let enqueued_lt: number = slice.loadUint(64);
-        let slice1 = slice.loadRef().beginParse();
-        let out_msg: MsgEnvelope = loadMsgEnvelope(slice1);
-        return {
-            kind: 'EnqueuedMsg',
-            enqueued_lt: enqueued_lt,
-            out_msg: out_msg,
-        }
-
+    let enqueued_lt: number = slice.loadUint(64);
+    let slice1 = slice.loadRef().beginParse();
+    let out_msg: MsgEnvelope = loadMsgEnvelope(slice1);
+    return {
+        kind: 'EnqueuedMsg',
+        enqueued_lt: enqueued_lt,
+        out_msg: out_msg,
     }
-    throw new Error('');
+
 }
 
 export function storeEnqueuedMsg(enqueuedMsg: EnqueuedMsg): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0x1006a25f, 32);
         builder.storeUint(enqueuedMsg.enqueued_lt, 64);
         let cell1 = beginCell();
         storeMsgEnvelope(enqueuedMsg.out_msg)(cell1);
@@ -4900,45 +4861,35 @@ export function storeEnqueuedMsg(enqueuedMsg: EnqueuedMsg): (builder: Builder) =
 }
 
 export function loadOutMsgDescr(slice: Slice): OutMsgDescr {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x67a8b3c9))) {
-        slice.loadUint(32);
-        let anon0: HashmapAugE<OutMsg, CurrencyCollection> = loadHashmapAugE<OutMsg, CurrencyCollection>(slice, 256, loadOutMsg, loadCurrencyCollection);
-        return {
-            kind: 'OutMsgDescr',
-            anon0: anon0,
-        }
-
+    let anon0: HashmapAugE<OutMsg, CurrencyCollection> = loadHashmapAugE<OutMsg, CurrencyCollection>(slice, 256, loadOutMsg, loadCurrencyCollection);
+    return {
+        kind: 'OutMsgDescr',
+        anon0: anon0,
     }
-    throw new Error('');
+
 }
 
 export function storeOutMsgDescr(outMsgDescr: OutMsgDescr): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0x67a8b3c9, 32);
         storeHashmapAugE<OutMsg, CurrencyCollection>(outMsgDescr.anon0, storeOutMsg, storeCurrencyCollection)(builder);
     })
 
 }
 
 export function loadOutMsgQueue(slice: Slice): OutMsgQueue {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x4ef24409))) {
-        slice.loadUint(32);
-        let anon0: HashmapAugE<EnqueuedMsg, number> = loadHashmapAugE<EnqueuedMsg, number>(slice, 352, loadEnqueuedMsg, ((slice: Slice) => {
-            return slice.loadUint(64)
+    let anon0: HashmapAugE<EnqueuedMsg, number> = loadHashmapAugE<EnqueuedMsg, number>(slice, 352, loadEnqueuedMsg, ((slice: Slice) => {
+        return slice.loadUint(64)
 
-        }));
-        return {
-            kind: 'OutMsgQueue',
-            anon0: anon0,
-        }
-
+    }));
+    return {
+        kind: 'OutMsgQueue',
+        anon0: anon0,
     }
-    throw new Error('');
+
 }
 
 export function storeOutMsgQueue(outMsgQueue: OutMsgQueue): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0x4ef24409, 32);
         storeHashmapAugE<EnqueuedMsg, number>(outMsgQueue.anon0, storeEnqueuedMsg, ((arg: number) => {
             return ((builder: Builder) => {
                 builder.storeUint(arg, 64);
@@ -4969,21 +4920,16 @@ export function storeProcessedUpto(processedUpto: ProcessedUpto): (builder: Buil
 }
 
 export function loadProcessedInfo(slice: Slice): ProcessedInfo {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x155266c0))) {
-        slice.loadUint(32);
-        let anon0: HashmapE<ProcessedUpto> = loadHashmapE<ProcessedUpto>(slice, 96, loadProcessedUpto);
-        return {
-            kind: 'ProcessedInfo',
-            anon0: anon0,
-        }
-
+    let anon0: HashmapE<ProcessedUpto> = loadHashmapE<ProcessedUpto>(slice, 96, loadProcessedUpto);
+    return {
+        kind: 'ProcessedInfo',
+        anon0: anon0,
     }
-    throw new Error('');
+
 }
 
 export function storeProcessedInfo(processedInfo: ProcessedInfo): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0x155266c0, 32);
         storeHashmapE<ProcessedUpto>(processedInfo.anon0, storeProcessedUpto)(builder);
     })
 
@@ -5006,46 +4952,36 @@ export function storeIhrPendingSince(ihrPendingSince: IhrPendingSince): (builder
 }
 
 export function loadIhrPendingInfo(slice: Slice): IhrPendingInfo {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x5a108747))) {
-        slice.loadUint(32);
-        let anon0: HashmapE<IhrPendingSince> = loadHashmapE<IhrPendingSince>(slice, 320, loadIhrPendingSince);
-        return {
-            kind: 'IhrPendingInfo',
-            anon0: anon0,
-        }
-
+    let anon0: HashmapE<IhrPendingSince> = loadHashmapE<IhrPendingSince>(slice, 320, loadIhrPendingSince);
+    return {
+        kind: 'IhrPendingInfo',
+        anon0: anon0,
     }
-    throw new Error('');
+
 }
 
 export function storeIhrPendingInfo(ihrPendingInfo: IhrPendingInfo): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0x5a108747, 32);
         storeHashmapE<IhrPendingSince>(ihrPendingInfo.anon0, storeIhrPendingSince)(builder);
     })
 
 }
 
 export function loadOutMsgQueueInfo(slice: Slice): OutMsgQueueInfo {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0xae4d516))) {
-        slice.loadUint(32);
-        let out_queue: OutMsgQueue = loadOutMsgQueue(slice);
-        let proc_info: ProcessedInfo = loadProcessedInfo(slice);
-        let ihr_pending: IhrPendingInfo = loadIhrPendingInfo(slice);
-        return {
-            kind: 'OutMsgQueueInfo',
-            out_queue: out_queue,
-            proc_info: proc_info,
-            ihr_pending: ihr_pending,
-        }
-
+    let out_queue: OutMsgQueue = loadOutMsgQueue(slice);
+    let proc_info: ProcessedInfo = loadProcessedInfo(slice);
+    let ihr_pending: IhrPendingInfo = loadIhrPendingInfo(slice);
+    return {
+        kind: 'OutMsgQueueInfo',
+        out_queue: out_queue,
+        proc_info: proc_info,
+        ihr_pending: ihr_pending,
     }
-    throw new Error('');
+
 }
 
 export function storeOutMsgQueueInfo(outMsgQueueInfo: OutMsgQueueInfo): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0xae4d516, 32);
         storeOutMsgQueue(outMsgQueueInfo.out_queue)(builder);
         storeProcessedInfo(outMsgQueueInfo.proc_info)(builder);
         storeIhrPendingInfo(outMsgQueueInfo.ihr_pending)(builder);
@@ -5339,21 +5275,16 @@ export function storeDepthBalanceInfo(depthBalanceInfo: DepthBalanceInfo): (buil
 }
 
 export function loadShardAccounts(slice: Slice): ShardAccounts {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x6aced5bb))) {
-        slice.loadUint(32);
-        let anon0: HashmapAugE<ShardAccount, DepthBalanceInfo> = loadHashmapAugE<ShardAccount, DepthBalanceInfo>(slice, 256, loadShardAccount, loadDepthBalanceInfo);
-        return {
-            kind: 'ShardAccounts',
-            anon0: anon0,
-        }
-
+    let anon0: HashmapAugE<ShardAccount, DepthBalanceInfo> = loadHashmapAugE<ShardAccount, DepthBalanceInfo>(slice, 256, loadShardAccount, loadDepthBalanceInfo);
+    return {
+        kind: 'ShardAccounts',
+        anon0: anon0,
     }
-    throw new Error('');
+
 }
 
 export function storeShardAccounts(shardAccounts: ShardAccounts): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0x6aced5bb, 32);
         storeHashmapAugE<ShardAccount, DepthBalanceInfo>(shardAccounts.anon0, storeShardAccount, storeDepthBalanceInfo)(builder);
     })
 
@@ -5598,21 +5529,16 @@ export function storeAccountBlock(accountBlock: AccountBlock): (builder: Builder
 }
 
 export function loadShardAccountBlocks(slice: Slice): ShardAccountBlocks {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x31fb3c58))) {
-        slice.loadUint(32);
-        let anon0: HashmapAugE<AccountBlock, CurrencyCollection> = loadHashmapAugE<AccountBlock, CurrencyCollection>(slice, 256, loadAccountBlock, loadCurrencyCollection);
-        return {
-            kind: 'ShardAccountBlocks',
-            anon0: anon0,
-        }
-
+    let anon0: HashmapAugE<AccountBlock, CurrencyCollection> = loadHashmapAugE<AccountBlock, CurrencyCollection>(slice, 256, loadAccountBlock, loadCurrencyCollection);
+    return {
+        kind: 'ShardAccountBlocks',
+        anon0: anon0,
     }
-    throw new Error('');
+
 }
 
 export function storeShardAccountBlocks(shardAccountBlocks: ShardAccountBlocks): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0x31fb3c58, 32);
         storeHashmapAugE<AccountBlock, CurrencyCollection>(shardAccountBlocks.anon0, storeAccountBlock, storeCurrencyCollection)(builder);
     })
 
@@ -6706,15 +6632,6 @@ export function storeShardStateUnsplit(shardStateUnsplit: ShardStateUnsplit): (b
 }
 
 export function loadShardState(slice: Slice): ShardState {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x313f365c))) {
-        slice.loadUint(32);
-        let anon0: ShardStateUnsplit = loadShardStateUnsplit(slice);
-        return {
-            kind: 'ShardState__',
-            anon0: anon0,
-        }
-
-    }
     if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x5f327da5))) {
         slice.loadUint(32);
         let slice1 = slice.loadRef().beginParse();
@@ -6728,17 +6645,18 @@ export function loadShardState(slice: Slice): ShardState {
         }
 
     }
+    if (true) {
+        let anon0: ShardStateUnsplit = loadShardStateUnsplit(slice);
+        return {
+            kind: 'ShardState__',
+            anon0: anon0,
+        }
+
+    }
     throw new Error('');
 }
 
 export function storeShardState(shardState: ShardState): (builder: Builder) => void {
-    if ((shardState.kind == 'ShardState__')) {
-        return ((builder: Builder) => {
-            builder.storeUint(0x313f365c, 32);
-            storeShardStateUnsplit(shardState.anon0)(builder);
-        })
-
-    }
     if ((shardState.kind == 'ShardState_split_state')) {
         return ((builder: Builder) => {
             builder.storeUint(0x5f327da5, 32);
@@ -6748,6 +6666,12 @@ export function storeShardState(shardState: ShardState): (builder: Builder) => v
             let cell2 = beginCell();
             storeShardStateUnsplit(shardState.right)(cell2);
             builder.storeRef(cell2);
+        })
+
+    }
+    if ((shardState.kind == 'ShardState__')) {
+        return ((builder: Builder) => {
+            storeShardStateUnsplit(shardState.anon0)(builder);
         })
 
     }
@@ -7430,25 +7354,20 @@ export function storeShardDescr(shardDescr: ShardDescr): (builder: Builder) => v
 }
 
 export function loadShardHashes(slice: Slice): ShardHashes {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x7bea3589))) {
-        slice.loadUint(32);
-        let anon0: HashmapE<BinTree<ShardDescr>> = loadHashmapE<BinTree<ShardDescr>>(slice, 32, ((slice: Slice) => {
-            let slice1 = slice.loadRef().beginParse();
-            return loadBinTree<ShardDescr>(slice1, loadShardDescr)
+    let anon0: HashmapE<BinTree<ShardDescr>> = loadHashmapE<BinTree<ShardDescr>>(slice, 32, ((slice: Slice) => {
+        let slice1 = slice.loadRef().beginParse();
+        return loadBinTree<ShardDescr>(slice1, loadShardDescr)
 
-        }));
-        return {
-            kind: 'ShardHashes',
-            anon0: anon0,
-        }
-
+    }));
+    return {
+        kind: 'ShardHashes',
+        anon0: anon0,
     }
-    throw new Error('');
+
 }
 
 export function storeShardHashes(shardHashes: ShardHashes): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0x7bea3589, 32);
         storeHashmapE<BinTree<ShardDescr>>(shardHashes.anon0, ((arg: BinTree<ShardDescr>) => {
             return ((builder: Builder) => {
                 let cell1 = beginCell();
@@ -7518,23 +7437,18 @@ export function storeBinTreeAug<X, Y>(binTreeAug: BinTreeAug<X, Y>, storeX: (x: 
 }
 
 export function loadShardFeeCreated(slice: Slice): ShardFeeCreated {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x8269845))) {
-        slice.loadUint(32);
-        let fees: CurrencyCollection = loadCurrencyCollection(slice);
-        let create: CurrencyCollection = loadCurrencyCollection(slice);
-        return {
-            kind: 'ShardFeeCreated',
-            fees: fees,
-            create: create,
-        }
-
+    let fees: CurrencyCollection = loadCurrencyCollection(slice);
+    let create: CurrencyCollection = loadCurrencyCollection(slice);
+    return {
+        kind: 'ShardFeeCreated',
+        fees: fees,
+        create: create,
     }
-    throw new Error('');
+
 }
 
 export function storeShardFeeCreated(shardFeeCreated: ShardFeeCreated): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0x8269845, 32);
         storeCurrencyCollection(shardFeeCreated.fees)(builder);
         storeCurrencyCollection(shardFeeCreated.create)(builder);
     })
@@ -7542,49 +7456,39 @@ export function storeShardFeeCreated(shardFeeCreated: ShardFeeCreated): (builder
 }
 
 export function loadShardFees(slice: Slice): ShardFees {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x6136639f))) {
-        slice.loadUint(32);
-        let anon0: HashmapAugE<ShardFeeCreated, ShardFeeCreated> = loadHashmapAugE<ShardFeeCreated, ShardFeeCreated>(slice, 96, loadShardFeeCreated, loadShardFeeCreated);
-        return {
-            kind: 'ShardFees',
-            anon0: anon0,
-        }
-
+    let anon0: HashmapAugE<ShardFeeCreated, ShardFeeCreated> = loadHashmapAugE<ShardFeeCreated, ShardFeeCreated>(slice, 96, loadShardFeeCreated, loadShardFeeCreated);
+    return {
+        kind: 'ShardFees',
+        anon0: anon0,
     }
-    throw new Error('');
+
 }
 
 export function storeShardFees(shardFees: ShardFees): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0x6136639f, 32);
         storeHashmapAugE<ShardFeeCreated, ShardFeeCreated>(shardFees.anon0, storeShardFeeCreated, storeShardFeeCreated)(builder);
     })
 
 }
 
 export function loadConfigParams(slice: Slice): ConfigParams {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x44d63bde))) {
-        slice.loadUint(32);
-        let config_addr: BitString = slice.loadBits(256);
+    let config_addr: BitString = slice.loadBits(256);
+    let slice1 = slice.loadRef().beginParse();
+    let config: Hashmap<Slice> = loadHashmap<Slice>(slice1, 32, ((slice: Slice) => {
         let slice1 = slice.loadRef().beginParse();
-        let config: Hashmap<Slice> = loadHashmap<Slice>(slice1, 32, ((slice: Slice) => {
-            let slice1 = slice.loadRef().beginParse();
-            return slice1
+        return slice1
 
-        }));
-        return {
-            kind: 'ConfigParams',
-            config_addr: config_addr,
-            config: config,
-        }
-
+    }));
+    return {
+        kind: 'ConfigParams',
+        config_addr: config_addr,
+        config: config,
     }
-    throw new Error('');
+
 }
 
 export function storeConfigParams(configParams: ConfigParams): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0x44d63bde, 32);
         builder.storeBits(configParams.config_addr);
         let cell1 = beginCell();
         storeHashmap<Slice>(configParams.config, ((arg: Slice) => {
@@ -7643,23 +7547,18 @@ export function storeValidatorBaseInfo(validatorBaseInfo: ValidatorBaseInfo): (b
 }
 
 export function loadKeyMaxLt(slice: Slice): KeyMaxLt {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x5da0639c))) {
-        slice.loadUint(32);
-        let key: Bool = loadBool(slice);
-        let max_end_lt: number = slice.loadUint(64);
-        return {
-            kind: 'KeyMaxLt',
-            key: key,
-            max_end_lt: max_end_lt,
-        }
-
+    let key: Bool = loadBool(slice);
+    let max_end_lt: number = slice.loadUint(64);
+    return {
+        kind: 'KeyMaxLt',
+        key: key,
+        max_end_lt: max_end_lt,
     }
-    throw new Error('');
+
 }
 
 export function storeKeyMaxLt(keyMaxLt: KeyMaxLt): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0x5da0639c, 32);
         storeBool(keyMaxLt.key)(builder);
         builder.storeUint(keyMaxLt.max_end_lt, 64);
     })
@@ -7667,23 +7566,18 @@ export function storeKeyMaxLt(keyMaxLt: KeyMaxLt): (builder: Builder) => void {
 }
 
 export function loadKeyExtBlkRef(slice: Slice): KeyExtBlkRef {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0xaa27f21))) {
-        slice.loadUint(32);
-        let key: Bool = loadBool(slice);
-        let blk_ref: ExtBlkRef = loadExtBlkRef(slice);
-        return {
-            kind: 'KeyExtBlkRef',
-            key: key,
-            blk_ref: blk_ref,
-        }
-
+    let key: Bool = loadBool(slice);
+    let blk_ref: ExtBlkRef = loadExtBlkRef(slice);
+    return {
+        kind: 'KeyExtBlkRef',
+        key: key,
+        blk_ref: blk_ref,
     }
-    throw new Error('');
+
 }
 
 export function storeKeyExtBlkRef(keyExtBlkRef: KeyExtBlkRef): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0xaa27f21, 32);
         storeBool(keyExtBlkRef.key)(builder);
         storeExtBlkRef(keyExtBlkRef.blk_ref)(builder);
     })
@@ -7691,21 +7585,16 @@ export function storeKeyExtBlkRef(keyExtBlkRef: KeyExtBlkRef): (builder: Builder
 }
 
 export function loadOldMcBlocksInfo(slice: Slice): OldMcBlocksInfo {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x725093d))) {
-        slice.loadUint(32);
-        let anon0: HashmapAugE<KeyExtBlkRef, KeyMaxLt> = loadHashmapAugE<KeyExtBlkRef, KeyMaxLt>(slice, 32, loadKeyExtBlkRef, loadKeyMaxLt);
-        return {
-            kind: 'OldMcBlocksInfo',
-            anon0: anon0,
-        }
-
+    let anon0: HashmapAugE<KeyExtBlkRef, KeyMaxLt> = loadHashmapAugE<KeyExtBlkRef, KeyMaxLt>(slice, 32, loadKeyExtBlkRef, loadKeyMaxLt);
+    return {
+        kind: 'OldMcBlocksInfo',
+        anon0: anon0,
     }
-    throw new Error('');
+
 }
 
 export function storeOldMcBlocksInfo(oldMcBlocksInfo: OldMcBlocksInfo): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0x725093d, 32);
         storeHashmapAugE<KeyExtBlkRef, KeyMaxLt>(oldMcBlocksInfo.anon0, storeKeyExtBlkRef, storeKeyMaxLt)(builder);
     })
 
@@ -7904,15 +7793,6 @@ export function storeCryptoSignatureSimple(cryptoSignatureSimple: CryptoSignatur
 }
 
 export function loadCryptoSignature(slice: Slice): CryptoSignature {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x232dece3))) {
-        slice.loadUint(32);
-        let anon0: CryptoSignatureSimple = loadCryptoSignatureSimple(slice);
-        return {
-            kind: 'CryptoSignature__',
-            anon0: anon0,
-        }
-
-    }
     if (((slice.remainingBits >= 4) && (slice.preloadUint(4) == 0xf))) {
         slice.loadUint(4);
         let slice1 = slice.loadRef().beginParse();
@@ -7925,17 +7805,18 @@ export function loadCryptoSignature(slice: Slice): CryptoSignature {
         }
 
     }
+    if (true) {
+        let anon0: CryptoSignatureSimple = loadCryptoSignatureSimple(slice);
+        return {
+            kind: 'CryptoSignature__',
+            anon0: anon0,
+        }
+
+    }
     throw new Error('');
 }
 
 export function storeCryptoSignature(cryptoSignature: CryptoSignature): (builder: Builder) => void {
-    if ((cryptoSignature.kind == 'CryptoSignature__')) {
-        return ((builder: Builder) => {
-            builder.storeUint(0x232dece3, 32);
-            storeCryptoSignatureSimple(cryptoSignature.anon0)(builder);
-        })
-
-    }
     if ((cryptoSignature.kind == 'CryptoSignature_chained_signature')) {
         return ((builder: Builder) => {
             builder.storeUint(0xf, 4);
@@ -7943,6 +7824,12 @@ export function storeCryptoSignature(cryptoSignature: CryptoSignature): (builder
             storeSignedCertificate(cryptoSignature.signed_cert)(cell1);
             builder.storeRef(cell1);
             storeCryptoSignatureSimple(cryptoSignature.temp_key_signature)(builder);
+        })
+
+    }
+    if ((cryptoSignature.kind == 'CryptoSignature__')) {
+        return ((builder: Builder) => {
+            storeCryptoSignatureSimple(cryptoSignature.anon0)(builder);
         })
 
     }
@@ -8244,8 +8131,7 @@ export function storeValidatorSet(validatorSet: ValidatorSet): (builder: Builder
 }
 
 export function loadConfigParam(slice: Slice, arg0: number): ConfigParam {
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x73a8e939) && (arg0 == 0)))) {
-        slice.loadUint(32);
+    if ((arg0 == 0)) {
         let config_addr: BitString = slice.loadBits(256);
         return {
             kind: 'ConfigParam__',
@@ -8253,8 +8139,7 @@ export function loadConfigParam(slice: Slice, arg0: number): ConfigParam {
         }
 
     }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x54b6a30e) && (arg0 == 1)))) {
-        slice.loadUint(32);
+    if ((arg0 == 1)) {
         let elector_addr: BitString = slice.loadBits(256);
         return {
             kind: 'ConfigParam__1',
@@ -8262,8 +8147,7 @@ export function loadConfigParam(slice: Slice, arg0: number): ConfigParam {
         }
 
     }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x140a60cd) && (arg0 == 2)))) {
-        slice.loadUint(32);
+    if ((arg0 == 2)) {
         let minter_addr: BitString = slice.loadBits(256);
         return {
             kind: 'ConfigParam__2',
@@ -8271,8 +8155,7 @@ export function loadConfigParam(slice: Slice, arg0: number): ConfigParam {
         }
 
     }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x1f8e5906) && (arg0 == 3)))) {
-        slice.loadUint(32);
+    if ((arg0 == 3)) {
         let fee_collector_addr: BitString = slice.loadBits(256);
         return {
             kind: 'ConfigParam__3',
@@ -8280,8 +8163,7 @@ export function loadConfigParam(slice: Slice, arg0: number): ConfigParam {
         }
 
     }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x539877d6) && (arg0 == 4)))) {
-        slice.loadUint(32);
+    if ((arg0 == 4)) {
         let dns_root_addr: BitString = slice.loadBits(256);
         return {
             kind: 'ConfigParam__4',
@@ -8289,8 +8171,7 @@ export function loadConfigParam(slice: Slice, arg0: number): ConfigParam {
         }
 
     }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x439fe43d) && (arg0 == 5)))) {
-        slice.loadUint(32);
+    if ((arg0 == 5)) {
         let anon0: BurningConfig = loadBurningConfig(slice);
         return {
             kind: 'ConfigParam__5',
@@ -8298,8 +8179,7 @@ export function loadConfigParam(slice: Slice, arg0: number): ConfigParam {
         }
 
     }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x657ceda4) && (arg0 == 6)))) {
-        slice.loadUint(32);
+    if ((arg0 == 6)) {
         let mint_new_price: Grams = loadGrams(slice);
         let mint_add_price: Grams = loadGrams(slice);
         return {
@@ -8309,8 +8189,7 @@ export function loadConfigParam(slice: Slice, arg0: number): ConfigParam {
         }
 
     }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x13b3e23b) && (arg0 == 7)))) {
-        slice.loadUint(32);
+    if ((arg0 == 7)) {
         let to_mint: ExtraCurrencyCollection = loadExtraCurrencyCollection(slice);
         return {
             kind: 'ConfigParam__7',
@@ -8318,8 +8197,7 @@ export function loadConfigParam(slice: Slice, arg0: number): ConfigParam {
         }
 
     }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x7cc939b3) && (arg0 == 8)))) {
-        slice.loadUint(32);
+    if ((arg0 == 8)) {
         let anon0: GlobalVersion = loadGlobalVersion(slice);
         return {
             kind: 'ConfigParam__8',
@@ -8327,8 +8205,7 @@ export function loadConfigParam(slice: Slice, arg0: number): ConfigParam {
         }
 
     }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x576c3788) && (arg0 == 9)))) {
-        slice.loadUint(32);
+    if ((arg0 == 9)) {
         let mandatory_params: Hashmap<True> = loadHashmap<True>(slice, 32, loadTrue);
         return {
             kind: 'ConfigParam__9',
@@ -8336,8 +8213,7 @@ export function loadConfigParam(slice: Slice, arg0: number): ConfigParam {
         }
 
     }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x54c7bee6) && (arg0 == 10)))) {
-        slice.loadUint(32);
+    if ((arg0 == 10)) {
         let critical_params: Hashmap<True> = loadHashmap<True>(slice, 32, loadTrue);
         return {
             kind: 'ConfigParam__10',
@@ -8345,8 +8221,7 @@ export function loadConfigParam(slice: Slice, arg0: number): ConfigParam {
         }
 
     }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x5e24c290) && (arg0 == 11)))) {
-        slice.loadUint(32);
+    if ((arg0 == 11)) {
         let anon0: ConfigVotingSetup = loadConfigVotingSetup(slice);
         return {
             kind: 'ConfigParam__11',
@@ -8354,8 +8229,7 @@ export function loadConfigParam(slice: Slice, arg0: number): ConfigParam {
         }
 
     }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x3074376c) && (arg0 == 12)))) {
-        slice.loadUint(32);
+    if ((arg0 == 12)) {
         let workchains: HashmapE<WorkchainDescr> = loadHashmapE<WorkchainDescr>(slice, 32, loadWorkchainDescr);
         return {
             kind: 'ConfigParam__12',
@@ -8363,8 +8237,7 @@ export function loadConfigParam(slice: Slice, arg0: number): ConfigParam {
         }
 
     }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x19c3905a) && (arg0 == 13)))) {
-        slice.loadUint(32);
+    if ((arg0 == 13)) {
         let anon0: ComplaintPricing = loadComplaintPricing(slice);
         return {
             kind: 'ConfigParam__13',
@@ -8372,8 +8245,7 @@ export function loadConfigParam(slice: Slice, arg0: number): ConfigParam {
         }
 
     }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0xad661db) && (arg0 == 14)))) {
-        slice.loadUint(32);
+    if ((arg0 == 14)) {
         let anon0: BlockCreateFees = loadBlockCreateFees(slice);
         return {
             kind: 'ConfigParam__14',
@@ -8381,8 +8253,7 @@ export function loadConfigParam(slice: Slice, arg0: number): ConfigParam {
         }
 
     }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x3487eadb) && (arg0 == 15)))) {
-        slice.loadUint(32);
+    if ((arg0 == 15)) {
         let validators_elected_for: number = slice.loadUint(32);
         let elections_start_before: number = slice.loadUint(32);
         let elections_end_before: number = slice.loadUint(32);
@@ -8396,8 +8267,7 @@ export function loadConfigParam(slice: Slice, arg0: number): ConfigParam {
         }
 
     }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x3993e4d6) && (arg0 == 16)))) {
-        slice.loadUint(32);
+    if ((arg0 == 16)) {
         let max_validators: number = slice.loadUint(16);
         let max_main_validators: number = slice.loadUint(16);
         let min_validators: number = slice.loadUint(16);
@@ -8418,8 +8288,7 @@ export function loadConfigParam(slice: Slice, arg0: number): ConfigParam {
         }
 
     }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x11848225) && (arg0 == 17)))) {
-        slice.loadUint(32);
+    if ((arg0 == 17)) {
         let min_stake: Grams = loadGrams(slice);
         let max_stake: Grams = loadGrams(slice);
         let min_total_stake: Grams = loadGrams(slice);
@@ -8433,8 +8302,7 @@ export function loadConfigParam(slice: Slice, arg0: number): ConfigParam {
         }
 
     }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x6b4c6702) && (arg0 == 18)))) {
-        slice.loadUint(32);
+    if ((arg0 == 18)) {
         let anon0: Hashmap<StoragePrices> = loadHashmap<StoragePrices>(slice, 32, loadStoragePrices);
         return {
             kind: 'ConfigParam__18',
@@ -8442,183 +8310,11 @@ export function loadConfigParam(slice: Slice, arg0: number): ConfigParam {
         }
 
     }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0xb916605) && (arg0 == 19)))) {
-        slice.loadUint(32);
+    if ((arg0 == 19)) {
         let global_id: number = slice.loadInt(32);
         return {
             kind: 'ConfigParam__19',
             global_id: global_id,
-        }
-
-    }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x500e41c8) && (arg0 == 28)))) {
-        slice.loadUint(32);
-        let anon0: CatchainConfig = loadCatchainConfig(slice);
-        return {
-            kind: 'ConfigParam__26',
-            anon0: anon0,
-        }
-
-    }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x5d933fdf) && (arg0 == 29)))) {
-        slice.loadUint(32);
-        let anon0: ConsensusConfig = loadConsensusConfig(slice);
-        return {
-            kind: 'ConfigParam__27',
-            anon0: anon0,
-        }
-
-    }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x6bbc2369) && (arg0 == 31)))) {
-        slice.loadUint(32);
-        let fundamental_smc_addr: HashmapE<True> = loadHashmapE<True>(slice, 256, loadTrue);
-        return {
-            kind: 'ConfigParam__28',
-            fundamental_smc_addr: fundamental_smc_addr,
-        }
-
-    }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x7d31022b) && (arg0 == 32)))) {
-        slice.loadUint(32);
-        let prev_validators: ValidatorSet = loadValidatorSet(slice);
-        return {
-            kind: 'ConfigParam__29',
-            prev_validators: prev_validators,
-        }
-
-    }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x1e48f929) && (arg0 == 33)))) {
-        slice.loadUint(32);
-        let prev_temp_validators: ValidatorSet = loadValidatorSet(slice);
-        return {
-            kind: 'ConfigParam__30',
-            prev_temp_validators: prev_temp_validators,
-        }
-
-    }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x3b08e907) && (arg0 == 34)))) {
-        slice.loadUint(32);
-        let cur_validators: ValidatorSet = loadValidatorSet(slice);
-        return {
-            kind: 'ConfigParam__31',
-            cur_validators: cur_validators,
-        }
-
-    }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x29a48da1) && (arg0 == 35)))) {
-        slice.loadUint(32);
-        let cur_temp_validators: ValidatorSet = loadValidatorSet(slice);
-        return {
-            kind: 'ConfigParam__32',
-            cur_temp_validators: cur_temp_validators,
-        }
-
-    }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x5f120fda) && (arg0 == 36)))) {
-        slice.loadUint(32);
-        let next_validators: ValidatorSet = loadValidatorSet(slice);
-        return {
-            kind: 'ConfigParam__33',
-            next_validators: next_validators,
-        }
-
-    }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x23b0f8c4) && (arg0 == 37)))) {
-        slice.loadUint(32);
-        let next_temp_validators: ValidatorSet = loadValidatorSet(slice);
-        return {
-            kind: 'ConfigParam__34',
-            next_temp_validators: next_temp_validators,
-        }
-
-    }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x71e8478c) && (arg0 == 39)))) {
-        slice.loadUint(32);
-        let anon0: HashmapE<ValidatorSignedTempKey> = loadHashmapE<ValidatorSignedTempKey>(slice, 256, loadValidatorSignedTempKey);
-        return {
-            kind: 'ConfigParam__35',
-            anon0: anon0,
-        }
-
-    }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x7de3be4f) && (arg0 == 40)))) {
-        slice.loadUint(32);
-        let anon0: MisbehaviourPunishmentConfig = loadMisbehaviourPunishmentConfig(slice);
-        return {
-            kind: 'ConfigParam__36',
-            anon0: anon0,
-        }
-
-    }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x3f96c8b4) && (arg0 == 43)))) {
-        slice.loadUint(32);
-        let anon0: SizeLimitsConfig = loadSizeLimitsConfig(slice);
-        return {
-            kind: 'ConfigParam__37',
-            anon0: anon0,
-        }
-
-    }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x14939d74) && (arg0 == 44)))) {
-        slice.loadUint(32);
-        let anon0: SuspendedAddressList = loadSuspendedAddressList(slice);
-        return {
-            kind: 'ConfigParam__38',
-            anon0: anon0,
-        }
-
-    }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x70d29ded) && (arg0 == 71)))) {
-        slice.loadUint(32);
-        let anon0: OracleBridgeParams = loadOracleBridgeParams(slice);
-        return {
-            kind: 'ConfigParam__39',
-            anon0: anon0,
-        }
-
-    }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x69dbcc57) && (arg0 == 72)))) {
-        slice.loadUint(32);
-        let anon0: OracleBridgeParams = loadOracleBridgeParams(slice);
-        return {
-            kind: 'ConfigParam__40',
-            anon0: anon0,
-        }
-
-    }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x1edcfcc1) && (arg0 == 73)))) {
-        slice.loadUint(32);
-        let anon0: OracleBridgeParams = loadOracleBridgeParams(slice);
-        return {
-            kind: 'ConfigParam__41',
-            anon0: anon0,
-        }
-
-    }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x1df4510f) && (arg0 == 79)))) {
-        slice.loadUint(32);
-        let anon0: JettonBridgeParams = loadJettonBridgeParams(slice);
-        return {
-            kind: 'ConfigParam__42',
-            anon0: anon0,
-        }
-
-    }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0x14b7c5f2) && (arg0 == 81)))) {
-        slice.loadUint(32);
-        let anon0: JettonBridgeParams = loadJettonBridgeParams(slice);
-        return {
-            kind: 'ConfigParam__43',
-            anon0: anon0,
-        }
-
-    }
-    if (((slice.remainingBits >= 32) && ((slice.preloadUint(32) == 0xdbe9448) && (arg0 == 82)))) {
-        slice.loadUint(32);
-        let anon0: JettonBridgeParams = loadJettonBridgeParams(slice);
-        return {
-            kind: 'ConfigParam__44',
-            anon0: anon0,
         }
 
     }
@@ -8670,55 +8366,200 @@ export function loadConfigParam(slice: Slice, arg0: number): ConfigParam {
         }
 
     }
+    if ((arg0 == 28)) {
+        let anon0: CatchainConfig = loadCatchainConfig(slice);
+        return {
+            kind: 'ConfigParam__26',
+            anon0: anon0,
+        }
+
+    }
+    if ((arg0 == 29)) {
+        let anon0: ConsensusConfig = loadConsensusConfig(slice);
+        return {
+            kind: 'ConfigParam__27',
+            anon0: anon0,
+        }
+
+    }
+    if ((arg0 == 31)) {
+        let fundamental_smc_addr: HashmapE<True> = loadHashmapE<True>(slice, 256, loadTrue);
+        return {
+            kind: 'ConfigParam__28',
+            fundamental_smc_addr: fundamental_smc_addr,
+        }
+
+    }
+    if ((arg0 == 32)) {
+        let prev_validators: ValidatorSet = loadValidatorSet(slice);
+        return {
+            kind: 'ConfigParam__29',
+            prev_validators: prev_validators,
+        }
+
+    }
+    if ((arg0 == 33)) {
+        let prev_temp_validators: ValidatorSet = loadValidatorSet(slice);
+        return {
+            kind: 'ConfigParam__30',
+            prev_temp_validators: prev_temp_validators,
+        }
+
+    }
+    if ((arg0 == 34)) {
+        let cur_validators: ValidatorSet = loadValidatorSet(slice);
+        return {
+            kind: 'ConfigParam__31',
+            cur_validators: cur_validators,
+        }
+
+    }
+    if ((arg0 == 35)) {
+        let cur_temp_validators: ValidatorSet = loadValidatorSet(slice);
+        return {
+            kind: 'ConfigParam__32',
+            cur_temp_validators: cur_temp_validators,
+        }
+
+    }
+    if ((arg0 == 36)) {
+        let next_validators: ValidatorSet = loadValidatorSet(slice);
+        return {
+            kind: 'ConfigParam__33',
+            next_validators: next_validators,
+        }
+
+    }
+    if ((arg0 == 37)) {
+        let next_temp_validators: ValidatorSet = loadValidatorSet(slice);
+        return {
+            kind: 'ConfigParam__34',
+            next_temp_validators: next_temp_validators,
+        }
+
+    }
+    if ((arg0 == 39)) {
+        let anon0: HashmapE<ValidatorSignedTempKey> = loadHashmapE<ValidatorSignedTempKey>(slice, 256, loadValidatorSignedTempKey);
+        return {
+            kind: 'ConfigParam__35',
+            anon0: anon0,
+        }
+
+    }
+    if ((arg0 == 40)) {
+        let anon0: MisbehaviourPunishmentConfig = loadMisbehaviourPunishmentConfig(slice);
+        return {
+            kind: 'ConfigParam__36',
+            anon0: anon0,
+        }
+
+    }
+    if ((arg0 == 43)) {
+        let anon0: SizeLimitsConfig = loadSizeLimitsConfig(slice);
+        return {
+            kind: 'ConfigParam__37',
+            anon0: anon0,
+        }
+
+    }
+    if ((arg0 == 44)) {
+        let anon0: SuspendedAddressList = loadSuspendedAddressList(slice);
+        return {
+            kind: 'ConfigParam__38',
+            anon0: anon0,
+        }
+
+    }
+    if ((arg0 == 71)) {
+        let anon0: OracleBridgeParams = loadOracleBridgeParams(slice);
+        return {
+            kind: 'ConfigParam__39',
+            anon0: anon0,
+        }
+
+    }
+    if ((arg0 == 72)) {
+        let anon0: OracleBridgeParams = loadOracleBridgeParams(slice);
+        return {
+            kind: 'ConfigParam__40',
+            anon0: anon0,
+        }
+
+    }
+    if ((arg0 == 73)) {
+        let anon0: OracleBridgeParams = loadOracleBridgeParams(slice);
+        return {
+            kind: 'ConfigParam__41',
+            anon0: anon0,
+        }
+
+    }
+    if ((arg0 == 79)) {
+        let anon0: JettonBridgeParams = loadJettonBridgeParams(slice);
+        return {
+            kind: 'ConfigParam__42',
+            anon0: anon0,
+        }
+
+    }
+    if ((arg0 == 81)) {
+        let anon0: JettonBridgeParams = loadJettonBridgeParams(slice);
+        return {
+            kind: 'ConfigParam__43',
+            anon0: anon0,
+        }
+
+    }
+    if ((arg0 == 82)) {
+        let anon0: JettonBridgeParams = loadJettonBridgeParams(slice);
+        return {
+            kind: 'ConfigParam__44',
+            anon0: anon0,
+        }
+
+    }
     throw new Error('');
 }
 
 export function storeConfigParam(configParam: ConfigParam): (builder: Builder) => void {
     if ((configParam.kind == 'ConfigParam__')) {
         return ((builder: Builder) => {
-            builder.storeUint(0x73a8e939, 32);
             builder.storeBits(configParam.config_addr);
         })
 
     }
     if ((configParam.kind == 'ConfigParam__1')) {
         return ((builder: Builder) => {
-            builder.storeUint(0x54b6a30e, 32);
             builder.storeBits(configParam.elector_addr);
         })
 
     }
     if ((configParam.kind == 'ConfigParam__2')) {
         return ((builder: Builder) => {
-            builder.storeUint(0x140a60cd, 32);
             builder.storeBits(configParam.minter_addr);
         })
 
     }
     if ((configParam.kind == 'ConfigParam__3')) {
         return ((builder: Builder) => {
-            builder.storeUint(0x1f8e5906, 32);
             builder.storeBits(configParam.fee_collector_addr);
         })
 
     }
     if ((configParam.kind == 'ConfigParam__4')) {
         return ((builder: Builder) => {
-            builder.storeUint(0x539877d6, 32);
             builder.storeBits(configParam.dns_root_addr);
         })
 
     }
     if ((configParam.kind == 'ConfigParam__5')) {
         return ((builder: Builder) => {
-            builder.storeUint(0x439fe43d, 32);
             storeBurningConfig(configParam.anon0)(builder);
         })
 
     }
     if ((configParam.kind == 'ConfigParam__6')) {
         return ((builder: Builder) => {
-            builder.storeUint(0x657ceda4, 32);
             storeGrams(configParam.mint_new_price)(builder);
             storeGrams(configParam.mint_add_price)(builder);
         })
@@ -8726,63 +8567,54 @@ export function storeConfigParam(configParam: ConfigParam): (builder: Builder) =
     }
     if ((configParam.kind == 'ConfigParam__7')) {
         return ((builder: Builder) => {
-            builder.storeUint(0x13b3e23b, 32);
             storeExtraCurrencyCollection(configParam.to_mint)(builder);
         })
 
     }
     if ((configParam.kind == 'ConfigParam__8')) {
         return ((builder: Builder) => {
-            builder.storeUint(0x7cc939b3, 32);
             storeGlobalVersion(configParam.anon0)(builder);
         })
 
     }
     if ((configParam.kind == 'ConfigParam__9')) {
         return ((builder: Builder) => {
-            builder.storeUint(0x576c3788, 32);
             storeHashmap<True>(configParam.mandatory_params, storeTrue)(builder);
         })
 
     }
     if ((configParam.kind == 'ConfigParam__10')) {
         return ((builder: Builder) => {
-            builder.storeUint(0x54c7bee6, 32);
             storeHashmap<True>(configParam.critical_params, storeTrue)(builder);
         })
 
     }
     if ((configParam.kind == 'ConfigParam__11')) {
         return ((builder: Builder) => {
-            builder.storeUint(0x5e24c290, 32);
             storeConfigVotingSetup(configParam.anon0)(builder);
         })
 
     }
     if ((configParam.kind == 'ConfigParam__12')) {
         return ((builder: Builder) => {
-            builder.storeUint(0x3074376c, 32);
             storeHashmapE<WorkchainDescr>(configParam.workchains, storeWorkchainDescr)(builder);
         })
 
     }
     if ((configParam.kind == 'ConfigParam__13')) {
         return ((builder: Builder) => {
-            builder.storeUint(0x19c3905a, 32);
             storeComplaintPricing(configParam.anon0)(builder);
         })
 
     }
     if ((configParam.kind == 'ConfigParam__14')) {
         return ((builder: Builder) => {
-            builder.storeUint(0xad661db, 32);
             storeBlockCreateFees(configParam.anon0)(builder);
         })
 
     }
     if ((configParam.kind == 'ConfigParam__15')) {
         return ((builder: Builder) => {
-            builder.storeUint(0x3487eadb, 32);
             builder.storeUint(configParam.validators_elected_for, 32);
             builder.storeUint(configParam.elections_start_before, 32);
             builder.storeUint(configParam.elections_end_before, 32);
@@ -8792,7 +8624,6 @@ export function storeConfigParam(configParam: ConfigParam): (builder: Builder) =
     }
     if ((configParam.kind == 'ConfigParam__16')) {
         return ((builder: Builder) => {
-            builder.storeUint(0x3993e4d6, 32);
             builder.storeUint(configParam.max_validators, 16);
             builder.storeUint(configParam.max_main_validators, 16);
             builder.storeUint(configParam.min_validators, 16);
@@ -8810,7 +8641,6 @@ export function storeConfigParam(configParam: ConfigParam): (builder: Builder) =
     }
     if ((configParam.kind == 'ConfigParam__17')) {
         return ((builder: Builder) => {
-            builder.storeUint(0x11848225, 32);
             storeGrams(configParam.min_stake)(builder);
             storeGrams(configParam.max_stake)(builder);
             storeGrams(configParam.min_total_stake)(builder);
@@ -8820,148 +8650,13 @@ export function storeConfigParam(configParam: ConfigParam): (builder: Builder) =
     }
     if ((configParam.kind == 'ConfigParam__18')) {
         return ((builder: Builder) => {
-            builder.storeUint(0x6b4c6702, 32);
             storeHashmap<StoragePrices>(configParam.anon0, storeStoragePrices)(builder);
         })
 
     }
     if ((configParam.kind == 'ConfigParam__19')) {
         return ((builder: Builder) => {
-            builder.storeUint(0xb916605, 32);
             builder.storeInt(configParam.global_id, 32);
-        })
-
-    }
-    if ((configParam.kind == 'ConfigParam__26')) {
-        return ((builder: Builder) => {
-            builder.storeUint(0x500e41c8, 32);
-            storeCatchainConfig(configParam.anon0)(builder);
-        })
-
-    }
-    if ((configParam.kind == 'ConfigParam__27')) {
-        return ((builder: Builder) => {
-            builder.storeUint(0x5d933fdf, 32);
-            storeConsensusConfig(configParam.anon0)(builder);
-        })
-
-    }
-    if ((configParam.kind == 'ConfigParam__28')) {
-        return ((builder: Builder) => {
-            builder.storeUint(0x6bbc2369, 32);
-            storeHashmapE<True>(configParam.fundamental_smc_addr, storeTrue)(builder);
-        })
-
-    }
-    if ((configParam.kind == 'ConfigParam__29')) {
-        return ((builder: Builder) => {
-            builder.storeUint(0x7d31022b, 32);
-            storeValidatorSet(configParam.prev_validators)(builder);
-        })
-
-    }
-    if ((configParam.kind == 'ConfigParam__30')) {
-        return ((builder: Builder) => {
-            builder.storeUint(0x1e48f929, 32);
-            storeValidatorSet(configParam.prev_temp_validators)(builder);
-        })
-
-    }
-    if ((configParam.kind == 'ConfigParam__31')) {
-        return ((builder: Builder) => {
-            builder.storeUint(0x3b08e907, 32);
-            storeValidatorSet(configParam.cur_validators)(builder);
-        })
-
-    }
-    if ((configParam.kind == 'ConfigParam__32')) {
-        return ((builder: Builder) => {
-            builder.storeUint(0x29a48da1, 32);
-            storeValidatorSet(configParam.cur_temp_validators)(builder);
-        })
-
-    }
-    if ((configParam.kind == 'ConfigParam__33')) {
-        return ((builder: Builder) => {
-            builder.storeUint(0x5f120fda, 32);
-            storeValidatorSet(configParam.next_validators)(builder);
-        })
-
-    }
-    if ((configParam.kind == 'ConfigParam__34')) {
-        return ((builder: Builder) => {
-            builder.storeUint(0x23b0f8c4, 32);
-            storeValidatorSet(configParam.next_temp_validators)(builder);
-        })
-
-    }
-    if ((configParam.kind == 'ConfigParam__35')) {
-        return ((builder: Builder) => {
-            builder.storeUint(0x71e8478c, 32);
-            storeHashmapE<ValidatorSignedTempKey>(configParam.anon0, storeValidatorSignedTempKey)(builder);
-        })
-
-    }
-    if ((configParam.kind == 'ConfigParam__36')) {
-        return ((builder: Builder) => {
-            builder.storeUint(0x7de3be4f, 32);
-            storeMisbehaviourPunishmentConfig(configParam.anon0)(builder);
-        })
-
-    }
-    if ((configParam.kind == 'ConfigParam__37')) {
-        return ((builder: Builder) => {
-            builder.storeUint(0x3f96c8b4, 32);
-            storeSizeLimitsConfig(configParam.anon0)(builder);
-        })
-
-    }
-    if ((configParam.kind == 'ConfigParam__38')) {
-        return ((builder: Builder) => {
-            builder.storeUint(0x14939d74, 32);
-            storeSuspendedAddressList(configParam.anon0)(builder);
-        })
-
-    }
-    if ((configParam.kind == 'ConfigParam__39')) {
-        return ((builder: Builder) => {
-            builder.storeUint(0x70d29ded, 32);
-            storeOracleBridgeParams(configParam.anon0)(builder);
-        })
-
-    }
-    if ((configParam.kind == 'ConfigParam__40')) {
-        return ((builder: Builder) => {
-            builder.storeUint(0x69dbcc57, 32);
-            storeOracleBridgeParams(configParam.anon0)(builder);
-        })
-
-    }
-    if ((configParam.kind == 'ConfigParam__41')) {
-        return ((builder: Builder) => {
-            builder.storeUint(0x1edcfcc1, 32);
-            storeOracleBridgeParams(configParam.anon0)(builder);
-        })
-
-    }
-    if ((configParam.kind == 'ConfigParam__42')) {
-        return ((builder: Builder) => {
-            builder.storeUint(0x1df4510f, 32);
-            storeJettonBridgeParams(configParam.anon0)(builder);
-        })
-
-    }
-    if ((configParam.kind == 'ConfigParam__43')) {
-        return ((builder: Builder) => {
-            builder.storeUint(0x14b7c5f2, 32);
-            storeJettonBridgeParams(configParam.anon0)(builder);
-        })
-
-    }
-    if ((configParam.kind == 'ConfigParam__44')) {
-        return ((builder: Builder) => {
-            builder.storeUint(0xdbe9448, 32);
-            storeJettonBridgeParams(configParam.anon0)(builder);
         })
 
     }
@@ -8998,6 +8693,120 @@ export function storeConfigParam(configParam: ConfigParam): (builder: Builder) =
     if ((configParam.kind == 'ConfigParam_config_fwd_prices')) {
         return ((builder: Builder) => {
             storeMsgForwardPrices(configParam.anon0)(builder);
+        })
+
+    }
+    if ((configParam.kind == 'ConfigParam__26')) {
+        return ((builder: Builder) => {
+            storeCatchainConfig(configParam.anon0)(builder);
+        })
+
+    }
+    if ((configParam.kind == 'ConfigParam__27')) {
+        return ((builder: Builder) => {
+            storeConsensusConfig(configParam.anon0)(builder);
+        })
+
+    }
+    if ((configParam.kind == 'ConfigParam__28')) {
+        return ((builder: Builder) => {
+            storeHashmapE<True>(configParam.fundamental_smc_addr, storeTrue)(builder);
+        })
+
+    }
+    if ((configParam.kind == 'ConfigParam__29')) {
+        return ((builder: Builder) => {
+            storeValidatorSet(configParam.prev_validators)(builder);
+        })
+
+    }
+    if ((configParam.kind == 'ConfigParam__30')) {
+        return ((builder: Builder) => {
+            storeValidatorSet(configParam.prev_temp_validators)(builder);
+        })
+
+    }
+    if ((configParam.kind == 'ConfigParam__31')) {
+        return ((builder: Builder) => {
+            storeValidatorSet(configParam.cur_validators)(builder);
+        })
+
+    }
+    if ((configParam.kind == 'ConfigParam__32')) {
+        return ((builder: Builder) => {
+            storeValidatorSet(configParam.cur_temp_validators)(builder);
+        })
+
+    }
+    if ((configParam.kind == 'ConfigParam__33')) {
+        return ((builder: Builder) => {
+            storeValidatorSet(configParam.next_validators)(builder);
+        })
+
+    }
+    if ((configParam.kind == 'ConfigParam__34')) {
+        return ((builder: Builder) => {
+            storeValidatorSet(configParam.next_temp_validators)(builder);
+        })
+
+    }
+    if ((configParam.kind == 'ConfigParam__35')) {
+        return ((builder: Builder) => {
+            storeHashmapE<ValidatorSignedTempKey>(configParam.anon0, storeValidatorSignedTempKey)(builder);
+        })
+
+    }
+    if ((configParam.kind == 'ConfigParam__36')) {
+        return ((builder: Builder) => {
+            storeMisbehaviourPunishmentConfig(configParam.anon0)(builder);
+        })
+
+    }
+    if ((configParam.kind == 'ConfigParam__37')) {
+        return ((builder: Builder) => {
+            storeSizeLimitsConfig(configParam.anon0)(builder);
+        })
+
+    }
+    if ((configParam.kind == 'ConfigParam__38')) {
+        return ((builder: Builder) => {
+            storeSuspendedAddressList(configParam.anon0)(builder);
+        })
+
+    }
+    if ((configParam.kind == 'ConfigParam__39')) {
+        return ((builder: Builder) => {
+            storeOracleBridgeParams(configParam.anon0)(builder);
+        })
+
+    }
+    if ((configParam.kind == 'ConfigParam__40')) {
+        return ((builder: Builder) => {
+            storeOracleBridgeParams(configParam.anon0)(builder);
+        })
+
+    }
+    if ((configParam.kind == 'ConfigParam__41')) {
+        return ((builder: Builder) => {
+            storeOracleBridgeParams(configParam.anon0)(builder);
+        })
+
+    }
+    if ((configParam.kind == 'ConfigParam__42')) {
+        return ((builder: Builder) => {
+            storeJettonBridgeParams(configParam.anon0)(builder);
+        })
+
+    }
+    if ((configParam.kind == 'ConfigParam__43')) {
+        return ((builder: Builder) => {
+            storeJettonBridgeParams(configParam.anon0)(builder);
+        })
+
+    }
+    if ((configParam.kind == 'ConfigParam__44')) {
+        return ((builder: Builder) => {
+            storeJettonBridgeParams(configParam.anon0)(builder);
         })
 
     }
@@ -10973,36 +10782,31 @@ export function storeVmStackValue(vmStackValue: VmStackValue): (builder: Builder
 }
 
 export function loadVmCellSlice(slice: Slice): VmCellSlice {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x65a00962))) {
-        slice.loadUint(32);
-        let slice1 = slice.loadRef().beginParse();
-        let _cell: Slice = slice1;
-        let st_bits: number = slice.loadUint(10);
-        let end_bits: number = slice.loadUint(10);
-        let st_ref: number = slice.loadUint(bitLen(4));
-        let end_ref: number = slice.loadUint(bitLen(4));
-        if ((!(st_bits <= end_bits))) {
-            throw new Error('');
-        }
-        if ((!(st_ref <= end_ref))) {
-            throw new Error('');
-        }
-        return {
-            kind: 'VmCellSlice',
-            _cell: _cell,
-            st_bits: st_bits,
-            end_bits: end_bits,
-            st_ref: st_ref,
-            end_ref: end_ref,
-        }
-
+    let slice1 = slice.loadRef().beginParse();
+    let _cell: Slice = slice1;
+    let st_bits: number = slice.loadUint(10);
+    let end_bits: number = slice.loadUint(10);
+    let st_ref: number = slice.loadUint(bitLen(4));
+    let end_ref: number = slice.loadUint(bitLen(4));
+    if ((!(st_bits <= end_bits))) {
+        throw new Error('');
     }
-    throw new Error('');
+    if ((!(st_ref <= end_ref))) {
+        throw new Error('');
+    }
+    return {
+        kind: 'VmCellSlice',
+        _cell: _cell,
+        st_bits: st_bits,
+        end_bits: end_bits,
+        st_ref: st_ref,
+        end_ref: end_ref,
+    }
+
 }
 
 export function storeVmCellSlice(vmCellSlice: VmCellSlice): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0x65a00962, 32);
         let cell1 = beginCell();
         cell1.storeSlice(vmCellSlice._cell);
         builder.storeRef(cell1);
@@ -11174,21 +10978,16 @@ export function storeVmStackList(vmStackList: VmStackList): (builder: Builder) =
 }
 
 export function loadVmSaveList(slice: Slice): VmSaveList {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x59072e9c))) {
-        slice.loadUint(32);
-        let cregs: HashmapE<VmStackValue> = loadHashmapE<VmStackValue>(slice, 4, loadVmStackValue);
-        return {
-            kind: 'VmSaveList',
-            cregs: cregs,
-        }
-
+    let cregs: HashmapE<VmStackValue> = loadHashmapE<VmStackValue>(slice, 4, loadVmStackValue);
+    return {
+        kind: 'VmSaveList',
+        cregs: cregs,
     }
-    throw new Error('');
+
 }
 
 export function storeVmSaveList(vmSaveList: VmSaveList): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0x59072e9c, 32);
         storeHashmapE<VmStackValue>(vmSaveList.cregs, storeVmStackValue)(builder);
     })
 
@@ -11223,25 +11022,20 @@ export function storeVmGasLimits(vmGasLimits: VmGasLimits): (builder: Builder) =
 }
 
 export function loadVmLibraries(slice: Slice): VmLibraries {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x32869156))) {
-        slice.loadUint(32);
-        let libraries: HashmapE<Slice> = loadHashmapE<Slice>(slice, 256, ((slice: Slice) => {
-            let slice1 = slice.loadRef().beginParse();
-            return slice1
+    let libraries: HashmapE<Slice> = loadHashmapE<Slice>(slice, 256, ((slice: Slice) => {
+        let slice1 = slice.loadRef().beginParse();
+        return slice1
 
-        }));
-        return {
-            kind: 'VmLibraries',
-            libraries: libraries,
-        }
-
+    }));
+    return {
+        kind: 'VmLibraries',
+        libraries: libraries,
     }
-    throw new Error('');
+
 }
 
 export function storeVmLibraries(vmLibraries: VmLibraries): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0x32869156, 32);
         storeHashmapE<Slice>(vmLibraries.libraries, ((arg: Slice) => {
             return ((builder: Builder) => {
                 let cell1 = beginCell();
@@ -11531,25 +11325,20 @@ export function storeVmCont(vmCont: VmCont): (builder: Builder) => void {
 }
 
 export function loadDNS_RecordSet(slice: Slice): DNS_RecordSet {
-    if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0xdf62588))) {
-        slice.loadUint(32);
-        let anon0: HashmapE<DNSRecord> = loadHashmapE<DNSRecord>(slice, 256, ((slice: Slice) => {
-            let slice1 = slice.loadRef().beginParse();
-            return loadDNSRecord(slice1)
+    let anon0: HashmapE<DNSRecord> = loadHashmapE<DNSRecord>(slice, 256, ((slice: Slice) => {
+        let slice1 = slice.loadRef().beginParse();
+        return loadDNSRecord(slice1)
 
-        }));
-        return {
-            kind: 'DNS_RecordSet',
-            anon0: anon0,
-        }
-
+    }));
+    return {
+        kind: 'DNS_RecordSet',
+        anon0: anon0,
     }
-    throw new Error('');
+
 }
 
 export function storeDNS_RecordSet(dNS_RecordSet: DNS_RecordSet): (builder: Builder) => void {
     return ((builder: Builder) => {
-        builder.storeUint(0xdf62588, 32);
         storeHashmapE<DNSRecord>(dNS_RecordSet.anon0, ((arg: DNSRecord) => {
             return ((builder: Builder) => {
                 let cell1 = beginCell();
