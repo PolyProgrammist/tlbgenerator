@@ -120,8 +120,20 @@ export function addLoadProperty(name: string, loadExpr: Expression, typeExpr: Ty
 }
 
 export function calculateOpcode(declaration: Declaration, input: string[]): string {
-    let constructorString = getStringDeclaration(declaration, input)
-    const a = BigInt(crc32.str(constructorString));
-    const b = BigInt(0x80000000);
-    return ((a | b) < 0 ? (a | b) + BigInt('4294967296') : a | b).toString(16);
+    let scheme = getStringDeclaration(declaration, input)
+    let constructor = scheme.substring(0, scheme.indexOf(' '));
+    const rest = scheme.substring(scheme.indexOf(' '));
+    if (constructor.includes('#')) {
+        constructor = constructor.substring(0, constructor.indexOf('#'));
+    }
+    scheme = 
+        constructor +
+            ' ' +
+            rest
+                .replace(/\(/g, '')
+                .replace(/\)/g, '')
+                .replace(/\s+/g, ' ')
+                .replace(/;/g, '')
+                .trim()
+    return (BigInt(crc32.str(scheme)) & BigInt(0x7fffffff)).toString(16);
 }

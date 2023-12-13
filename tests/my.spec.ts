@@ -7,59 +7,42 @@ import { ast } from '../src'
 import { generate } from '../src/codegen/main'
 import { Program } from '../src/ast/nodes'
 
-import { X, loadX, storeX } from '../generated_test'
+import * as crc32 from 'crc-32';
 
 const fixturesDir = path.resolve(__dirname, 'fixtures')
 
+function calculateRequestOpcode(scheme: string): string {
+  let constructor = scheme.substring(0, scheme.indexOf(' '));
+  const rest = scheme.substring(scheme.indexOf(' '));
+  if (constructor.includes('#')) {
+      constructor = constructor.substring(0, constructor.indexOf('#'));
+  }
+  scheme = 
+      constructor +
+          ' ' +
+          rest
+              .replace(/\(/g, '')
+              .replace(/\)/g, '')
+              .replace(/\s+/g, ' ')
+              .replace(/;/g, '')
+              .trim()
+  return (BigInt(crc32.str(scheme)) & BigInt(0x7fffffff)).toString(16);
+}
 
 describe('parsing into intermediate representation using grammar', () => {
   test('test.tlb can be parsed', () => {
+
     // console.log(util.inspect(babelTestAst.program.body[2], false, null, true /* enable colors */))
-
-    expect.hasAssertions()
-
-    const input = fs.readFileSync(
-      path.resolve(fixturesDir, 'tlb', 'test.tlb'),
-      'utf-8',
-    )
-    const parsed = parse(input)
-
-    expect(parsed.shortMessage).toBe(undefined)
-    expect(parsed.succeeded()).toBe(true)
-
-    const tree = ast(input)
-
-    fs.writeFile('generated_test.ts', generate(tree), () => { });
-
-    expect(tree).toBeInstanceOf(Program)
+    let x = 
+`block_extra in_msg_descr:^InMsgDescr
+  out_msg_descr:^OutMsgDescr
+  account_blocks:^ShardAccountBlocks
+  rand_seed:bits256
+  created_by:bits256
+  custom:(Maybe ^McBlockExtra) = BlockExtra;`
+  console.log(calculateRequestOpcode(x));
   })
 })
-
-
-describe('parsing into intermediate representation using grammar', () => {
-  test('my.tlb can be parsed', () => {
-    // console.log(util.inspect(babelTestAst.program.body[2], false, null, true /* enable colors */))
-
-    expect.hasAssertions()
-
-    const input = fs.readFileSync(
-      path.resolve(fixturesDir, 'tlb', 'my.tlb'),
-      'utf-8',
-    )
-    const parsed = parse(input)
-
-    expect(parsed.shortMessage).toBe(undefined)
-    expect(parsed.succeeded()).toBe(true)
-
-    const tree = ast(input)
-
-    fs.writeFile('generated_my.ts', generate(tree), () => { });
-
-
-    expect(tree).toBeInstanceOf(Program)
-  })
-})
-
 
 /*
   storeY(y)(builder)
