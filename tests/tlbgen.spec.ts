@@ -142,14 +142,8 @@ describe('Generating tlb code', () => {
         let checkKeyword: CheckKeyword = {kind: 'CheckKeyword', const0: 3}
         checkSameOnStoreLoad(checkKeyword, loadCheckKeyword, storeCheckKeyword);
 
-        let checkBigIntExpected: bigint = BigInt(2709958555) * BigInt(1e9) + BigInt(228628813);
-        let checkBigIntBits = 100;
-
-        let initialCell = beginCell().storeUint(checkBigIntExpected, checkBigIntBits).endCell();
-        let checkBigInt: BitLenArg = loadBitLenArg(initialCell.beginParse(), checkBigIntBits)
-        let checkBigIntStored = beginCell();
-        storeBitLenArg(checkBigInt)(checkBigIntStored);
-        expect(deepEqual(initialCell.hash(), checkBigIntStored.endCell().hash())).toBeTruthy();
+        let checkBigInt: BitLenArg = {kind: 'BitLenArg', x: 100, value: BigInt(2709958555) * BigInt(1e9) + BigInt(228628813)}
+        checkSameOnStoreLoad(checkBigInt, (slice: Slice) => {return loadBitLenArg(slice, checkBigInt.x)}, storeBitLenArg)
     })
 
     test('Combinators', () => {
