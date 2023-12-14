@@ -124,3 +124,8 @@ a$_ const:# = CheckKeyword;
 
 a$_ {X:Type} t:# y:(Maybe ^X) = RefCombinatorInRefHelper X; 
 a$_ msg:^(RefCombinatorInRefHelper Any) = RefCombinatorInRef;
+
+//bool_false$0 = Bool;
+//bool_true$1 = Bool;
+
+//_ a:Bool = BoolUser;

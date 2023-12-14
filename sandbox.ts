@@ -586,3 +586,25 @@ export function storeConditionalField(conditionalField: ConditionalField): (buil
 if (!(flags <= 100)) {
 	throw new Error(`Variable flags = ${flags} doesn't follow implicit condition: { flags <= 100 }`)
 }
+
+
+export function loadBoolUser(slice: Slice): BoolUser {
+    let a: boolean = slice.loadBoolean();
+    return {
+        kind: 'BoolUser',
+        a: a,
+    }
+
+}
+
+export function storeBoolUser(boolUser: BoolUser): (builder: Builder) => void {
+    return ((builder: Builder) => {
+        builder.storeBit(boolUser.a);
+    })
+
+}
+
+export interface BoolUser {
+    readonly kind: 'BoolUser';
+    readonly a: boolean;
+}
