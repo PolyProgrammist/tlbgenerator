@@ -411,7 +411,7 @@ export function getStringDeclaration(declaration: Declaration, input: string[]):
     let currentLine = declaration.locations.line - 1;
     let currentColumn = 0;
     while (!splittedInput[currentLine]?.includes(';')) {
-        result += splittedInput[currentLine]?.substring(currentColumn);
+        result += splittedInput[currentLine]?.substring(currentColumn) + '\n';
         currentLine++;
         currentColumn = 0;
     }

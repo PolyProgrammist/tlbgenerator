@@ -482,6 +482,8 @@ export function bitLen(n: number) {
     return n.toString(2).length;;
 }
 
+// tmpa$_ a:# b:# = Simple;
+
 export function loadSimple(slice: Slice): Simple {
     let a: number = slice.loadUint(32);
     let b: number = slice.loadUint(32);
@@ -500,6 +502,10 @@ export function storeSimple(simple: Simple): (builder: Builder) => void {
     })
 
 }
+
+// bool_false$0 a:# b:(## 7) c:# = TwoConstructors;
+
+// bool_true$1 b:# = TwoConstructors;
 
 export function loadTwoConstructors(slice: Slice): TwoConstructors {
     if (((slice.remainingBits >= 1) && (slice.preloadUint(1) == 0b0))) {
@@ -547,6 +553,8 @@ export function storeTwoConstructors(twoConstructors: TwoConstructors): (builder
     throw new Error('');
 }
 
+// tmpb$_ y:(## 5) = FixedIntParam;
+
 export function loadFixedIntParam(slice: Slice): FixedIntParam {
     let y: number = slice.loadUint(5);
     return {
@@ -562,6 +570,8 @@ export function storeFixedIntParam(fixedIntParam: FixedIntParam): (builder: Buil
     })
 
 }
+
+// tmpc$_ y:FixedIntParam c:# = TypedField;
 
 export function loadTypedField(slice: Slice): TypedField {
     let y: FixedIntParam = loadFixedIntParam(slice);
@@ -582,6 +592,8 @@ export function storeTypedField(typedField: TypedField): (builder: Builder) => v
 
 }
 
+// tmpd#_ y:FixedIntParam c:# = SharpConstructor;
+
 export function loadSharpConstructor(slice: Slice): SharpConstructor {
     let y: FixedIntParam = loadFixedIntParam(slice);
     let c: number = slice.loadUint(32);
@@ -600,6 +612,10 @@ export function storeSharpConstructor(sharpConstructor: SharpConstructor): (buil
     })
 
 }
+
+// nothing$0 {TheType:Type} = Maybe TheType;
+
+// just$1 {TheType:Type} value:TheType = Maybe TheType;
 
 export function loadMaybe<TheType>(slice: Slice, loadTheType: (slice: Slice) => TheType): Maybe<TheType> {
     if (((slice.remainingBits >= 1) && (slice.preloadUint(1) == 0b0))) {
@@ -638,6 +654,8 @@ export function storeMaybe<TheType>(maybe: Maybe<TheType>, storeTheType: (theTyp
     throw new Error('');
 }
 
+// thejust$_ x:(Maybe SharpConstructor) = TypedParam;
+
 export function loadTypedParam(slice: Slice): TypedParam {
     let x: Maybe<SharpConstructor> = loadMaybe<SharpConstructor>(slice, loadSharpConstructor);
     return {
@@ -653,6 +671,10 @@ export function storeTypedParam(typedParam: TypedParam): (builder: Builder) => v
     })
 
 }
+
+// left$0 {X:Type} {Y:Type} value:X = Either X Y;
+
+// right$1 {X:Type} {Y:Type} value:Y = Either X Y;
 
 export function loadEither<X, Y>(slice: Slice, loadX: (slice: Slice) => X, loadY: (slice: Slice) => Y): Either<X, Y> {
     if (((slice.remainingBits >= 1) && (slice.preloadUint(1) == 0b0))) {
@@ -694,6 +716,8 @@ export function storeEither<X, Y>(either: Either<X, Y>, storeX: (x: X) => (build
     throw new Error('');
 }
 
+// a$_ {x:#} value:(## x) = BitLenArg x;
+
 export function loadBitLenArg(slice: Slice, x: number): BitLenArg {
     let value: bigint = slice.loadUintBig(x);
     return {
@@ -711,6 +735,8 @@ export function storeBitLenArg(bitLenArg: BitLenArg): (builder: Builder) => void
 
 }
 
+// a$_ t:(BitLenArg 4) = BitLenArgUser;
+
 export function loadBitLenArgUser(slice: Slice): BitLenArgUser {
     let t: BitLenArg = loadBitLenArg(slice, 4);
     return {
@@ -726,6 +752,8 @@ export function storeBitLenArgUser(bitLenArgUser: BitLenArgUser): (builder: Buil
     })
 
 }
+
+// a$_ {x:#} value:(## x) = ExprArg (2 + x);
 
 export function loadExprArg(slice: Slice, arg0: number): ExprArg {
     let value: bigint = slice.loadUintBig((arg0 - 2));
@@ -744,6 +772,8 @@ export function storeExprArg(exprArg: ExprArg): (builder: Builder) => void {
 
 }
 
+// a$_ t:(ExprArg 6) = ExprArgUser;
+
 export function loadExprArgUser(slice: Slice): ExprArgUser {
     let t: ExprArg = loadExprArg(slice, 6);
     return {
@@ -760,6 +790,8 @@ export function storeExprArgUser(exprArgUser: ExprArgUser): (builder: Builder) =
 
 }
 
+// a$_ a:ExprArgUser = ComplexTypedField;
+
 export function loadComplexTypedField(slice: Slice): ComplexTypedField {
     let a: ExprArgUser = loadExprArgUser(slice);
     return {
@@ -775,6 +807,8 @@ export function storeComplexTypedField(complexTypedField: ComplexTypedField): (b
     })
 
 }
+
+// a$_ a:^ExprArgUser = CellTypedField;
 
 export function loadCellTypedField(slice: Slice): CellTypedField {
     let slice1 = slice.loadRef().beginParse();
@@ -794,6 +828,8 @@ export function storeCellTypedField(_cellTypedField: CellTypedField): (builder: 
     })
 
 }
+
+// a$_ t:# ^[ q:# ] ^[ a:(## 32) ^[ e:# ] ^[ b:(## 32) d:# ^[ c:(## 32) ] ] ] = CellsSimple;
 
 export function loadCellsSimple(slice: Slice): CellsSimple {
     let t: number = slice.loadUint(32);
@@ -844,6 +880,8 @@ export function storeCellsSimple(_cellsSimple: CellsSimple): (builder: Builder) 
 
 }
 
+// b$_ d:int11 g:bits2 {Arg:Type} arg:Arg x:Any = IntBits Arg;
+
 export function loadIntBits<Arg>(slice: Slice, loadArg: (slice: Slice) => Arg): IntBits<Arg> {
     let d: number = slice.loadInt(11);
     let g: BitString = slice.loadBits(2);
@@ -868,6 +906,8 @@ export function storeIntBits<Arg>(intBits: IntBits<Arg>, storeArg: (arg: Arg) =>
     })
 
 }
+
+// a$_ {x:#} a:(IntBits (int (1 + x))) = IntBitsInside (x * 2);
 
 export function loadIntBitsInside(slice: Slice, arg0: number): IntBitsInside {
     let a: IntBits<bigint> = loadIntBits<bigint>(slice, ((slice: Slice) => {
@@ -894,6 +934,8 @@ export function storeIntBitsInside(intBitsInside: IntBitsInside): (builder: Buil
 
 }
 
+// a$_ x:(IntBitsInside 6) = IntBitsOutside;
+
 export function loadIntBitsOutside(slice: Slice): IntBitsOutside {
     let x: IntBitsInside = loadIntBitsInside(slice, 6);
     return {
@@ -909,6 +951,8 @@ export function storeIntBitsOutside(intBitsOutside: IntBitsOutside): (builder: B
     })
 
 }
+
+// a$_ {e:#} h:(int (e * 8)) f:(uint (7 * e)) i:(bits (5 + e)) j:(int 5) k:(uint e) tc:Cell = IntBitsParametrized e;
 
 export function loadIntBitsParametrized(slice: Slice, e: number): IntBitsParametrized {
     let h: bigint = slice.loadIntBig((e * 8));
@@ -942,6 +986,8 @@ export function storeIntBitsParametrized(intBitsParametrized: IntBitsParametrize
 
 }
 
+// a$_ {x:#} a:(IntBitsParametrized x) = IntBitsParametrizedInside x;
+
 export function loadIntBitsParametrizedInside(slice: Slice, x: number): IntBitsParametrizedInside {
     let a: IntBitsParametrized = loadIntBitsParametrized(slice, x);
     return {
@@ -959,6 +1005,8 @@ export function storeIntBitsParametrizedInside(intBitsParametrizedInside: IntBit
 
 }
 
+// a$_ x:(IntBitsParametrizedInside 5) = IntBitsParametrizedOutside;
+
 export function loadIntBitsParametrizedOutside(slice: Slice): IntBitsParametrizedOutside {
     let x: IntBitsParametrizedInside = loadIntBitsParametrizedInside(slice, 5);
     return {
@@ -974,6 +1022,8 @@ export function storeIntBitsParametrizedOutside(intBitsParametrizedOutside: IntB
     })
 
 }
+
+// a$_ x:(#< 4) y:(#<= 4) = LessThan;
 
 export function loadLessThan(slice: Slice): LessThan {
     let x: number = slice.loadUint(bitLen((4 - 1)));
@@ -994,6 +1044,8 @@ export function storeLessThan(lessThan: LessThan): (builder: Builder) => void {
 
 }
 
+// a$_ {A:Type} t:# x:A = OneComb A;
+
 export function loadOneComb<A>(slice: Slice, loadA: (slice: Slice) => A): OneComb<A> {
     let t: number = slice.loadUint(32);
     let x: A = loadA(slice);
@@ -1012,6 +1064,8 @@ export function storeOneComb<A>(oneComb: OneComb<A>, storeA: (a: A) => (builder:
     })
 
 }
+
+// a$_ y:(OneComb(OneComb(OneComb int3))) = ManyComb;
 
 export function loadManyComb(slice: Slice): ManyComb {
     let y: OneComb<OneComb<OneComb<number>>> = loadOneComb<OneComb<OneComb<number>>>(slice, ((slice: Slice) => {
@@ -1053,6 +1107,8 @@ export function storeManyComb(manyComb: ManyComb): (builder: Builder) => void {
 
 }
 
+// unary_zero$0 = Unary ~0;
+
 export function unary_unary_succ_get_n(x: Unary): number {
     if ((x.kind == 'Unary_unary_zero')) {
         return 0
@@ -1065,6 +1121,8 @@ export function unary_unary_succ_get_n(x: Unary): number {
     }
     throw new Error('');
 }
+
+// unary_succ$1 {n:#} x:(Unary ~n) = Unary ~(n + 1);
 
 export function loadUnary(slice: Slice): Unary {
     if (((slice.remainingBits >= 1) && (slice.preloadUint(1) == 0b0))) {
@@ -1104,6 +1162,14 @@ export function storeUnary(unary: Unary): (builder: Builder) => void {
     }
     throw new Error('');
 }
+
+// b$01 m:# k:# = ParamConst 2 1;
+
+// c$01 n:# m:# k:# = ParamConst 3 3;
+
+// a$_ n:# = ParamConst 1 1;
+
+// d$_ n:# m:# k:# l:# = ParamConst 4 2;
 
 export function loadParamConst(slice: Slice, arg0: number, arg1: number): ParamConst {
     if (((slice.remainingBits >= 2) && ((slice.preloadUint(2) == 0b01) && ((arg0 == 2) && (arg1 == 1))))) {
@@ -1191,6 +1257,10 @@ export function storeParamConst(paramConst: ParamConst): (builder: Builder) => v
     throw new Error('');
 }
 
+// a$0 = ParamDifNames 2 ~1;
+
+// b$1 = ParamDifNames 3 ~1;
+
 export function paramDifNames_c_get_n(x: ParamDifNames): number {
     if ((x.kind == 'ParamDifNames_a')) {
         return 1
@@ -1213,6 +1283,8 @@ export function paramDifNames_c_get_n(x: ParamDifNames): number {
     throw new Error('');
 }
 
+// c$1 {n:#} x:(ParamDifNames 2 ~n) = ParamDifNames 2 ~(n + 1);
+
 export function paramDifNames_d_get_m(x: ParamDifNames): number {
     if ((x.kind == 'ParamDifNames_a')) {
         return 1
@@ -1234,6 +1306,8 @@ export function paramDifNames_d_get_m(x: ParamDifNames): number {
     }
     throw new Error('');
 }
+
+// d$0 {m:#} x:(ParamDifNames 3 ~m) = ParamDifNames 3 ~(m * 2);
 
 export function loadParamDifNames(slice: Slice, arg0: number): ParamDifNames {
     if (((slice.remainingBits >= 1) && ((slice.preloadUint(1) == 0b0) && (arg0 == 2)))) {
@@ -1327,6 +1401,8 @@ export function paramDifNamesUser_get_k(x: ParamDifNames): number {
     throw new Error('');
 }
 
+// e$0 {k:#} x:(ParamDifNames 2 ~k) = ParamDifNamesUser;
+
 export function loadParamDifNamesUser(slice: Slice): ParamDifNamesUser {
     if (((slice.remainingBits >= 1) && (slice.preloadUint(1) == 0b0))) {
         slice.loadUint(1);
@@ -1349,6 +1425,8 @@ export function storeParamDifNamesUser(paramDifNamesUser: ParamDifNamesUser): (b
     })
 
 }
+
+// b$1 {y:#} t:# z:# { t = (~y) * 2} = NegationFromImplicit ~(y + 1);
 
 export function loadNegationFromImplicit(slice: Slice): NegationFromImplicit {
     if (((slice.remainingBits >= 1) && (slice.preloadUint(1) == 0b1))) {
@@ -1388,6 +1466,8 @@ export function unaryUserCheckOrder_get_l(label: Unary): number {
     throw new Error('');
 }
 
+// hm_edge#_ {l:#} {m:#} label:(Unary ~l) {7 = (~m) + l} = UnaryUserCheckOrder;
+
 export function loadUnaryUserCheckOrder(slice: Slice): UnaryUserCheckOrder {
     let label: Unary = loadUnary(slice);
     let l = unaryUserCheckOrder_get_l(label);
@@ -1406,6 +1486,13 @@ export function storeUnaryUserCheckOrder(unaryUserCheckOrder: UnaryUserCheckOrde
     })
 
 }
+
+/*
+a$_ {X:Type} info:int32
+  init:(Maybe (Either X ^int22))
+  other:(Either X ^(OneComb X))
+  body:(Either X ^X) = CombArgCellRef X;
+*/
 
 export function loadCombArgCellRef<X>(slice: Slice, loadX: (slice: Slice) => X): CombArgCellRef<X> {
     let info: number = slice.loadInt(32);
@@ -1476,6 +1563,8 @@ export function storeCombArgCellRef<X>(combArgCellRef: CombArgCellRef<X>, storeX
 
 }
 
+// a$_ x:(CombArgCellRef int12) = CombArgCellRefUser;
+
 export function loadCombArgCellRefUser(slice: Slice): CombArgCellRefUser {
     let x: CombArgCellRef<number> = loadCombArgCellRef<number>(slice, ((slice: Slice) => {
         return slice.loadInt(12)
@@ -1500,6 +1589,8 @@ export function storeCombArgCellRefUser(combArgCellRefUser: CombArgCellRefUser):
 
 }
 
+// a$_ {n:#} ref:^(BitLenArg (n + 2)) = MathExprAsCombArg (n + 2);
+
 export function loadMathExprAsCombArg(slice: Slice, arg0: number): MathExprAsCombArg {
     let slice1 = slice.loadRef().beginParse();
     let ref: BitLenArg = loadBitLenArg(slice1, ((arg0 - 2) + 2));
@@ -1520,6 +1611,8 @@ export function storeMathExprAsCombArg(mathExprAsCombArg: MathExprAsCombArg): (b
 
 }
 
+// _ a:# = EmptyTag;
+
 export function loadEmptyTag(slice: Slice): EmptyTag {
     let a: number = slice.loadUint(32);
     return {
@@ -1535,6 +1628,8 @@ export function storeEmptyTag(emptyTag: EmptyTag): (builder: Builder) => void {
     })
 
 }
+
+// a#f4 x:# = SharpTag;
 
 export function loadSharpTag(slice: Slice): SharpTag {
     if (((slice.remainingBits >= 8) && (slice.preloadUint(8) == 0xf4))) {
@@ -1557,6 +1652,8 @@ export function storeSharpTag(sharpTag: SharpTag): (builder: Builder) => void {
 
 }
 
+// a$1011 x:# = DollarTag;
+
 export function loadDollarTag(slice: Slice): DollarTag {
     if (((slice.remainingBits >= 4) && (slice.preloadUint(4) == 0b1011))) {
         slice.loadUint(4);
@@ -1577,6 +1674,8 @@ export function storeDollarTag(dollarTag: DollarTag): (builder: Builder) => void
     })
 
 }
+
+// a$_ s:(3 * int5) = TupleCheck;
 
 export function loadTupleCheck(slice: Slice): TupleCheck {
     let s: Array<number> = Array.from(Array(3).keys()).map(((arg: number) => {
@@ -1618,6 +1717,11 @@ export function hashmap_get_l(label: HmLabel): number {
     throw new Error('');
 }
 
+/*
+hm_edge#_ {n:#} {X:Type} {l:#} {m:#} label:(HmLabel ~l n) 
+          {n = (~m) + l} node:(HashmapNode m X) = Hashmap n X;
+*/
+
 export function loadHashmap<X>(slice: Slice, n: number, loadX: (slice: Slice) => X): Hashmap<X> {
     let label: HmLabel = loadHmLabel(slice, n);
     let l = hashmap_get_l(label);
@@ -1640,6 +1744,13 @@ export function storeHashmap<X>(hashmap: Hashmap<X>, storeX: (x: X) => (builder:
     })
 
 }
+
+// hmn_leaf#_ {X:Type} value:X = HashmapNode 0 X;
+
+/*
+hmn_fork#_ {n:#} {X:Type} left:^(Hashmap n X) 
+           right:^(Hashmap n X) = HashmapNode (n + 1) X;
+*/
 
 export function loadHashmapNode<X>(slice: Slice, arg0: number, loadX: (slice: Slice) => X): HashmapNode<X> {
     if ((arg0 == 0)) {
@@ -1699,6 +1810,12 @@ export function hmLabel_hml_short_get_n(len: Unary): number {
     }
     throw new Error('');
 }
+
+// hml_short$0 {m:#} {n:#} len:(Unary ~n) {n <= m} s:(n * Bit) = HmLabel ~n m;
+
+// hml_long$10 {m:#} n:(#<= m) s:(n * Bit) = HmLabel ~n m;
+
+// hml_same$11 {m:#} v:Bit n:(#<= m) = HmLabel ~n m;
 
 export function loadHmLabel(slice: Slice, m: number): HmLabel {
     if (((slice.remainingBits >= 1) && (slice.preloadUint(1) == 0b0))) {
@@ -1786,6 +1903,10 @@ export function storeHmLabel(hmLabel: HmLabel): (builder: Builder) => void {
     throw new Error('');
 }
 
+// hme_empty$0 {n:#} {X:Type} = HashmapE n X;
+
+// hme_root$1 {n:#} {X:Type} root:^(Hashmap n X) = HashmapE n X;
+
 export function loadHashmapE<X>(slice: Slice, n: number, loadX: (slice: Slice) => X): HashmapE<X> {
     if (((slice.remainingBits >= 1) && (slice.preloadUint(1) == 0b0))) {
         slice.loadUint(1);
@@ -1828,6 +1949,8 @@ export function storeHashmapE<X>(hashmapE: HashmapE<X>, storeX: (x: X) => (build
     throw new Error('');
 }
 
+// a$_ x:(HashmapE 8 uint16) = HashmapEUser;
+
 export function loadHashmapEUser(slice: Slice): HashmapEUser {
     let x: HashmapE<number> = loadHashmapE<number>(slice, 8, ((slice: Slice) => {
         return slice.loadUint(16)
@@ -1852,6 +1975,8 @@ export function storeHashmapEUser(hashmapEUser: HashmapEUser): (builder: Builder
 
 }
 
+// _ a:(## 1) b:a?(## 32) = ConditionalField;
+
 export function loadConditionalField(slice: Slice): ConditionalField {
     let a: number = slice.loadUint(1);
     let b: number | undefined = (a ? slice.loadUint(32) : undefined);
@@ -1872,6 +1997,8 @@ export function storeConditionalField(conditionalField: ConditionalField): (buil
     })
 
 }
+
+// _ a:(## 6) b:(a . 2)?(## 32) = BitSelection;
 
 export function loadBitSelection(slice: Slice): BitSelection {
     let a: number = slice.loadUint(6);
@@ -1894,6 +2021,8 @@ export function storeBitSelection(bitSelection: BitSelection): (builder: Builder
 
 }
 
+// _ flags:(## 10) { flags <= 100 } = ImplicitCondition;
+
 export function loadImplicitCondition(slice: Slice): ImplicitCondition {
     let flags: number = slice.loadUint(10);
     if ((!(flags <= 100))) {
@@ -1915,6 +2044,12 @@ export function storeImplicitCondition(implicitCondition: ImplicitCondition): (b
     })
 
 }
+
+// _ a:# = MultipleEmptyConstructor 0;
+
+// _ b:(## 5) = MultipleEmptyConstructor 1;
+
+// a$_ x:(## 6) = MultipleEmptyConstructor 2;
 
 export function loadMultipleEmptyConstructor(slice: Slice, arg0: number): MultipleEmptyConstructor {
     if ((arg0 == 0)) {
@@ -1966,6 +2101,8 @@ export function storeMultipleEmptyConstructor(multipleEmptyConstructor: Multiple
     throw new Error('');
 }
 
+// true$_ = True;
+
 export function loadTrue(slice: Slice): True {
     return {
         kind: 'True',
@@ -1978,6 +2115,10 @@ export function storeTrue(true0: True): (builder: Builder) => void {
     })
 
 }
+
+// a$0 {n:#} = ParamNamedArgInSecondConstr n;
+
+// b$1 {n:#} = ParamNamedArgInSecondConstr (n + 1);
 
 export function loadParamNamedArgInSecondConstr(slice: Slice, arg0: number): ParamNamedArgInSecondConstr {
     if (((slice.remainingBits >= 1) && (slice.preloadUint(1) == 0b0))) {
@@ -2015,6 +2156,8 @@ export function storeParamNamedArgInSecondConstr(paramNamedArgInSecondConstr: Pa
     throw new Error('');
 }
 
+// a$_ msg:^(Maybe Any) = RefCombinatorAny;
+
 export function loadRefCombinatorAny(slice: Slice): RefCombinatorAny {
     let slice1 = slice.loadRef().beginParse();
     let msg: Maybe<Slice> = loadMaybe<Slice>(slice1, ((slice: Slice) => {
@@ -2042,6 +2185,8 @@ export function storeRefCombinatorAny(refCombinatorAny: RefCombinatorAny): (buil
 
 }
 
+// a$_ n:# { 5 + n = 7 } = EqualityExpression;
+
 export function loadEqualityExpression(slice: Slice): EqualityExpression {
     let n: number = slice.loadUint(32);
     if ((!((5 + n) == 7))) {
@@ -2063,6 +2208,8 @@ export function storeEqualityExpression(equalityExpression: EqualityExpression):
     })
 
 }
+
+// a$_ x:(## 1) y:x?^Simple = ConditionalRef;
 
 export function loadConditionalRef(slice: Slice): ConditionalRef {
     let x: number = slice.loadUint(1);
@@ -2092,6 +2239,8 @@ export function storeConditionalRef(conditionalRef: ConditionalRef): (builder: B
 
 }
 
+// block_info#9bc7a987 seq_no:# { prev_seq_no:# } { ~prev_seq_no + 1 = seq_no } = LoadFromNegationOutsideExpr;
+
 export function loadLoadFromNegationOutsideExpr(slice: Slice): LoadFromNegationOutsideExpr {
     if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x9bc7a987))) {
         slice.loadUint(32);
@@ -2114,6 +2263,8 @@ export function storeLoadFromNegationOutsideExpr(loadFromNegationOutsideExpr: Lo
 
 }
 
+// bit$_ (## 1) = AnonymousData;
+
 export function loadAnonymousData(slice: Slice): AnonymousData {
     let anon0: number = slice.loadUint(1);
     return {
@@ -2129,6 +2280,8 @@ export function storeAnonymousData(anonymousData: AnonymousData): (builder: Buil
     })
 
 }
+
+// vm_stk_int#0201_ value:int257 = FalseAnonField;
 
 export function loadFalseAnonField(slice: Slice): FalseAnonField {
     if (((slice.remainingBits >= 16) && (slice.preloadUint(16) == 0x0201))) {
@@ -2150,6 +2303,10 @@ export function storeFalseAnonField(falseAnonField: FalseAnonField): (builder: B
     })
 
 }
+
+// a$0 a:Simple = ConstructorOrder;
+
+// _ Simple = ConstructorOrder;
 
 export function loadConstructorOrder(slice: Slice): ConstructorOrder {
     if (((slice.remainingBits >= 1) && (slice.preloadUint(1) == 0b0))) {
@@ -2188,6 +2345,10 @@ export function storeConstructorOrder(constructorOrder: ConstructorOrder): (buil
     }
     throw new Error('');
 }
+
+// a a:#  = CheckCrc32;
+
+// b b:# c:# = CheckCrc32;
 
 export function loadCheckCrc32(slice: Slice): CheckCrc32 {
     if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x9d97e7a))) {
@@ -2232,6 +2393,8 @@ export function storeCheckCrc32(checkCrc32: CheckCrc32): (builder: Builder) => v
     throw new Error('');
 }
 
+// a$_ const:# = CheckKeyword;
+
 export function loadCheckKeyword(slice: Slice): CheckKeyword {
     let const0: number = slice.loadUint(32);
     return {
@@ -2247,6 +2410,8 @@ export function storeCheckKeyword(checkKeyword: CheckKeyword): (builder: Builder
     })
 
 }
+
+// a$_ {X:Type} t:# y:(Maybe ^X) = RefCombinatorInRefHelper X;
 
 export function loadRefCombinatorInRefHelper<X>(slice: Slice, loadX: (slice: Slice) => X): RefCombinatorInRefHelper<X> {
     let t: number = slice.loadUint(32);
@@ -2278,6 +2443,8 @@ export function storeRefCombinatorInRefHelper<X>(refCombinatorInRefHelper: RefCo
     })
 
 }
+
+// a$_ msg:^(RefCombinatorInRefHelper Any) = RefCombinatorInRef;
 
 export function loadRefCombinatorInRef(slice: Slice): RefCombinatorInRef {
     let slice1 = slice.loadRef().beginParse();

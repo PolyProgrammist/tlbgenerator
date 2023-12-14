@@ -164,8 +164,9 @@ export interface TernaryExpression extends ASTNode {
     elseBody: Expression
 }
 
-export function tTernaryExpression(condition: Expression, body: Expression, elseBody: Expression): TernaryExpression {
-    return { type: "TernaryExpression", condition: condition, body: body, elseBody: elseBody };
+export interface Comment extends ASTNode {
+    type: "Comment",
+    value: string,
 }
 
 export interface MultiStatement extends ASTNode {
@@ -177,7 +178,7 @@ export type TypeExpression = Identifier | TypeWithParameters | ArrowFunctionType
 export type Statement = ReturnStatement | ExpressionStatement | IfStatement | MultiStatement | ForCycle;
 export type Literal = NumericLiteral | BinaryNumericLiteral | StringLiteral;
 export type Expression = Identifier | TypeExpression | Literal | ObjectExpression | FunctionCall | MemberExpression | ArrowFunctionExpression | BinaryExpression | ArrowFunctionType | TypeParametersExpression | DeclareVariable | TernaryExpression | UnaryOpExpression;
-export type GenDeclaration = ImportDeclaration | StructDeclaration | UnionTypeDeclaration | FunctionDeclaration;
+export type GenDeclaration = ImportDeclaration | StructDeclaration | UnionTypeDeclaration | FunctionDeclaration | Comment;
 
 export type TheNode = Identifier | GenDeclaration | TypedIdentifier | Expression | ObjectProperty | Statement;
 
@@ -285,6 +286,14 @@ export function tDeclareVariable(name: Identifier, init?: Expression, typeName?:
 
 export function tMultiStatement(statements: Array<Statement>): MultiStatement {
     return { type: "MultiStatement", statements: statements };
+}
+
+export function tComment(value: string): Comment {
+    return { type: "Comment", value: value };
+}
+
+export function tTernaryExpression(condition: Expression, body: Expression, elseBody: Expression): TernaryExpression {
+    return { type: "TernaryExpression", condition: condition, body: body, elseBody: elseBody };
 }
 
 export function toCodeArray(nodeArray: Array<TheNode>, code: CodeBuilder, delimeter: string) {
@@ -456,6 +465,19 @@ export function toCode(node: TheNode, code: CodeBuilder = new CodeBuilder()): Co
 
     if (node.type == "TernaryExpression") {
         code.add(`(${toCode(node.condition).render()} ? ${toCode(node.body).render()} : ${toCode(node.elseBody).render()})`, false)
+    }
+
+    if (node.type == "Comment") {
+        let splittedComment = node.value.split('\n');
+        if (splittedComment.length == 1) {
+            code.add(`// ${splittedComment[0]}`)
+        } else {
+            code.add(`/*`)
+            splittedComment.forEach(line => {
+                code.add(line);
+            })
+            code.add(`*/`)
+        }
     }
 
     return code;
