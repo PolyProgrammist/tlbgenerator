@@ -11,16 +11,6 @@ export interface True {
     readonly kind: 'True';
 }
 
-export type Bool = Bool_bool_false | Bool_bool_true;
-
-export interface Bool_bool_false {
-    readonly kind: 'Bool_bool_false';
-}
-
-export interface Bool_bool_true {
-    readonly kind: 'Bool_bool_true';
-}
-
 export interface BoolFalse {
     readonly kind: 'BoolFalse';
 }
@@ -2590,44 +2580,6 @@ export function storeTrue(true0: True): (builder: Builder) => void {
     return ((builder: Builder) => {
     })
 
-}
-
-// bool_false$0 = Bool;
-
-// bool_true$1 = Bool;
-
-export function loadBool(slice: Slice): Bool {
-    if (((slice.remainingBits >= 1) && (slice.preloadUint(1) == 0b0))) {
-        slice.loadUint(1);
-        return {
-            kind: 'Bool_bool_false',
-        }
-
-    }
-    if (((slice.remainingBits >= 1) && (slice.preloadUint(1) == 0b1))) {
-        slice.loadUint(1);
-        return {
-            kind: 'Bool_bool_true',
-        }
-
-    }
-    throw new Error('Expected one of "Bool_bool_false", "Bool_bool_true" in loading "Bool", but data does not satisfy any constructor');
-}
-
-export function storeBool(bool: Bool): (builder: Builder) => void {
-    if ((bool.kind == 'Bool_bool_false')) {
-        return ((builder: Builder) => {
-            builder.storeUint(0b0, 1);
-        })
-
-    }
-    if ((bool.kind == 'Bool_bool_true')) {
-        return ((builder: Builder) => {
-            builder.storeUint(0b1, 1);
-        })
-
-    }
-    throw new Error('Expected one of "Bool_bool_false", "Bool_bool_true" in loading "Bool", but data does not satisfy any constructor');
 }
 
 // bool_false$0 = BoolFalse;

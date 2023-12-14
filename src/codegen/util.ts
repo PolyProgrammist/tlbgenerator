@@ -422,6 +422,18 @@ export function getStringDeclaration(declaration: Declaration, input: string[]):
     return result;
 }
 
+export function checkAndRemovePrimitives(tlbCode: TLBCode) {
+    let toDelete: string[] = []
+    tlbCode.types.forEach((tlbType: TLBType, name: string) => {
+        if (name == 'Bool') {
+            toDelete.push('Bool')
+        }
+    })
+    toDelete.forEach((name: string) => {
+        tlbCode.types.delete(name)
+    })
+}
+
 export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, input: string[]) {
     declarations.forEach(declaration => {
         let tlbType: TLBType | undefined = tlbCode.types.get(declaration.combinator.name);
@@ -502,4 +514,5 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
         fixNaming(tlbType);
         tlbType.constructors.sort(compareConstructors)
     });
+    checkAndRemovePrimitives(tlbCode);
 }
