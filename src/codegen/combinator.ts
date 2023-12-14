@@ -39,7 +39,11 @@ export function handleCombinator(expr: ParserExpression, fieldName: string, isFi
 
   insideStoreParameters = [tMemberExpression(tIdentifier(variableCombinatorName), tIdentifier(goodVariableName(fieldName)))];
   let insideStoreParameters2: Expression[] = [tIdentifier('arg')]
-
+  
+  if (constructor.declaration.combinator.name == 'VarUInteger') {
+    console.log(expr)
+  }
+  
   if (expr instanceof BuiltinZeroArgs) {
     if (expr.name == '#') {
       exprForParam = {argLoadExpr: tNumericLiteral(32), argStoreExpr: tNumericLiteral(32), paramType: 'number', fieldLoadStoreSuffix: 'Uint'}
@@ -90,14 +94,16 @@ export function handleCombinator(expr: ParserExpression, fieldName: string, isFi
       exprForParam = {
         argLoadExpr: convertToAST(myMathExpr, constructor),
         argStoreExpr: convertToAST(myMathExpr, constructor, false, tIdentifier(variableSubStructName)),
-        paramType: 'number', fieldLoadStoreSuffix: 'Int'
+        paramType: (expr.args[0] instanceof NumberExpr && expr.args[0].num <= 63) ? 'number' : 'bigint', 
+        fieldLoadStoreSuffix: 'Int'
       }
     } else if (expr.name == 'uint' && expr.args.length == 1 && (expr.args[0] instanceof MathExpr || expr.args[0] instanceof NumberExpr || expr.args[0] instanceof NameExpr)) {
       let myMathExpr = convertToMathExpr(expr.args[0])
       exprForParam = {
         argLoadExpr: convertToAST(myMathExpr, constructor),
         argStoreExpr: convertToAST(myMathExpr, constructor, false, tIdentifier(variableSubStructName)),
-        paramType: 'number', fieldLoadStoreSuffix: 'Uint'
+        paramType: (expr.args[0] instanceof NumberExpr && expr.args[0].num <= 63) ? 'number' : 'bigint', 
+        fieldLoadStoreSuffix: 'Uint'
       }
     } else if (expr.name == 'bits' && expr.args.length == 1 && (expr.args[0] instanceof MathExpr || expr.args[0] instanceof NumberExpr || expr.args[0] instanceof NameExpr)) {
       let myMathExpr = convertToMathExpr(expr.args[0])

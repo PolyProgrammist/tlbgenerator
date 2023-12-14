@@ -121,7 +121,7 @@ export interface IntBits<Arg> {
 export interface IntBitsInside {
     readonly kind: 'IntBitsInside';
     readonly x: number;
-    readonly a: IntBits<number>;
+    readonly a: IntBits<bigint>;
 }
 
 export interface IntBitsOutside {
@@ -132,11 +132,11 @@ export interface IntBitsOutside {
 export interface IntBitsParametrized {
     readonly kind: 'IntBitsParametrized';
     readonly e: number;
-    readonly h: number;
-    readonly f: number;
+    readonly h: bigint;
+    readonly f: bigint;
     readonly i: BitString;
     readonly j: number;
-    readonly k: number;
+    readonly k: bigint;
     readonly tc: Slice;
 }
 
@@ -869,8 +869,8 @@ export function storeIntBits<Arg>(intBits: IntBits<Arg>, storeArg: (arg: Arg) =>
 }
 
 export function loadIntBitsInside(slice: Slice, arg0: number): IntBitsInside {
-    let a: IntBits<number> = loadIntBits<number>(slice, ((slice: Slice) => {
-        return slice.loadInt((1 + (arg0 / 2)))
+    let a: IntBits<bigint> = loadIntBits<bigint>(slice, ((slice: Slice) => {
+        return slice.loadIntBig((1 + (arg0 / 2)))
 
     }));
     return {
@@ -883,7 +883,7 @@ export function loadIntBitsInside(slice: Slice, arg0: number): IntBitsInside {
 
 export function storeIntBitsInside(intBitsInside: IntBitsInside): (builder: Builder) => void {
     return ((builder: Builder) => {
-        storeIntBits<number>(intBitsInside.a, ((arg: number) => {
+        storeIntBits<bigint>(intBitsInside.a, ((arg: bigint) => {
             return ((builder: Builder) => {
                 builder.storeInt(arg, (1 + intBitsInside.x));
             })
@@ -910,11 +910,11 @@ export function storeIntBitsOutside(intBitsOutside: IntBitsOutside): (builder: B
 }
 
 export function loadIntBitsParametrized(slice: Slice, e: number): IntBitsParametrized {
-    let h: number = slice.loadInt((e * 8));
-    let f: number = slice.loadUint((7 * e));
+    let h: bigint = slice.loadIntBig((e * 8));
+    let f: bigint = slice.loadUintBig((7 * e));
     let i: BitString = slice.loadBits((5 + e));
     let j: number = slice.loadInt(5);
-    let k: number = slice.loadUint(e);
+    let k: bigint = slice.loadUintBig(e);
     let tc: Slice = slice;
     return {
         kind: 'IntBitsParametrized',

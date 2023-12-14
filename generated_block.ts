@@ -314,14 +314,14 @@ export interface VarUInteger {
     readonly kind: 'VarUInteger';
     readonly n: number;
     readonly len: number;
-    readonly value: number;
+    readonly value: bigint;
 }
 
 export interface VarInteger {
     readonly kind: 'VarInteger';
     readonly n: number;
     readonly len: number;
-    readonly value: number;
+    readonly value: bigint;
 }
 
 export interface Grams {
@@ -3666,7 +3666,7 @@ export function storeMsgAddress(msgAddress: MsgAddress): (builder: Builder) => v
 
 export function loadVarUInteger(slice: Slice, n: number): VarUInteger {
     let len: number = slice.loadUint(bitLen((n - 1)));
-    let value: number = slice.loadUint((len * 8));
+    let value: bigint = slice.loadUintBig((len * 8));
     return {
         kind: 'VarUInteger',
         n: n,
@@ -3686,7 +3686,7 @@ export function storeVarUInteger(varUInteger: VarUInteger): (builder: Builder) =
 
 export function loadVarInteger(slice: Slice, n: number): VarInteger {
     let len: number = slice.loadUint(bitLen((n - 1)));
-    let value: number = slice.loadInt((len * 8));
+    let value: bigint = slice.loadIntBig((len * 8));
     return {
         kind: 'VarInteger',
         n: n,

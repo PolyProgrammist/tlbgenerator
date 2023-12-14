@@ -451,7 +451,7 @@ describe('Generating tlb code', () => {
             x: {
                 'kind': 'IntBitsInside', 
                 a: {
-                    'kind': 'IntBits', arg: 3, d: 5, 
+                    'kind': 'IntBits', arg: BigInt(3), d: 5, 
                     g: beginCell().storeUint(3, 2).endCell().beginParse().loadBits(2), 
                     x: beginCell().storeUint(76, 10).endCell().beginParse()
                 },
@@ -465,7 +465,7 @@ describe('Generating tlb code', () => {
             x: {
                 kind: 'IntBitsParametrizedInside', 
                 a: {
-                    kind: 'IntBitsParametrized', e: 5, f: 3, h: 7, j: 9, k: 10,
+                    kind: 'IntBitsParametrized', e: 5, f: BigInt(3), h: BigInt(7), j: 9, k: BigInt(10),
                     i: beginCell().storeUint(676, 10).endCell().beginParse().loadBits(10), 
                     tc: beginCell().storeUint(76, 10).endCell().beginParse()
                 },
@@ -479,7 +479,7 @@ describe('Generating tlb code', () => {
             x: {
                 kind: 'IntBitsParametrizedInside', 
                 a: {
-                    kind: 'IntBitsParametrized', e: 6, f: 3, h: 7, j: 9, k: 10,
+                    kind: 'IntBitsParametrized', e: 6, f: BigInt(3), h: BigInt(7), j: 9, k: BigInt(10),
                     i: beginCell().storeUint(676, 10).endCell().beginParse().loadBits(10), 
                     tc: beginCell().storeUint(76, 10).endCell().beginParse()
                 },
