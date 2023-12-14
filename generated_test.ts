@@ -466,6 +466,17 @@ export interface CheckKeyword {
     readonly const0: number;
 }
 
+export interface RefCombinatorInRefHelper<X> {
+    readonly kind: 'RefCombinatorInRefHelper';
+    readonly t: number;
+    readonly y: Maybe<X>;
+}
+
+export interface RefCombinatorInRef {
+    readonly kind: 'RefCombinatorInRef';
+    readonly msg: RefCombinatorInRefHelper<Slice>;
+}
+
 export function bitLen(n: number) {
     return n.toString(2).length;;
 }
@@ -2232,6 +2243,64 @@ export function loadCheckKeyword(slice: Slice): CheckKeyword {
 export function storeCheckKeyword(checkKeyword: CheckKeyword): (builder: Builder) => void {
     return ((builder: Builder) => {
         builder.storeUint(checkKeyword.const0, 32);
+    })
+
+}
+
+export function loadRefCombinatorInRefHelper<X>(slice: Slice, loadX: (slice: Slice) => X): RefCombinatorInRefHelper<X> {
+    let t: number = slice.loadUint(32);
+    let y: Maybe<X> = loadMaybe<X>(slice, ((slice: Slice) => {
+        let slice1 = slice.loadRef().beginParse();
+        return loadX(slice1)
+
+    }));
+    return {
+        kind: 'RefCombinatorInRefHelper',
+        t: t,
+        y: y,
+    }
+
+}
+
+export function storeRefCombinatorInRefHelper<X>(refCombinatorInRefHelper: RefCombinatorInRefHelper<X>, storeX: (x: X) => (builder: Builder) => void): (builder: Builder) => void {
+    return ((builder: Builder) => {
+        builder.storeUint(refCombinatorInRefHelper.t, 32);
+        storeMaybe<X>(refCombinatorInRefHelper.y, ((arg: X) => {
+            return ((builder: Builder) => {
+                let cell1 = beginCell();
+                storeX(arg)(cell1);
+                builder.storeRef(cell1);
+
+            })
+
+        }))(builder);
+    })
+
+}
+
+export function loadRefCombinatorInRef(slice: Slice): RefCombinatorInRef {
+    let slice1 = slice.loadRef().beginParse();
+    let msg: RefCombinatorInRefHelper<Slice> = loadRefCombinatorInRefHelper<Slice>(slice1, ((slice: Slice) => {
+        return slice
+
+    }));
+    return {
+        kind: 'RefCombinatorInRef',
+        msg: msg,
+    }
+
+}
+
+export function storeRefCombinatorInRef(refCombinatorInRef: RefCombinatorInRef): (builder: Builder) => void {
+    return ((builder: Builder) => {
+        let cell1 = beginCell();
+        storeRefCombinatorInRefHelper<Slice>(refCombinatorInRef.msg, ((arg: Slice) => {
+            return ((builder: Builder) => {
+                cell1.storeSlice(arg);
+            })
+
+        }))(cell1);
+        builder.storeRef(cell1);
     })
 
 }

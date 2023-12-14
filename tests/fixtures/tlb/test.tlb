@@ -121,3 +121,6 @@ a a:#  = CheckCrc32;
 b b:# c:# = CheckCrc32;
 
 a$_ const:# = CheckKeyword;
+
+a$_ {X:Type} t:# y:(Maybe ^X) = RefCombinatorInRefHelper X; 
+a$_ msg:^(RefCombinatorInRefHelper Any) = RefCombinatorInRef;

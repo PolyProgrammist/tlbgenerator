@@ -28,7 +28,7 @@ describe('parsing into intermediate representation using grammar', () => {
     console.log(builder.endCell().hash())
     fs.writeFile('lol.txt', builder.endCell().toString(), () => { });
 
-    expect(cs.hash() == builder.endCell().hash()).toBeTruthy()
+    expect(cs.hash()builder.endCell().hash()).toBeTruthy()
   })
 })
 
