@@ -270,8 +270,8 @@ export function handleCombinator(expr: ParserExpression, fieldName: string, isFi
       result.loadFunctionExpr = tArrowFunctionExpression([tTypedIdentifier(tIdentifier('slice'), tIdentifier('Slice'))], [tReturnStatement(tIdentifier('slice'))])
     }
     result.typeParamExpr = tIdentifier(exprForParam.paramType);
-    result.storeExpr = tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('store' + exprForParam.fieldLoadStoreSuffix)), insideStoreParameters));
-    storeExpr2 = tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('store' + exprForParam.fieldLoadStoreSuffix)), insideStoreParameters2));
+    result.storeExpr = tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(theCell), tIdentifier('store' + exprForParam.fieldLoadStoreSuffix)), insideStoreParameters));
+    storeExpr2 = tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(theCell), tIdentifier('store' + exprForParam.fieldLoadStoreSuffix)), insideStoreParameters2));
   }
 
   if (result.loadExpr && !result.loadFunctionExpr) {

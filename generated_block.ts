@@ -4352,7 +4352,7 @@ export function storeMsgEnvelope(msgEnvelope: MsgEnvelope): (builder: Builder) =
         let cell1 = beginCell();
         storeMessage<Slice>(msgEnvelope.msg, ((arg: Slice) => {
             return ((builder: Builder) => {
-                cell1.storeSlice(arg);
+                builder.storeSlice(arg);
             })
 
         }))(cell1);
@@ -4485,7 +4485,7 @@ export function storeInMsg(inMsg: InMsg): (builder: Builder) => void {
             let cell1 = beginCell();
             storeMessage<Slice>(inMsg.msg, ((arg: Slice) => {
                 return ((builder: Builder) => {
-                    cell1.storeSlice(arg);
+                    builder.storeSlice(arg);
                 })
 
             }))(cell1);
@@ -4502,7 +4502,7 @@ export function storeInMsg(inMsg: InMsg): (builder: Builder) => void {
             let cell1 = beginCell();
             storeMessage<Slice>(inMsg.msg, ((arg: Slice) => {
                 return ((builder: Builder) => {
-                    cell1.storeSlice(arg);
+                    builder.storeSlice(arg);
                 })
 
             }))(cell1);
@@ -4741,7 +4741,7 @@ export function storeOutMsg(outMsg: OutMsg): (builder: Builder) => void {
             let cell1 = beginCell();
             storeMessage<Slice>(outMsg.msg, ((arg: Slice) => {
                 return ((builder: Builder) => {
-                    cell1.storeSlice(arg);
+                    builder.storeSlice(arg);
                 })
 
             }))(cell1);
@@ -5361,7 +5361,7 @@ export function storeTransaction(transaction: Transaction): (builder: Builder) =
                 let cell1 = beginCell();
                 storeMessage<Slice>(arg, ((arg: Slice) => {
                     return ((builder: Builder) => {
-                        cell1.storeSlice(arg);
+                        builder.storeSlice(arg);
                     })
 
                 }))(cell1);
@@ -5375,7 +5375,7 @@ export function storeTransaction(transaction: Transaction): (builder: Builder) =
                 let cell1 = beginCell();
                 storeMessage<Slice>(arg, ((arg: Slice) => {
                     return ((builder: Builder) => {
-                        cell1.storeSlice(arg);
+                        builder.storeSlice(arg);
                     })
 
                 }))(cell1);
@@ -5713,7 +5713,7 @@ export function storeTrComputePhase(trComputePhase: TrComputePhase): (builder: B
             cell1.storeInt(trComputePhase.exit_code, 32);
             storeMaybe<number>(trComputePhase.exit_arg, ((arg: number) => {
                 return ((builder: Builder) => {
-                    cell1.storeInt(arg, 32);
+                    builder.storeInt(arg, 32);
                 })
 
             }))(cell1);
@@ -6347,7 +6347,7 @@ export function storeOutAction(outAction: OutAction): (builder: Builder) => void
             let cell1 = beginCell();
             storeMessageRelaxed<Slice>(outAction.out_msg, ((arg: Slice) => {
                 return ((builder: Builder) => {
-                    cell1.storeSlice(arg);
+                    builder.storeSlice(arg);
                 })
 
             }))(cell1);

@@ -2032,7 +2032,7 @@ export function storeRefCombinatorAny(refCombinatorAny: RefCombinatorAny): (buil
         let cell1 = beginCell();
         storeMaybe<Slice>(refCombinatorAny.msg, ((arg: Slice) => {
             return ((builder: Builder) => {
-                cell1.storeSlice(arg);
+                builder.storeSlice(arg);
             })
 
         }))(cell1);
@@ -2296,7 +2296,7 @@ export function storeRefCombinatorInRef(refCombinatorInRef: RefCombinatorInRef):
         let cell1 = beginCell();
         storeRefCombinatorInRefHelper<Slice>(refCombinatorInRef.msg, ((arg: Slice) => {
             return ((builder: Builder) => {
-                cell1.storeSlice(arg);
+                builder.storeSlice(arg);
             })
 
         }))(cell1);
