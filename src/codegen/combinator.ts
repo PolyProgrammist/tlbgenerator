@@ -16,8 +16,8 @@ type FieldInfoType = {
 }
 
 type ExprForParam = {
-  argLoadExpr: Expression
-  argStoreExpr: Expression
+  argLoadExpr: Expression | undefined
+  argStoreExpr: Expression | undefined
   paramType: string
   fieldLoadSuffix: string
   fieldStoreSuffix: string
@@ -161,8 +161,8 @@ export function handleCombinator(expr: ParserExpression, fieldName: string, isFi
       exprForParam = {argLoadExpr: tNumericLiteral(theNum), argStoreExpr: tNumericLiteral(theNum), paramType: 'number', fieldLoadSuffix: 'Uint', fieldStoreSuffix: 'Uint'}
     } else if ((theNum = splitForTypeValue(expr.name, 'bits')) != undefined) {
       exprForParam = {argLoadExpr: tNumericLiteral(theNum), argStoreExpr: tNumericLiteral(theNum), paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'}
-    // } else if (expr.name == 'Bool') {
-    //   exprForParam = {argLoadExpr: tIdentifier(''), argStoreExpr: tIdentifier(''), paramType: 'boolean', fieldLoadStoreSuffix: 'Boolean'}
+    } else if (expr.name == 'Bool') {
+      exprForParam = {argLoadExpr: undefined, argStoreExpr: undefined, paramType: 'boolean', fieldLoadSuffix: 'Boolean', fieldStoreSuffix: 'Bit'}
     } else {
       if (constructor.variablesMap.get(expr.name)?.type == '#') {
         result.loadExpr = getVarExprByName(expr.name, constructor)
@@ -268,10 +268,12 @@ export function handleCombinator(expr: ParserExpression, fieldName: string, isFi
   }
   if (exprForParam) {
     if (exprForParam.paramType != 'BitString' && exprForParam.paramType != 'Slice') {
-      insideStoreParameters.push(exprForParam.argStoreExpr);
-      insideStoreParameters2.push(exprForParam.argStoreExpr);
+      if (exprForParam.argStoreExpr) {
+        insideStoreParameters.push(exprForParam.argStoreExpr);
+        insideStoreParameters2.push(exprForParam.argStoreExpr);
+      }
     }
-    result.loadExpr = tFunctionCall(tMemberExpression(tIdentifier(currentSlice), tIdentifier('load' + exprForParam.fieldLoadSuffix)), [exprForParam.argLoadExpr]);
+    result.loadExpr = tFunctionCall(tMemberExpression(tIdentifier(currentSlice), tIdentifier('load' + exprForParam.fieldLoadSuffix)), (exprForParam.argLoadExpr ? [exprForParam.argLoadExpr] : []));
     if (exprForParam.paramType == 'Slice') {
       result.loadExpr = tIdentifier(currentSlice)
       result.loadFunctionExpr = tArrowFunctionExpression([tTypedIdentifier(tIdentifier('slice'), tIdentifier('Slice'))], [tReturnStatement(tIdentifier('slice'))])
