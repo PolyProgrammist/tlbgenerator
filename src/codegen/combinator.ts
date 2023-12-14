@@ -297,15 +297,5 @@ export function handleCombinator(expr: ParserExpression, fieldName: string, isFi
   }
 
   result.storeExpr2 = storeExpr2
-
-  if (constructor.declaration.combinator.name == 'RefCombinatorInRef') {
-    if (result.storeExpr && result.storeExpr2 && result.storeFunctionExpr) {
-      console.log(fieldName)
-      // console.log(expr)
-      console.log(toCode(result.storeExpr).code)
-      console.log(toCode(result.storeExpr2).code)
-      console.log(toCode(result.storeFunctionExpr).code)
-    }
-  }
   return result;
 }

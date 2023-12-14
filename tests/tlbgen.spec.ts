@@ -161,7 +161,7 @@ describe('Generating tlb code', () => {
         checkSameOnStoreLoad(refCombinatorAny, loadRefCombinatorAny, storeRefCombinatorAny);
 
         let msgEnvelope: RefCombinatorInRef = {kind: 'RefCombinatorInRef', msg: {kind: 'RefCombinatorInRefHelper', t: 3, y: {kind: 'Maybe_just', value: beginCell().storeUint(3, 32).endCell().beginParse()}} } 
-        // checkSameOnStoreLoad(msgEnvelope, loadRefCombinatorInRef, storeRefCombinatorInRef);
+        checkSameOnStoreLoad(msgEnvelope, loadRefCombinatorInRef, storeRefCombinatorInRef);
     });
 
     test('Naming', () => {
