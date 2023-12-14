@@ -40,10 +40,6 @@ export function handleCombinator(expr: ParserExpression, fieldName: string, isFi
   insideStoreParameters = [tMemberExpression(tIdentifier(variableCombinatorName), tIdentifier(goodVariableName(fieldName)))];
   let insideStoreParameters2: Expression[] = [tIdentifier('arg')]
   
-  if (constructor.declaration.combinator.name == 'VarUInteger') {
-    console.log(expr)
-  }
-  
   if (expr instanceof BuiltinZeroArgs) {
     if (expr.name == '#') {
       exprForParam = {argLoadExpr: tNumericLiteral(32), argStoreExpr: tNumericLiteral(32), paramType: 'number', fieldLoadStoreSuffix: 'Uint'}

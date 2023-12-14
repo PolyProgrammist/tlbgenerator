@@ -2,6 +2,7 @@ import { Builder } from 'ton'
 import { Slice } from 'ton'
 import { beginCell } from 'ton'
 import { BitString } from 'ton'
+import { Cell } from 'ton'
 export interface Unit {
     readonly kind: 'Unit';
 }
@@ -1141,7 +1142,7 @@ export interface Block {
     readonly global_id: number;
     readonly info: BlockInfo;
     readonly value_flow: ValueFlow;
-    readonly state_update: MERKLE_UPDATE<ShardState>;
+    readonly state_update: Cell;
     readonly extra: BlockExtra;
 }
 
@@ -6884,8 +6885,8 @@ export function loadBlock(slice: Slice): Block {
         let info: BlockInfo = loadBlockInfo(slice1);
         let slice2 = slice.loadRef().beginParse();
         let value_flow: ValueFlow = loadValueFlow(slice2);
-        let slice3 = slice.loadRef().beginParse();
-        let state_update: MERKLE_UPDATE<ShardState> = loadMERKLE_UPDATE<ShardState>(slice3, loadShardState);
+        let cell3 = slice.loadRef();
+        let state_update = cell3;
         let slice4 = slice.loadRef().beginParse();
         let extra: BlockExtra = loadBlockExtra(slice4);
         return {
@@ -6911,9 +6912,7 @@ export function storeBlock(block: Block): (builder: Builder) => void {
         let cell2 = beginCell();
         storeValueFlow(block.value_flow)(cell2);
         builder.storeRef(cell2);
-        let cell3 = beginCell();
-        storeMERKLE_UPDATE<ShardState>(block.state_update, storeShardState)(cell3);
-        builder.storeRef(cell3);
+        builder.storeRef(block.state_update);
         let cell4 = beginCell();
         storeBlockExtra(block.extra)(cell4);
         builder.storeRef(cell4);

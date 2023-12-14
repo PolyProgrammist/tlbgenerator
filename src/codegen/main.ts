@@ -15,6 +15,7 @@ export function generate(tree: Program, input: string) {
   jsCodeDeclarations.push(tImportDeclaration(tIdentifier('Slice'), tStringLiteral('ton')))  // importDeclaration([importSpecifier(identifier('Slice'), identifier('Slice'))], stringLiteral('../boc/Slice')))
   jsCodeDeclarations.push(tImportDeclaration(tIdentifier('beginCell'), tStringLiteral('ton')))
   jsCodeDeclarations.push(tImportDeclaration(tIdentifier('BitString'), tStringLiteral('ton')))
+  jsCodeDeclarations.push(tImportDeclaration(tIdentifier('Cell'), tStringLiteral('ton')))
 
   let jsCodeConstructorDeclarations: GenDeclaration[] = []
   let jsCodeFunctionsDeclarations: FunctionDeclaration[] = []

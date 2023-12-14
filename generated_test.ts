@@ -2,6 +2,7 @@ import { Builder } from 'ton'
 import { Slice } from 'ton'
 import { beginCell } from 'ton'
 import { BitString } from 'ton'
+import { Cell } from 'ton'
 export interface Simple {
     readonly kind: 'Simple';
     readonly a: number;

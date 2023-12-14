@@ -16,7 +16,7 @@ const fixturesDir = path.resolve(__dirname, 'fixtures')
 describe('parsing into intermediate representation using grammar', () => {
   test('test.tlb can be parsed', () => {
     let builder = beginCell();
-    // builder.storeUint(5, 0);
+    builder.storeUint(BigInt(0), 0);
 
 
     let x = beginCell().endCell().beginParse()
