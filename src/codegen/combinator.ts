@@ -260,16 +260,15 @@ export function handleCombinator(expr: ParserExpression, fieldName: string, isFi
     throw new Error('Expression not supported: ' + expr);
   }
   if (exprForParam) {
-    result.loadExpr = tFunctionCall(tMemberExpression(tIdentifier(theSlice), tIdentifier('load' + exprForParam.fieldLoadStoreSuffix)), [exprForParam.argLoadExpr])
+    let fieldLoadSuffix = exprForParam.fieldLoadStoreSuffix;
+    if (exprForParam.paramType == 'bigint') {
+      fieldLoadSuffix += 'Big'
+    }
     if (exprForParam.paramType != 'BitString' && exprForParam.paramType != 'Slice') {
       insideStoreParameters.push(exprForParam.argStoreExpr);
       insideStoreParameters2.push(exprForParam.argStoreExpr);
     }
-    result.storeExpr = tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(theCell), tIdentifier('store' + exprForParam.fieldLoadStoreSuffix)), insideStoreParameters));
-    storeExpr2 = tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(theCell), tIdentifier('store' + exprForParam.fieldLoadStoreSuffix)), insideStoreParameters2));
-  }
-  if (exprForParam != undefined) {
-    result.loadExpr = tFunctionCall(tMemberExpression(tIdentifier(currentSlice), tIdentifier('load' + exprForParam.fieldLoadStoreSuffix)), [exprForParam.argLoadExpr]);
+    result.loadExpr = tFunctionCall(tMemberExpression(tIdentifier(currentSlice), tIdentifier('load' + fieldLoadSuffix)), [exprForParam.argLoadExpr]);
     if (exprForParam.paramType == 'Slice') {
       result.loadExpr = tIdentifier(currentSlice)
       result.loadFunctionExpr = tArrowFunctionExpression([tTypedIdentifier(tIdentifier('slice'), tIdentifier('Slice'))], [tReturnStatement(tIdentifier('slice'))])

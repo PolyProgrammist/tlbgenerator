@@ -694,7 +694,7 @@ export function storeEither<X, Y>(either: Either<X, Y>, storeX: (x: X) => (build
 }
 
 export function loadBitLenArg(slice: Slice, x: number): BitLenArg {
-    let value: bigint = slice.loadUint(x);
+    let value: bigint = slice.loadUintBig(x);
     return {
         kind: 'BitLenArg',
         x: x,
@@ -727,7 +727,7 @@ export function storeBitLenArgUser(bitLenArgUser: BitLenArgUser): (builder: Buil
 }
 
 export function loadExprArg(slice: Slice, arg0: number): ExprArg {
-    let value: bigint = slice.loadUint((arg0 - 2));
+    let value: bigint = slice.loadUintBig((arg0 - 2));
     return {
         kind: 'ExprArg',
         x: (arg0 - 2),
