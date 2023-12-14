@@ -422,10 +422,32 @@ export function getStringDeclaration(declaration: Declaration, input: string[]):
     return result;
 }
 
-export function checkAndRemovePrimitives(tlbCode: TLBCode) {
+function opCodeSetsEqual(a: string[], b: string[]) {
+    if (a === b) return true;
+    if (a == null || b == null) return false;
+    if (a.length !== b.length) return false;
+  
+    a = a.sort();
+    b = b.sort();
+  
+    for (var i = 0; i < a.length; ++i) {
+      if (a[i] !== b[i]) return false;
+    }
+    return true;
+  }
+
+export function checkAndRemovePrimitives(tlbCode: TLBCode, input: string[]) {
     let toDelete: string[] = []
     tlbCode.types.forEach((tlbType: TLBType, name: string) => {
         if (name == 'Bool') {
+            let opCodesExpected: string[] = [ '4702fd23', 'f0e8d7f' ]
+            let opCodesActual: string[] = []
+            tlbType.constructors.forEach(constructor => {
+                opCodesActual.push(calculateOpcode(constructor.declaration, input))
+            })
+            if (!opCodeSetsEqual(opCodesExpected, opCodesActual)) {
+                throw new Error('Bool primitive type is not correct in scheme')
+            }
             toDelete.push('Bool')
         }
     })
@@ -514,5 +536,5 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
         fixNaming(tlbType);
         tlbType.constructors.sort(compareConstructors)
     });
-    checkAndRemovePrimitives(tlbCode);
+    checkAndRemovePrimitives(tlbCode, input);
 }
