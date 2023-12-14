@@ -70,7 +70,7 @@ export interface Either_right<X, Y> {
 export interface BitLenArg {
     readonly kind: 'BitLenArg';
     readonly x: number;
-    readonly value: number;
+    readonly value: bigint;
 }
 
 export interface BitLenArgUser {
@@ -81,7 +81,7 @@ export interface BitLenArgUser {
 export interface ExprArg {
     readonly kind: 'ExprArg';
     readonly x: number;
-    readonly value: number;
+    readonly value: bigint;
 }
 
 export interface ExprArgUser {
@@ -694,7 +694,7 @@ export function storeEither<X, Y>(either: Either<X, Y>, storeX: (x: X) => (build
 }
 
 export function loadBitLenArg(slice: Slice, x: number): BitLenArg {
-    let value: number = slice.loadUint(x);
+    let value: bigint = slice.loadUint(x);
     return {
         kind: 'BitLenArg',
         x: x,
@@ -727,7 +727,7 @@ export function storeBitLenArgUser(bitLenArgUser: BitLenArgUser): (builder: Buil
 }
 
 export function loadExprArg(slice: Slice, arg0: number): ExprArg {
-    let value: number = slice.loadUint((arg0 - 2));
+    let value: bigint = slice.loadUint((arg0 - 2));
     return {
         kind: 'ExprArg',
         x: (arg0 - 2),

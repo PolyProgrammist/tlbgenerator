@@ -49,7 +49,12 @@ export function handleCombinator(expr: ParserExpression, fieldName: string, isFi
   } else if (expr instanceof BuiltinOneArgExpr) {
     if (expr.name.toString() == '##' || expr.name.toString() == '(##)') {
       if (expr.arg instanceof NumberExpr) {
-        exprForParam = {argLoadExpr: tNumericLiteral(expr.arg.num), argStoreExpr: tNumericLiteral(expr.arg.num), paramType: 'number', fieldLoadStoreSuffix: 'Uint'}
+        exprForParam = {
+          argLoadExpr: tNumericLiteral(expr.arg.num), 
+          argStoreExpr: tNumericLiteral(expr.arg.num), 
+          paramType: expr.arg.num <= 63 ? 'number' : 'bigint', 
+          fieldLoadStoreSuffix: 'Uint'
+        }
       }
       if (expr.arg instanceof NameExpr) {
         let parameter = constructor.parametersMap.get(expr.arg.name)
@@ -59,7 +64,7 @@ export function handleCombinator(expr: ParserExpression, fieldName: string, isFi
         exprForParam = {
           argLoadExpr: getParamVarExpr(parameter, constructor), 
           argStoreExpr: tMemberExpression(tIdentifier(variableCombinatorName), tIdentifier(goodVariableName(expr.arg.name))), 
-          paramType: 'number', fieldLoadStoreSuffix: 'Uint'
+          paramType: 'bigint', fieldLoadStoreSuffix: 'Uint'
         }
       } // TODO: handle other cases
     } else if (expr.name == '#<') {
