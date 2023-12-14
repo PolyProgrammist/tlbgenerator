@@ -530,7 +530,7 @@ export function loadTwoConstructors(slice: Slice): TwoConstructors {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "TwoConstructors_bool_false", "TwoConstructors_bool_true" in loading "TwoConstructors", but data does not satisfy any constructor');
 }
 
 export function storeTwoConstructors(twoConstructors: TwoConstructors): (builder: Builder) => void {
@@ -550,7 +550,7 @@ export function storeTwoConstructors(twoConstructors: TwoConstructors): (builder
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "TwoConstructors_bool_false", "TwoConstructors_bool_true" in loading "TwoConstructors", but data does not satisfy any constructor');
 }
 
 // tmpb$_ y:(## 5) = FixedIntParam;
@@ -634,7 +634,7 @@ export function loadMaybe<TheType>(slice: Slice, loadTheType: (slice: Slice) => 
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "Maybe_nothing", "Maybe_just" in loading "Maybe", but data does not satisfy any constructor');
 }
 
 export function storeMaybe<TheType>(maybe: Maybe<TheType>, storeTheType: (theType: TheType) => (builder: Builder) => void): (builder: Builder) => void {
@@ -651,7 +651,7 @@ export function storeMaybe<TheType>(maybe: Maybe<TheType>, storeTheType: (theTyp
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "Maybe_nothing", "Maybe_just" in loading "Maybe", but data does not satisfy any constructor');
 }
 
 // thejust$_ x:(Maybe SharpConstructor) = TypedParam;
@@ -695,7 +695,7 @@ export function loadEither<X, Y>(slice: Slice, loadX: (slice: Slice) => X, loadY
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "Either_left", "Either_right" in loading "Either", but data does not satisfy any constructor');
 }
 
 export function storeEither<X, Y>(either: Either<X, Y>, storeX: (x: X) => (builder: Builder) => void, storeY: (y: Y) => (builder: Builder) => void): (builder: Builder) => void {
@@ -713,7 +713,7 @@ export function storeEither<X, Y>(either: Either<X, Y>, storeX: (x: X) => (build
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "Either_left", "Either_right" in loading "Either", but data does not satisfy any constructor');
 }
 
 // a$_ {x:#} value:(## x) = BitLenArg x;
@@ -1119,7 +1119,7 @@ export function unary_unary_succ_get_n(x: Unary): number {
         return (n + 1)
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "Unary_unary_zero", "Unary_unary_succ" for type "Unary" while getting "x", but data does not satisfy any constructor');
 }
 
 // unary_succ$1 {n:#} x:(Unary ~n) = Unary ~(n + 1);
@@ -1143,7 +1143,7 @@ export function loadUnary(slice: Slice): Unary {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "Unary_unary_zero", "Unary_unary_succ" in loading "Unary", but data does not satisfy any constructor');
 }
 
 export function storeUnary(unary: Unary): (builder: Builder) => void {
@@ -1160,7 +1160,7 @@ export function storeUnary(unary: Unary): (builder: Builder) => void {
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "Unary_unary_zero", "Unary_unary_succ" in loading "Unary", but data does not satisfy any constructor');
 }
 
 // b$01 m:# k:# = ParamConst 2 1;
@@ -1218,7 +1218,7 @@ export function loadParamConst(slice: Slice, arg0: number, arg1: number): ParamC
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ParamConst_b", "ParamConst_c", "ParamConst_a", "ParamConst_d" in loading "ParamConst", but data does not satisfy any constructor');
 }
 
 export function storeParamConst(paramConst: ParamConst): (builder: Builder) => void {
@@ -1254,7 +1254,7 @@ export function storeParamConst(paramConst: ParamConst): (builder: Builder) => v
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ParamConst_b", "ParamConst_c", "ParamConst_a", "ParamConst_d" in loading "ParamConst", but data does not satisfy any constructor');
 }
 
 // a$0 = ParamDifNames 2 ~1;
@@ -1280,7 +1280,7 @@ export function paramDifNames_c_get_n(x: ParamDifNames): number {
         return (m * 2)
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ParamDifNames_a", "ParamDifNames_b", "ParamDifNames_c", "ParamDifNames_d" for type "ParamDifNames" while getting "x", but data does not satisfy any constructor');
 }
 
 // c$1 {n:#} x:(ParamDifNames 2 ~n) = ParamDifNames 2 ~(n + 1);
@@ -1304,7 +1304,7 @@ export function paramDifNames_d_get_m(x: ParamDifNames): number {
         return (m * 2)
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ParamDifNames_a", "ParamDifNames_b", "ParamDifNames_c", "ParamDifNames_d" for type "ParamDifNames" while getting "x", but data does not satisfy any constructor');
 }
 
 // d$0 {m:#} x:(ParamDifNames 3 ~m) = ParamDifNames 3 ~(m * 2);
@@ -1346,7 +1346,7 @@ export function loadParamDifNames(slice: Slice, arg0: number): ParamDifNames {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ParamDifNames_a", "ParamDifNames_b", "ParamDifNames_c", "ParamDifNames_d" in loading "ParamDifNames", but data does not satisfy any constructor');
 }
 
 export function storeParamDifNames(paramDifNames: ParamDifNames): (builder: Builder) => void {
@@ -1376,7 +1376,7 @@ export function storeParamDifNames(paramDifNames: ParamDifNames): (builder: Buil
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ParamDifNames_a", "ParamDifNames_b", "ParamDifNames_c", "ParamDifNames_d" in loading "ParamDifNames", but data does not satisfy any constructor');
 }
 
 export function paramDifNamesUser_get_k(x: ParamDifNames): number {
@@ -1398,7 +1398,7 @@ export function paramDifNamesUser_get_k(x: ParamDifNames): number {
         return (m * 2)
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ParamDifNames_a", "ParamDifNames_b", "ParamDifNames_c", "ParamDifNames_d" for type "ParamDifNames" while getting "x", but data does not satisfy any constructor');
 }
 
 // e$0 {k:#} x:(ParamDifNames 2 ~k) = ParamDifNamesUser;
@@ -1415,7 +1415,7 @@ export function loadParamDifNamesUser(slice: Slice): ParamDifNamesUser {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ParamDifNamesUser" in loading "ParamDifNamesUser", but data does not satisfy any constructor');
 }
 
 export function storeParamDifNamesUser(paramDifNamesUser: ParamDifNamesUser): (builder: Builder) => void {
@@ -1441,7 +1441,7 @@ export function loadNegationFromImplicit(slice: Slice): NegationFromImplicit {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "NegationFromImplicit" in loading "NegationFromImplicit", but data does not satisfy any constructor');
 }
 
 export function storeNegationFromImplicit(negationFromImplicit: NegationFromImplicit): (builder: Builder) => void {
@@ -1463,7 +1463,7 @@ export function unaryUserCheckOrder_get_l(label: Unary): number {
         return (n + 1)
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "Unary_unary_zero", "Unary_unary_succ" for type "Unary" while getting "label", but data does not satisfy any constructor');
 }
 
 // hm_edge#_ {l:#} {m:#} label:(Unary ~l) {7 = (~m) + l} = UnaryUserCheckOrder;
@@ -1641,7 +1641,7 @@ export function loadSharpTag(slice: Slice): SharpTag {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "SharpTag" in loading "SharpTag", but data does not satisfy any constructor');
 }
 
 export function storeSharpTag(sharpTag: SharpTag): (builder: Builder) => void {
@@ -1664,7 +1664,7 @@ export function loadDollarTag(slice: Slice): DollarTag {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "DollarTag" in loading "DollarTag", but data does not satisfy any constructor');
 }
 
 export function storeDollarTag(dollarTag: DollarTag): (builder: Builder) => void {
@@ -1714,7 +1714,7 @@ export function hashmap_get_l(label: HmLabel): number {
         return n
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "HmLabel_hml_short", "HmLabel_hml_long", "HmLabel_hml_same" for type "HmLabel" while getting "label", but data does not satisfy any constructor');
 }
 
 /*
@@ -1774,7 +1774,7 @@ export function loadHashmapNode<X>(slice: Slice, arg0: number, loadX: (slice: Sl
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "HashmapNode_hmn_leaf", "HashmapNode_hmn_fork" in loading "HashmapNode", but data does not satisfy any constructor');
 }
 
 export function storeHashmapNode<X>(hashmapNode: HashmapNode<X>, storeX: (x: X) => (builder: Builder) => void): (builder: Builder) => void {
@@ -1795,7 +1795,7 @@ export function storeHashmapNode<X>(hashmapNode: HashmapNode<X>, storeX: (x: X) 
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "HashmapNode_hmn_leaf", "HashmapNode_hmn_fork" in loading "HashmapNode", but data does not satisfy any constructor');
 }
 
 export function hmLabel_hml_short_get_n(len: Unary): number {
@@ -1808,7 +1808,7 @@ export function hmLabel_hml_short_get_n(len: Unary): number {
         return (n + 1)
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "Unary_unary_zero", "Unary_unary_succ" for type "Unary" while getting "len", but data does not satisfy any constructor');
 }
 
 // hml_short$0 {m:#} {n:#} len:(Unary ~n) {n <= m} s:(n * Bit) = HmLabel ~n m;
@@ -1827,7 +1827,7 @@ export function loadHmLabel(slice: Slice, m: number): HmLabel {
 
         }));
         if ((!(n <= m))) {
-            throw new Error('');
+            throw new Error('Condition (n <= m) is not satisfied while loading "HmLabel_hml_short" for type "HmLabel"');
         }
         return {
             kind: 'HmLabel_hml_short',
@@ -1865,7 +1865,7 @@ export function loadHmLabel(slice: Slice, m: number): HmLabel {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "HmLabel_hml_short", "HmLabel_hml_long", "HmLabel_hml_same" in loading "HmLabel", but data does not satisfy any constructor');
 }
 
 export function storeHmLabel(hmLabel: HmLabel): (builder: Builder) => void {
@@ -1877,7 +1877,7 @@ export function storeHmLabel(hmLabel: HmLabel): (builder: Builder) => void {
                 builder.storeBits(arg);
             }));
             if ((!(hmLabel.n <= hmLabel.m))) {
-                throw new Error('');
+                throw new Error('Condition (hmLabel.n <= hmLabel.m) is not satisfied while loading "HmLabel_hml_short" for type "HmLabel"');
             }
         })
 
@@ -1900,7 +1900,7 @@ export function storeHmLabel(hmLabel: HmLabel): (builder: Builder) => void {
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "HmLabel_hml_short", "HmLabel_hml_long", "HmLabel_hml_same" in loading "HmLabel", but data does not satisfy any constructor');
 }
 
 // hme_empty$0 {n:#} {X:Type} = HashmapE n X;
@@ -1927,7 +1927,7 @@ export function loadHashmapE<X>(slice: Slice, n: number, loadX: (slice: Slice) =
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "HashmapE_hme_empty", "HashmapE_hme_root" in loading "HashmapE", but data does not satisfy any constructor');
 }
 
 export function storeHashmapE<X>(hashmapE: HashmapE<X>, storeX: (x: X) => (builder: Builder) => void): (builder: Builder) => void {
@@ -1946,7 +1946,7 @@ export function storeHashmapE<X>(hashmapE: HashmapE<X>, storeX: (x: X) => (build
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "HashmapE_hme_empty", "HashmapE_hme_root" in loading "HashmapE", but data does not satisfy any constructor');
 }
 
 // a$_ x:(HashmapE 8 uint16) = HashmapEUser;
@@ -2026,7 +2026,7 @@ export function storeBitSelection(bitSelection: BitSelection): (builder: Builder
 export function loadImplicitCondition(slice: Slice): ImplicitCondition {
     let flags: number = slice.loadUint(10);
     if ((!(flags <= 100))) {
-        throw new Error('');
+        throw new Error('Condition (flags <= 100) is not satisfied while loading "ImplicitCondition" for type "ImplicitCondition"');
     }
     return {
         kind: 'ImplicitCondition',
@@ -2039,7 +2039,7 @@ export function storeImplicitCondition(implicitCondition: ImplicitCondition): (b
     return ((builder: Builder) => {
         builder.storeUint(implicitCondition.flags, 10);
         if ((!(implicitCondition.flags <= 100))) {
-            throw new Error('');
+            throw new Error('Condition (implicitCondition.flags <= 100) is not satisfied while loading "ImplicitCondition" for type "ImplicitCondition"');
         }
     })
 
@@ -2076,7 +2076,7 @@ export function loadMultipleEmptyConstructor(slice: Slice, arg0: number): Multip
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "MultipleEmptyConstructor__", "MultipleEmptyConstructor__1", "MultipleEmptyConstructor_a" in loading "MultipleEmptyConstructor", but data does not satisfy any constructor');
 }
 
 export function storeMultipleEmptyConstructor(multipleEmptyConstructor: MultipleEmptyConstructor): (builder: Builder) => void {
@@ -2098,7 +2098,7 @@ export function storeMultipleEmptyConstructor(multipleEmptyConstructor: Multiple
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "MultipleEmptyConstructor__", "MultipleEmptyConstructor__1", "MultipleEmptyConstructor_a" in loading "MultipleEmptyConstructor", but data does not satisfy any constructor');
 }
 
 // true$_ = True;
@@ -2137,7 +2137,7 @@ export function loadParamNamedArgInSecondConstr(slice: Slice, arg0: number): Par
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ParamNamedArgInSecondConstr_a", "ParamNamedArgInSecondConstr_b" in loading "ParamNamedArgInSecondConstr", but data does not satisfy any constructor');
 }
 
 export function storeParamNamedArgInSecondConstr(paramNamedArgInSecondConstr: ParamNamedArgInSecondConstr): (builder: Builder) => void {
@@ -2153,7 +2153,7 @@ export function storeParamNamedArgInSecondConstr(paramNamedArgInSecondConstr: Pa
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ParamNamedArgInSecondConstr_a", "ParamNamedArgInSecondConstr_b" in loading "ParamNamedArgInSecondConstr", but data does not satisfy any constructor');
 }
 
 // a$_ msg:^(Maybe Any) = RefCombinatorAny;
@@ -2190,7 +2190,7 @@ export function storeRefCombinatorAny(refCombinatorAny: RefCombinatorAny): (buil
 export function loadEqualityExpression(slice: Slice): EqualityExpression {
     let n: number = slice.loadUint(32);
     if ((!((5 + n) == 7))) {
-        throw new Error('');
+        throw new Error('Condition ((5 + n) == 7) is not satisfied while loading "EqualityExpression" for type "EqualityExpression"');
     }
     return {
         kind: 'EqualityExpression',
@@ -2203,7 +2203,7 @@ export function storeEqualityExpression(equalityExpression: EqualityExpression):
     return ((builder: Builder) => {
         builder.storeUint(equalityExpression.n, 32);
         if ((!((5 + equalityExpression.n) == 7))) {
-            throw new Error('');
+            throw new Error('Condition ((5 + equalityExpression.n) == 7) is not satisfied while loading "EqualityExpression" for type "EqualityExpression"');
         }
     })
 
@@ -2252,7 +2252,7 @@ export function loadLoadFromNegationOutsideExpr(slice: Slice): LoadFromNegationO
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "LoadFromNegationOutsideExpr" in loading "LoadFromNegationOutsideExpr", but data does not satisfy any constructor');
 }
 
 export function storeLoadFromNegationOutsideExpr(loadFromNegationOutsideExpr: LoadFromNegationOutsideExpr): (builder: Builder) => void {
@@ -2293,7 +2293,7 @@ export function loadFalseAnonField(slice: Slice): FalseAnonField {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "FalseAnonField" in loading "FalseAnonField", but data does not satisfy any constructor');
 }
 
 export function storeFalseAnonField(falseAnonField: FalseAnonField): (builder: Builder) => void {
@@ -2326,7 +2326,7 @@ export function loadConstructorOrder(slice: Slice): ConstructorOrder {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ConstructorOrder_a", "ConstructorOrder__" in loading "ConstructorOrder", but data does not satisfy any constructor');
 }
 
 export function storeConstructorOrder(constructorOrder: ConstructorOrder): (builder: Builder) => void {
@@ -2343,7 +2343,7 @@ export function storeConstructorOrder(constructorOrder: ConstructorOrder): (buil
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ConstructorOrder_a", "ConstructorOrder__" in loading "ConstructorOrder", but data does not satisfy any constructor');
 }
 
 // a a:#  = CheckCrc32;
@@ -2371,7 +2371,7 @@ export function loadCheckCrc32(slice: Slice): CheckCrc32 {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "CheckCrc32_a", "CheckCrc32_b" in loading "CheckCrc32", but data does not satisfy any constructor');
 }
 
 export function storeCheckCrc32(checkCrc32: CheckCrc32): (builder: Builder) => void {
@@ -2390,7 +2390,7 @@ export function storeCheckCrc32(checkCrc32: CheckCrc32): (builder: Builder) => v
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "CheckCrc32_a", "CheckCrc32_b" in loading "CheckCrc32", but data does not satisfy any constructor');
 }
 
 // a$_ const:# = CheckKeyword;

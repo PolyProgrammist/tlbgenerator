@@ -1,4 +1,4 @@
-import { BuiltinZeroArgs, FieldCurlyExprDef, FieldNamedDef, Program, Declaration, BuiltinOneArgExpr, NumberExpr, NameExpr, CombinatorExpr, FieldBuiltinDef, MathExpr, SimpleExpr, NegateExpr, CellRefExpr, FieldDefinition, FieldAnonymousDef, CondExpr, CompareExpr, Expression as ParserExpression } from '../../src/ast/nodes'
+import { BuiltinZeroArgs, FieldCurlyExprDef, FieldNamedDef, Program, Declaration, BuiltinOneArgExpr, NumberExpr, NameExpr, CombinatorExpr, FieldBuiltinDef, MathExpr, SimpleExpr, NegateExpr, CellRefExpr, FieldDefinition, FieldAnonymousDef, CondExpr, CompareExpr, Expression as ParserExpression, Constructor } from '../../src/ast/nodes'
 import { tIdentifier, tArrowFunctionExpression, tArrowFunctionType, tBinaryExpression, tBinaryNumericLiteral, tDeclareVariable, tExpressionStatement, tFunctionCall, tFunctionDeclaration, tIfStatement, tImportDeclaration, tMemberExpression, tNumericLiteral, tObjectExpression, tObjectProperty, tReturnStatement, tStringLiteral, tStructDeclaration, tTypeParametersExpression, tTypeWithParameters, tTypedIdentifier, tUnionTypeDeclaration, toCode, GenDeclaration, TypeWithParameters, ArrowFunctionExpression, tUnionTypeExpression, tUnaryOpExpression, StructDeclaration, FunctionDeclaration, tComment } from './tsgen'
 import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructor, TLBParameter, TLBVariable, TLBConstructorTag } from './ast'
 import { Expression, Statement, Identifier, BinaryExpression, ASTNode, TypeExpression, TypeParametersExpression, ObjectProperty, TypedIdentifier } from './tsgen'
@@ -78,8 +78,11 @@ export function generate(tree: Program, input: string) {
       let structX = tStructDeclaration(tIdentifier(subStructName), subStructProperties, structTypeParametersExpr);
 
       constructor.constraints.forEach(constraint => {
-        constructorLoadStatements.push(tIfStatement(tUnaryOpExpression('!', convertToAST(constraint, constructor, true)), [tExpressionStatement(tIdentifier("throw new Error('')"))]));
-        subStructStoreStatements.push(tIfStatement(tUnaryOpExpression('!', convertToAST(constraint, constructor, true, tIdentifier(variableCombinatorName))), [tExpressionStatement(tIdentifier("throw new Error('')"))]))
+        let loadConstraintAST = convertToAST(constraint, constructor, true);
+        let storeConstraintAST = convertToAST(constraint, constructor, true, tIdentifier(variableCombinatorName));
+        let exceptionCommentLastPart = ` is not satisfied while loading "${getSubStructName(tlbType, constructor)}" for type "${tlbType.name}"`
+        constructorLoadStatements.push(tIfStatement(tUnaryOpExpression('!', loadConstraintAST), [tExpressionStatement(tIdentifier("throw new Error('Condition " + toCode(loadConstraintAST).code + exceptionCommentLastPart + "')"))]));
+        subStructStoreStatements.push(tIfStatement(tUnaryOpExpression('!', storeConstraintAST), [tExpressionStatement(tIdentifier("throw new Error('Condition " + toCode(storeConstraintAST).code + exceptionCommentLastPart + "')"))]))
       });
 
       constructorLoadStatements.push(tReturnStatement(tObjectExpression(subStructLoadProperties)));
@@ -124,10 +127,17 @@ export function generate(tree: Program, input: string) {
 
     // loadTheType: (slice: Slice) => TheType
 
-    if (tlbType.constructors.length > 1 || tlbType.constructors.at(0)?.tag.bitLen != 0)
-      loadStatements.push(tExpressionStatement(tIdentifier("throw new Error('')")))
+    let exceptionTypesComment = tlbType.constructors.map(constructor => {return `"${getSubStructName(tlbType, constructor)}"`}).join(', ')
+    let exceptionComment = tExpressionStatement(tIdentifier("throw new Error('" + `Expected one of ${exceptionTypesComment} in loading "${tlbType.name}", but data does not satisfy any constructor` + "')"))
+    if (tlbType.constructors.length > 1 || tlbType.constructors.at(0)?.tag.bitLen != 0) {
+      let neededTypesComment = '';
+      tlbType.constructors.forEach(constructor => {
+        neededTypesComment += getSubStructName(tlbType, constructor)
+      })
+      loadStatements.push(exceptionComment)
+    }
     if (tlbType.constructors.length > 1) {
-      storeStatements.push(tExpressionStatement(tIdentifier("throw new Error('')")))
+      storeStatements.push(exceptionComment)
     }
 
     let loadFunctionParameters = [tTypedIdentifier(tIdentifier('slice'), tIdentifier('Slice'))]

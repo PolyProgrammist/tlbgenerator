@@ -108,7 +108,12 @@ export function getNegationDerivationFunctionBody(tlbCode: TLBCode, typeName: st
       }
     }
   });
-  result.push(tExpressionStatement(tIdentifier("throw new Error('')")))
+
+  if (tlbType) {
+    let exceptionTypesComment = tlbType.constructors.map(constructor => {return `"${tlbType ? getSubStructName(tlbType, constructor) : ''}"`}).join(', ')
+    let exceptionComment = tExpressionStatement(tIdentifier("throw new Error('" + `Expected one of ${exceptionTypesComment} for type "${tlbType.name}" while getting "${parameterName}", but data does not satisfy any constructor` + "')"))
+    result.push(exceptionComment)
+  }
 
   return result;
 }

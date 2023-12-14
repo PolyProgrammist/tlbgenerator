@@ -2611,7 +2611,7 @@ export function loadBool(slice: Slice): Bool {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "Bool_bool_false", "Bool_bool_true" in loading "Bool", but data does not satisfy any constructor');
 }
 
 export function storeBool(bool: Bool): (builder: Builder) => void {
@@ -2627,7 +2627,7 @@ export function storeBool(bool: Bool): (builder: Builder) => void {
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "Bool_bool_false", "Bool_bool_true" in loading "Bool", but data does not satisfy any constructor');
 }
 
 // bool_false$0 = BoolFalse;
@@ -2640,7 +2640,7 @@ export function loadBoolFalse(slice: Slice): BoolFalse {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "BoolFalse" in loading "BoolFalse", but data does not satisfy any constructor');
 }
 
 export function storeBoolFalse(boolFalse: BoolFalse): (builder: Builder) => void {
@@ -2660,7 +2660,7 @@ export function loadBoolTrue(slice: Slice): BoolTrue {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "BoolTrue" in loading "BoolTrue", but data does not satisfy any constructor');
 }
 
 export function storeBoolTrue(boolTrue: BoolTrue): (builder: Builder) => void {
@@ -2691,7 +2691,7 @@ export function loadMaybe<X>(slice: Slice, loadX: (slice: Slice) => X): Maybe<X>
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "Maybe_nothing", "Maybe_just" in loading "Maybe", but data does not satisfy any constructor');
 }
 
 export function storeMaybe<X>(maybe: Maybe<X>, storeX: (x: X) => (builder: Builder) => void): (builder: Builder) => void {
@@ -2708,7 +2708,7 @@ export function storeMaybe<X>(maybe: Maybe<X>, storeX: (x: X) => (builder: Build
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "Maybe_nothing", "Maybe_just" in loading "Maybe", but data does not satisfy any constructor');
 }
 
 // left$0 {X:Type} {Y:Type} value:X = Either X Y;
@@ -2734,7 +2734,7 @@ export function loadEither<X, Y>(slice: Slice, loadX: (slice: Slice) => X, loadY
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "Either_left", "Either_right" in loading "Either", but data does not satisfy any constructor');
 }
 
 export function storeEither<X, Y>(either: Either<X, Y>, storeX: (x: X) => (builder: Builder) => void, storeY: (y: Y) => (builder: Builder) => void): (builder: Builder) => void {
@@ -2752,7 +2752,7 @@ export function storeEither<X, Y>(either: Either<X, Y>, storeX: (x: X) => (build
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "Either_left", "Either_right" in loading "Either", but data does not satisfy any constructor');
 }
 
 // pair$_ {X:Type} {Y:Type} first:X second:Y = Both X Y;
@@ -2810,7 +2810,7 @@ export function hashmap_get_l(label: HmLabel): number {
         return n
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "HmLabel_hml_short", "HmLabel_hml_long", "HmLabel_hml_same" for type "HmLabel" while getting "label", but data does not satisfy any constructor');
 }
 
 /*
@@ -2870,7 +2870,7 @@ export function loadHashmapNode<X>(slice: Slice, arg0: number, loadX: (slice: Sl
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "HashmapNode_hmn_leaf", "HashmapNode_hmn_fork" in loading "HashmapNode", but data does not satisfy any constructor');
 }
 
 export function storeHashmapNode<X>(hashmapNode: HashmapNode<X>, storeX: (x: X) => (builder: Builder) => void): (builder: Builder) => void {
@@ -2891,7 +2891,7 @@ export function storeHashmapNode<X>(hashmapNode: HashmapNode<X>, storeX: (x: X) 
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "HashmapNode_hmn_leaf", "HashmapNode_hmn_fork" in loading "HashmapNode", but data does not satisfy any constructor');
 }
 
 export function hmLabel_hml_short_get_n(len: Unary): number {
@@ -2904,7 +2904,7 @@ export function hmLabel_hml_short_get_n(len: Unary): number {
         return (n + 1)
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "Unary_unary_zero", "Unary_unary_succ" for type "Unary" while getting "len", but data does not satisfy any constructor');
 }
 
 // hml_short$0 {m:#} {n:#} len:(Unary ~n) {n <= m} s:(n * Bit) = HmLabel ~n m;
@@ -2923,7 +2923,7 @@ export function loadHmLabel(slice: Slice, m: number): HmLabel {
 
         }));
         if ((!(n <= m))) {
-            throw new Error('');
+            throw new Error('Condition (n <= m) is not satisfied while loading "HmLabel_hml_short" for type "HmLabel"');
         }
         return {
             kind: 'HmLabel_hml_short',
@@ -2961,7 +2961,7 @@ export function loadHmLabel(slice: Slice, m: number): HmLabel {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "HmLabel_hml_short", "HmLabel_hml_long", "HmLabel_hml_same" in loading "HmLabel", but data does not satisfy any constructor');
 }
 
 export function storeHmLabel(hmLabel: HmLabel): (builder: Builder) => void {
@@ -2973,7 +2973,7 @@ export function storeHmLabel(hmLabel: HmLabel): (builder: Builder) => void {
                 builder.storeBits(arg);
             }));
             if ((!(hmLabel.n <= hmLabel.m))) {
-                throw new Error('');
+                throw new Error('Condition (hmLabel.n <= hmLabel.m) is not satisfied while loading "HmLabel_hml_short" for type "HmLabel"');
             }
         })
 
@@ -2996,7 +2996,7 @@ export function storeHmLabel(hmLabel: HmLabel): (builder: Builder) => void {
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "HmLabel_hml_short", "HmLabel_hml_long", "HmLabel_hml_same" in loading "HmLabel", but data does not satisfy any constructor');
 }
 
 // unary_zero$0 = Unary ~0;
@@ -3011,7 +3011,7 @@ export function unary_unary_succ_get_n(x: Unary): number {
         return (n + 1)
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "Unary_unary_zero", "Unary_unary_succ" for type "Unary" while getting "x", but data does not satisfy any constructor');
 }
 
 // unary_succ$1 {n:#} x:(Unary ~n) = Unary ~(n + 1);
@@ -3035,7 +3035,7 @@ export function loadUnary(slice: Slice): Unary {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "Unary_unary_zero", "Unary_unary_succ" in loading "Unary", but data does not satisfy any constructor');
 }
 
 export function storeUnary(unary: Unary): (builder: Builder) => void {
@@ -3052,7 +3052,7 @@ export function storeUnary(unary: Unary): (builder: Builder) => void {
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "Unary_unary_zero", "Unary_unary_succ" in loading "Unary", but data does not satisfy any constructor');
 }
 
 // hme_empty$0 {n:#} {X:Type} = HashmapE n X;
@@ -3079,7 +3079,7 @@ export function loadHashmapE<X>(slice: Slice, n: number, loadX: (slice: Slice) =
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "HashmapE_hme_empty", "HashmapE_hme_root" in loading "HashmapE", but data does not satisfy any constructor');
 }
 
 export function storeHashmapE<X>(hashmapE: HashmapE<X>, storeX: (x: X) => (builder: Builder) => void): (builder: Builder) => void {
@@ -3098,7 +3098,7 @@ export function storeHashmapE<X>(hashmapE: HashmapE<X>, storeX: (x: X) => (build
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "HashmapE_hme_empty", "HashmapE_hme_root" in loading "HashmapE", but data does not satisfy any constructor');
 }
 
 // _ {n:#} _:(Hashmap n True) = BitstringSet n;
@@ -3136,7 +3136,7 @@ export function hashmapAug_get_l(label: HmLabel): number {
         return n
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "HmLabel_hml_short", "HmLabel_hml_long", "HmLabel_hml_same" for type "HmLabel" while getting "label", but data does not satisfy any constructor');
 }
 
 /*
@@ -3201,7 +3201,7 @@ export function loadHashmapAugNode<X, Y>(slice: Slice, arg0: number, loadX: (sli
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "HashmapAugNode_ahmn_leaf", "HashmapAugNode_ahmn_fork" in loading "HashmapAugNode", but data does not satisfy any constructor');
 }
 
 export function storeHashmapAugNode<X, Y>(hashmapAugNode: HashmapAugNode<X, Y>, storeX: (x: X) => (builder: Builder) => void, storeY: (y: Y) => (builder: Builder) => void): (builder: Builder) => void {
@@ -3224,7 +3224,7 @@ export function storeHashmapAugNode<X, Y>(hashmapAugNode: HashmapAugNode<X, Y>, 
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "HashmapAugNode_ahmn_leaf", "HashmapAugNode_ahmn_fork" in loading "HashmapAugNode", but data does not satisfy any constructor');
 }
 
 /*
@@ -3261,7 +3261,7 @@ export function loadHashmapAugE<X, Y>(slice: Slice, n: number, loadX: (slice: Sl
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "HashmapAugE_ahme_empty", "HashmapAugE_ahme_root" in loading "HashmapAugE", but data does not satisfy any constructor');
 }
 
 export function storeHashmapAugE<X, Y>(hashmapAugE: HashmapAugE<X, Y>, storeX: (x: X) => (builder: Builder) => void, storeY: (y: Y) => (builder: Builder) => void): (builder: Builder) => void {
@@ -3282,7 +3282,7 @@ export function storeHashmapAugE<X, Y>(hashmapAugE: HashmapAugE<X, Y>, storeX: (
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "HashmapAugE_ahme_empty", "HashmapAugE_ahme_root" in loading "HashmapAugE", but data does not satisfy any constructor');
 }
 
 export function varHashmap_get_l(label: HmLabel): number {
@@ -3301,7 +3301,7 @@ export function varHashmap_get_l(label: HmLabel): number {
         return n
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "HmLabel_hml_short", "HmLabel_hml_long", "HmLabel_hml_same" for type "HmLabel" while getting "label", but data does not satisfy any constructor');
 }
 
 /*
@@ -3388,7 +3388,7 @@ export function loadVarHashmapNode<X>(slice: Slice, arg0: number, loadX: (slice:
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "VarHashmapNode_vhmn_leaf", "VarHashmapNode_vhmn_fork", "VarHashmapNode_vhmn_cont" in loading "VarHashmapNode", but data does not satisfy any constructor');
 }
 
 export function storeVarHashmapNode<X>(varHashmapNode: VarHashmapNode<X>, storeX: (x: X) => (builder: Builder) => void): (builder: Builder) => void {
@@ -3423,7 +3423,7 @@ export function storeVarHashmapNode<X>(varHashmapNode: VarHashmapNode<X>, storeX
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "VarHashmapNode_vhmn_leaf", "VarHashmapNode_vhmn_fork", "VarHashmapNode_vhmn_cont" in loading "VarHashmapNode", but data does not satisfy any constructor');
 }
 
 // vhme_empty$0 {n:#} {X:Type} = VarHashmapE n X;
@@ -3453,7 +3453,7 @@ export function loadVarHashmapE<X>(slice: Slice, n: number, loadX: (slice: Slice
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "VarHashmapE_vhme_empty", "VarHashmapE_vhme_root" in loading "VarHashmapE", but data does not satisfy any constructor');
 }
 
 export function storeVarHashmapE<X>(varHashmapE: VarHashmapE<X>, storeX: (x: X) => (builder: Builder) => void): (builder: Builder) => void {
@@ -3472,7 +3472,7 @@ export function storeVarHashmapE<X>(varHashmapE: VarHashmapE<X>, storeX: (x: X) 
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "VarHashmapE_vhme_empty", "VarHashmapE_vhme_root" in loading "VarHashmapE", but data does not satisfy any constructor');
 }
 
 export function pfxHashmap_get_l(label: HmLabel): number {
@@ -3491,7 +3491,7 @@ export function pfxHashmap_get_l(label: HmLabel): number {
         return n
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "HmLabel_hml_short", "HmLabel_hml_long", "HmLabel_hml_same" for type "HmLabel" while getting "label", but data does not satisfy any constructor');
 }
 
 /*
@@ -3555,7 +3555,7 @@ export function loadPfxHashmapNode<X>(slice: Slice, arg0: number, loadX: (slice:
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "PfxHashmapNode_phmn_leaf", "PfxHashmapNode_phmn_fork" in loading "PfxHashmapNode", but data does not satisfy any constructor');
 }
 
 export function storePfxHashmapNode<X>(pfxHashmapNode: PfxHashmapNode<X>, storeX: (x: X) => (builder: Builder) => void): (builder: Builder) => void {
@@ -3578,7 +3578,7 @@ export function storePfxHashmapNode<X>(pfxHashmapNode: PfxHashmapNode<X>, storeX
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "PfxHashmapNode_phmn_leaf", "PfxHashmapNode_phmn_fork" in loading "PfxHashmapNode", but data does not satisfy any constructor');
 }
 
 // phme_empty$0 {n:#} {X:Type} = PfxHashmapE n X;
@@ -3608,7 +3608,7 @@ export function loadPfxHashmapE<X>(slice: Slice, n: number, loadX: (slice: Slice
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "PfxHashmapE_phme_empty", "PfxHashmapE_phme_root" in loading "PfxHashmapE", but data does not satisfy any constructor');
 }
 
 export function storePfxHashmapE<X>(pfxHashmapE: PfxHashmapE<X>, storeX: (x: X) => (builder: Builder) => void): (builder: Builder) => void {
@@ -3627,7 +3627,7 @@ export function storePfxHashmapE<X>(pfxHashmapE: PfxHashmapE<X>, storeX: (x: X) 
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "PfxHashmapE_phme_empty", "PfxHashmapE_phme_root" in loading "PfxHashmapE", but data does not satisfy any constructor');
 }
 
 // addr_none$00 = MsgAddressExt;
@@ -3656,7 +3656,7 @@ export function loadMsgAddressExt(slice: Slice): MsgAddressExt {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "MsgAddressExt_addr_none", "MsgAddressExt_addr_extern" in loading "MsgAddressExt", but data does not satisfy any constructor');
 }
 
 export function storeMsgAddressExt(msgAddressExt: MsgAddressExt): (builder: Builder) => void {
@@ -3674,7 +3674,7 @@ export function storeMsgAddressExt(msgAddressExt: MsgAddressExt): (builder: Buil
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "MsgAddressExt_addr_none", "MsgAddressExt_addr_extern" in loading "MsgAddressExt", but data does not satisfy any constructor');
 }
 
 /*
@@ -3686,7 +3686,7 @@ export function loadAnycast(slice: Slice): Anycast {
     let depth: number = slice.loadUint(bitLen(30));
     let rewrite_pfx: BitString = slice.loadBits(depth);
     if ((!(depth >= 1))) {
-        throw new Error('');
+        throw new Error('Condition (depth >= 1) is not satisfied while loading "Anycast" for type "Anycast"');
     }
     return {
         kind: 'Anycast',
@@ -3701,7 +3701,7 @@ export function storeAnycast(anycast: Anycast): (builder: Builder) => void {
         builder.storeUint(anycast.depth, bitLen(30));
         builder.storeBits(anycast.rewrite_pfx);
         if ((!(anycast.depth >= 1))) {
-            throw new Error('');
+            throw new Error('Condition (anycast.depth >= 1) is not satisfied while loading "Anycast" for type "Anycast"');
         }
     })
 
@@ -3746,7 +3746,7 @@ export function loadMsgAddressInt(slice: Slice): MsgAddressInt {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "MsgAddressInt_addr_std", "MsgAddressInt_addr_var" in loading "MsgAddressInt", but data does not satisfy any constructor');
 }
 
 export function storeMsgAddressInt(msgAddressInt: MsgAddressInt): (builder: Builder) => void {
@@ -3769,7 +3769,7 @@ export function storeMsgAddressInt(msgAddressInt: MsgAddressInt): (builder: Buil
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "MsgAddressInt_addr_std", "MsgAddressInt_addr_var" in loading "MsgAddressInt", but data does not satisfy any constructor');
 }
 
 // _ _:MsgAddressInt = MsgAddress;
@@ -3793,7 +3793,7 @@ export function loadMsgAddress(slice: Slice): MsgAddress {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "MsgAddress__", "MsgAddress__1" in loading "MsgAddress", but data does not satisfy any constructor');
 }
 
 export function storeMsgAddress(msgAddress: MsgAddress): (builder: Builder) => void {
@@ -3809,7 +3809,7 @@ export function storeMsgAddress(msgAddress: MsgAddress): (builder: Builder) => v
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "MsgAddress__", "MsgAddress__1" in loading "MsgAddress", but data does not satisfy any constructor');
 }
 
 /*
@@ -4024,7 +4024,7 @@ export function loadCommonMsgInfo(slice: Slice): CommonMsgInfo {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "CommonMsgInfo_int_msg_info", "CommonMsgInfo_ext_in_msg_info", "CommonMsgInfo_ext_out_msg_info" in loading "CommonMsgInfo", but data does not satisfy any constructor');
 }
 
 export function storeCommonMsgInfo(commonMsgInfo: CommonMsgInfo): (builder: Builder) => void {
@@ -4063,7 +4063,7 @@ export function storeCommonMsgInfo(commonMsgInfo: CommonMsgInfo): (builder: Buil
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "CommonMsgInfo_int_msg_info", "CommonMsgInfo_ext_in_msg_info", "CommonMsgInfo_ext_out_msg_info" in loading "CommonMsgInfo", but data does not satisfy any constructor');
 }
 
 /*
@@ -4121,7 +4121,7 @@ export function loadCommonMsgInfoRelaxed(slice: Slice): CommonMsgInfoRelaxed {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "CommonMsgInfoRelaxed_int_msg_info", "CommonMsgInfoRelaxed_ext_out_msg_info" in loading "CommonMsgInfoRelaxed", but data does not satisfy any constructor');
 }
 
 export function storeCommonMsgInfoRelaxed(commonMsgInfoRelaxed: CommonMsgInfoRelaxed): (builder: Builder) => void {
@@ -4151,7 +4151,7 @@ export function storeCommonMsgInfoRelaxed(commonMsgInfoRelaxed: CommonMsgInfoRel
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "CommonMsgInfoRelaxed_int_msg_info", "CommonMsgInfoRelaxed_ext_out_msg_info" in loading "CommonMsgInfoRelaxed", but data does not satisfy any constructor');
 }
 
 // tick_tock$_ tick:Bool tock:Bool = TickTock;
@@ -4536,7 +4536,7 @@ export function loadIntermediateAddress(slice: Slice): IntermediateAddress {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "IntermediateAddress_interm_addr_regular", "IntermediateAddress_interm_addr_simple", "IntermediateAddress_interm_addr_ext" in loading "IntermediateAddress", but data does not satisfy any constructor');
 }
 
 export function storeIntermediateAddress(intermediateAddress: IntermediateAddress): (builder: Builder) => void {
@@ -4563,7 +4563,7 @@ export function storeIntermediateAddress(intermediateAddress: IntermediateAddres
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "IntermediateAddress_interm_addr_regular", "IntermediateAddress_interm_addr_simple", "IntermediateAddress_interm_addr_ext" in loading "IntermediateAddress", but data does not satisfy any constructor');
 }
 
 /*
@@ -4592,7 +4592,7 @@ export function loadMsgEnvelope(slice: Slice): MsgEnvelope {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "MsgEnvelope" in loading "MsgEnvelope", but data does not satisfy any constructor');
 }
 
 export function storeMsgEnvelope(msgEnvelope: MsgEnvelope): (builder: Builder) => void {
@@ -4762,7 +4762,7 @@ export function loadInMsg(slice: Slice): InMsg {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "InMsg_msg_import_ext", "InMsg_msg_import_ihr", "InMsg_msg_import_imm", "InMsg_msg_import_fin", "InMsg_msg_import_tr", "InMsg_msg_discard_fin", "InMsg_msg_discard_tr" in loading "InMsg", but data does not satisfy any constructor');
 }
 
 export function storeInMsg(inMsg: InMsg): (builder: Builder) => void {
@@ -4868,7 +4868,7 @@ export function storeInMsg(inMsg: InMsg): (builder: Builder) => void {
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "InMsg_msg_import_ext", "InMsg_msg_import_ihr", "InMsg_msg_import_imm", "InMsg_msg_import_fin", "InMsg_msg_import_tr", "InMsg_msg_discard_fin", "InMsg_msg_discard_tr" in loading "InMsg", but data does not satisfy any constructor');
 }
 
 /*
@@ -5066,7 +5066,7 @@ export function loadOutMsg(slice: Slice): OutMsg {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "OutMsg_msg_export_ext", "OutMsg_msg_export_imm", "OutMsg_msg_export_new", "OutMsg_msg_export_tr", "OutMsg_msg_export_deq", "OutMsg_msg_export_deq_short", "OutMsg_msg_export_tr_req", "OutMsg_msg_export_deq_imm" in loading "OutMsg", but data does not satisfy any constructor');
 }
 
 export function storeOutMsg(outMsg: OutMsg): (builder: Builder) => void {
@@ -5170,7 +5170,7 @@ export function storeOutMsg(outMsg: OutMsg): (builder: Builder) => void {
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "OutMsg_msg_export_ext", "OutMsg_msg_export_imm", "OutMsg_msg_export_new", "OutMsg_msg_export_tr", "OutMsg_msg_export_deq", "OutMsg_msg_export_deq_short", "OutMsg_msg_export_tr_req", "OutMsg_msg_export_deq_imm" in loading "OutMsg", but data does not satisfy any constructor');
 }
 
 // _ enqueued_lt:uint64 out_msg:^MsgEnvelope = EnqueuedMsg;
@@ -5449,7 +5449,7 @@ export function loadAccount(slice: Slice): Account {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "Account_account_none", "Account_account" in loading "Account", but data does not satisfy any constructor');
 }
 
 export function storeAccount(account: Account): (builder: Builder) => void {
@@ -5468,7 +5468,7 @@ export function storeAccount(account: Account): (builder: Builder) => void {
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "Account_account_none", "Account_account" in loading "Account", but data does not satisfy any constructor');
 }
 
 /*
@@ -5531,7 +5531,7 @@ export function loadAccountState(slice: Slice): AccountState {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "AccountState_account_uninit", "AccountState_account_active", "AccountState_account_frozen" in loading "AccountState", but data does not satisfy any constructor');
 }
 
 export function storeAccountState(accountState: AccountState): (builder: Builder) => void {
@@ -5555,7 +5555,7 @@ export function storeAccountState(accountState: AccountState): (builder: Builder
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "AccountState_account_uninit", "AccountState_account_active", "AccountState_account_frozen" in loading "AccountState", but data does not satisfy any constructor');
 }
 
 // acc_state_uninit$00 = AccountStatus;
@@ -5595,7 +5595,7 @@ export function loadAccountStatus(slice: Slice): AccountStatus {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "AccountStatus_acc_state_uninit", "AccountStatus_acc_state_frozen", "AccountStatus_acc_state_active", "AccountStatus_acc_state_nonexist" in loading "AccountStatus", but data does not satisfy any constructor');
 }
 
 export function storeAccountStatus(accountStatus: AccountStatus): (builder: Builder) => void {
@@ -5623,7 +5623,7 @@ export function storeAccountStatus(accountStatus: AccountStatus): (builder: Buil
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "AccountStatus_acc_state_uninit", "AccountStatus_acc_state_frozen", "AccountStatus_acc_state_active", "AccountStatus_acc_state_nonexist" in loading "AccountStatus", but data does not satisfy any constructor');
 }
 
 /*
@@ -5756,7 +5756,7 @@ export function loadTransaction(slice: Slice): Transaction {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "Transaction" in loading "Transaction", but data does not satisfy any constructor');
 }
 
 export function storeTransaction(transaction: Transaction): (builder: Builder) => void {
@@ -5834,7 +5834,7 @@ export function loadMERKLE_UPDATE<X>(slice: Slice, loadX: (slice: Slice) => X): 
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "MERKLE_UPDATE" in loading "MERKLE_UPDATE", but data does not satisfy any constructor');
 }
 
 export function storeMERKLE_UPDATE<X>(mERKLE_UPDATE: MERKLE_UPDATE<X>, storeX: (x: X) => (builder: Builder) => void): (builder: Builder) => void {
@@ -5869,7 +5869,7 @@ export function loadHASH_UPDATE<X>(slice: Slice, loadX: (slice: Slice) => X): HA
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "HASH_UPDATE" in loading "HASH_UPDATE", but data does not satisfy any constructor');
 }
 
 export function storeHASH_UPDATE<X>(hASH_UPDATE: HASH_UPDATE<X>, storeX: (x: X) => (builder: Builder) => void): (builder: Builder) => void {
@@ -5898,7 +5898,7 @@ export function loadMERKLE_PROOF<X>(slice: Slice, loadX: (slice: Slice) => X): M
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "MERKLE_PROOF" in loading "MERKLE_PROOF", but data does not satisfy any constructor');
 }
 
 export function storeMERKLE_PROOF<X>(mERKLE_PROOF: MERKLE_PROOF<X>, storeX: (x: X) => (builder: Builder) => void): (builder: Builder) => void {
@@ -5939,7 +5939,7 @@ export function loadAccountBlock(slice: Slice): AccountBlock {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "AccountBlock" in loading "AccountBlock", but data does not satisfy any constructor');
 }
 
 export function storeAccountBlock(accountBlock: AccountBlock): (builder: Builder) => void {
@@ -6037,7 +6037,7 @@ export function loadAccStatusChange(slice: Slice): AccStatusChange {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "AccStatusChange_acst_unchanged", "AccStatusChange_acst_frozen", "AccStatusChange_acst_deleted" in loading "AccStatusChange", but data does not satisfy any constructor');
 }
 
 export function storeAccStatusChange(accStatusChange: AccStatusChange): (builder: Builder) => void {
@@ -6059,7 +6059,7 @@ export function storeAccStatusChange(accStatusChange: AccStatusChange): (builder
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "AccStatusChange_acst_unchanged", "AccStatusChange_acst_frozen", "AccStatusChange_acst_deleted" in loading "AccStatusChange", but data does not satisfy any constructor');
 }
 
 /*
@@ -6152,7 +6152,7 @@ export function loadTrComputePhase(slice: Slice): TrComputePhase {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "TrComputePhase_tr_phase_compute_skipped", "TrComputePhase_tr_phase_compute_vm" in loading "TrComputePhase", but data does not satisfy any constructor');
 }
 
 export function storeTrComputePhase(trComputePhase: TrComputePhase): (builder: Builder) => void {
@@ -6194,7 +6194,7 @@ export function storeTrComputePhase(trComputePhase: TrComputePhase): (builder: B
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "TrComputePhase_tr_phase_compute_skipped", "TrComputePhase_tr_phase_compute_vm" in loading "TrComputePhase", but data does not satisfy any constructor');
 }
 
 // cskip_no_state$00 = ComputeSkipReason;
@@ -6234,7 +6234,7 @@ export function loadComputeSkipReason(slice: Slice): ComputeSkipReason {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ComputeSkipReason_cskip_no_state", "ComputeSkipReason_cskip_bad_state", "ComputeSkipReason_cskip_no_gas", "ComputeSkipReason_cskip_suspended" in loading "ComputeSkipReason", but data does not satisfy any constructor');
 }
 
 export function storeComputeSkipReason(computeSkipReason: ComputeSkipReason): (builder: Builder) => void {
@@ -6262,7 +6262,7 @@ export function storeComputeSkipReason(computeSkipReason: ComputeSkipReason): (b
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ComputeSkipReason_cskip_no_state", "ComputeSkipReason_cskip_bad_state", "ComputeSkipReason_cskip_no_gas", "ComputeSkipReason_cskip_suspended" in loading "ComputeSkipReason", but data does not satisfy any constructor');
 }
 
 /*
@@ -6382,7 +6382,7 @@ export function loadTrBouncePhase(slice: Slice): TrBouncePhase {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "TrBouncePhase_tr_phase_bounce_negfunds", "TrBouncePhase_tr_phase_bounce_nofunds", "TrBouncePhase_tr_phase_bounce_ok" in loading "TrBouncePhase", but data does not satisfy any constructor');
 }
 
 export function storeTrBouncePhase(trBouncePhase: TrBouncePhase): (builder: Builder) => void {
@@ -6409,7 +6409,7 @@ export function storeTrBouncePhase(trBouncePhase: TrBouncePhase): (builder: Buil
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "TrBouncePhase_tr_phase_bounce_negfunds", "TrBouncePhase_tr_phase_bounce_nofunds", "TrBouncePhase_tr_phase_bounce_ok" in loading "TrBouncePhase", but data does not satisfy any constructor');
 }
 
 /*
@@ -6601,7 +6601,7 @@ export function loadTransactionDescr(slice: Slice): TransactionDescr {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "TransactionDescr_trans_ord", "TransactionDescr_trans_storage", "TransactionDescr_trans_tick_tock", "TransactionDescr_trans_split_prepare", "TransactionDescr_trans_split_install", "TransactionDescr_trans_merge_prepare", "TransactionDescr_trans_merge_install" in loading "TransactionDescr", but data does not satisfy any constructor');
 }
 
 export function storeTransactionDescr(transactionDescr: TransactionDescr): (builder: Builder) => void {
@@ -6718,7 +6718,7 @@ export function storeTransactionDescr(transactionDescr: TransactionDescr): (buil
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "TransactionDescr_trans_ord", "TransactionDescr_trans_storage", "TransactionDescr_trans_tick_tock", "TransactionDescr_trans_split_prepare", "TransactionDescr_trans_split_install", "TransactionDescr_trans_merge_prepare", "TransactionDescr_trans_merge_install" in loading "TransactionDescr", but data does not satisfy any constructor');
 }
 
 /*
@@ -6788,7 +6788,7 @@ export function loadSmartContractInfo(slice: Slice): SmartContractInfo {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "SmartContractInfo" in loading "SmartContractInfo", but data does not satisfy any constructor');
 }
 
 export function storeSmartContractInfo(smartContractInfo: SmartContractInfo): (builder: Builder) => void {
@@ -6838,7 +6838,7 @@ export function loadOutList(slice: Slice, arg0: number): OutList {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "OutList_out_list_empty", "OutList_out_list" in loading "OutList", but data does not satisfy any constructor');
 }
 
 export function storeOutList(outList: OutList): (builder: Builder) => void {
@@ -6856,7 +6856,7 @@ export function storeOutList(outList: OutList): (builder: Builder) => void {
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "OutList_out_list_empty", "OutList_out_list" in loading "OutList", but data does not satisfy any constructor');
 }
 
 /*
@@ -6924,7 +6924,7 @@ export function loadOutAction(slice: Slice): OutAction {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "OutAction_action_send_msg", "OutAction_action_set_code", "OutAction_action_reserve_currency", "OutAction_action_change_library" in loading "OutAction", but data does not satisfy any constructor');
 }
 
 export function storeOutAction(outAction: OutAction): (builder: Builder) => void {
@@ -6968,7 +6968,7 @@ export function storeOutAction(outAction: OutAction): (builder: Builder) => void
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "OutAction_action_send_msg", "OutAction_action_set_code", "OutAction_action_reserve_currency", "OutAction_action_change_library" in loading "OutAction", but data does not satisfy any constructor');
 }
 
 // libref_hash$0 lib_hash:bits256 = LibRef;
@@ -6995,7 +6995,7 @@ export function loadLibRef(slice: Slice): LibRef {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "LibRef_libref_hash", "LibRef_libref_ref" in loading "LibRef", but data does not satisfy any constructor');
 }
 
 export function storeLibRef(libRef: LibRef): (builder: Builder) => void {
@@ -7015,7 +7015,7 @@ export function storeLibRef(libRef: LibRef): (builder: Builder) => void {
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "LibRef_libref_hash", "LibRef_libref_ref" in loading "LibRef", but data does not satisfy any constructor');
 }
 
 // out_list_node$_ prev:^Cell action:OutAction = OutListNode;
@@ -7061,7 +7061,7 @@ export function loadShardIdent(slice: Slice): ShardIdent {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ShardIdent" in loading "ShardIdent", but data does not satisfy any constructor');
 }
 
 export function storeShardIdent(shardIdent: ShardIdent): (builder: Builder) => void {
@@ -7220,7 +7220,7 @@ export function loadShardStateUnsplit(slice: Slice): ShardStateUnsplit {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ShardStateUnsplit" in loading "ShardStateUnsplit", but data does not satisfy any constructor');
 }
 
 export function storeShardStateUnsplit(shardStateUnsplit: ShardStateUnsplit): (builder: Builder) => void {
@@ -7287,7 +7287,7 @@ export function loadShardState(slice: Slice): ShardState {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ShardState_split_state", "ShardState__" in loading "ShardState", but data does not satisfy any constructor');
 }
 
 export function storeShardState(shardState: ShardState): (builder: Builder) => void {
@@ -7309,7 +7309,7 @@ export function storeShardState(shardState: ShardState): (builder: Builder) => v
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ShardState_split_state", "ShardState__" in loading "ShardState", but data does not satisfy any constructor');
 }
 
 /*
@@ -7330,7 +7330,7 @@ export function loadLibDescr(slice: Slice): LibDescr {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "LibDescr" in loading "LibDescr", but data does not satisfy any constructor');
 }
 
 export function storeLibDescr(libDescr: LibDescr): (builder: Builder) => void {
@@ -7404,10 +7404,10 @@ export function loadBlockInfo(slice: Slice): BlockInfo {
 
         })(slice) : undefined);
         if ((!(flags <= 1))) {
-            throw new Error('');
+            throw new Error('Condition (flags <= 1) is not satisfied while loading "BlockInfo" for type "BlockInfo"');
         }
         if ((!(vert_seq_no >= vert_seqno_incr))) {
-            throw new Error('');
+            throw new Error('Condition (vert_seq_no >= vert_seqno_incr) is not satisfied while loading "BlockInfo" for type "BlockInfo"');
         }
         return {
             kind: 'BlockInfo',
@@ -7439,7 +7439,7 @@ export function loadBlockInfo(slice: Slice): BlockInfo {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "BlockInfo" in loading "BlockInfo", but data does not satisfy any constructor');
 }
 
 export function storeBlockInfo(blockInfo: BlockInfo): (builder: Builder) => void {
@@ -7484,10 +7484,10 @@ export function storeBlockInfo(blockInfo: BlockInfo): (builder: Builder) => void
 
         }
         if ((!(blockInfo.flags <= 1))) {
-            throw new Error('');
+            throw new Error('Condition (blockInfo.flags <= 1) is not satisfied while loading "BlockInfo" for type "BlockInfo"');
         }
         if ((!(blockInfo.vert_seq_no >= blockInfo.vert_seqno_incr))) {
-            throw new Error('');
+            throw new Error('Condition (blockInfo.vert_seq_no >= blockInfo.vert_seqno_incr) is not satisfied while loading "BlockInfo" for type "BlockInfo"');
         }
     })
 
@@ -7518,7 +7518,7 @@ export function loadBlkPrevInfo(slice: Slice, arg0: number): BlkPrevInfo {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "BlkPrevInfo_prev_blk_info", "BlkPrevInfo_prev_blks_info" in loading "BlkPrevInfo", but data does not satisfy any constructor');
 }
 
 export function storeBlkPrevInfo(blkPrevInfo: BlkPrevInfo): (builder: Builder) => void {
@@ -7539,7 +7539,7 @@ export function storeBlkPrevInfo(blkPrevInfo: BlkPrevInfo): (builder: Builder) =
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "BlkPrevInfo_prev_blk_info", "BlkPrevInfo_prev_blks_info" in loading "BlkPrevInfo", but data does not satisfy any constructor');
 }
 
 /*
@@ -7571,7 +7571,7 @@ export function loadBlock(slice: Slice): Block {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "Block" in loading "Block", but data does not satisfy any constructor');
 }
 
 export function storeBlock(block: Block): (builder: Builder) => void {
@@ -7628,7 +7628,7 @@ export function loadBlockExtra(slice: Slice): BlockExtra {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "BlockExtra" in loading "BlockExtra", but data does not satisfy any constructor');
 }
 
 export function storeBlockExtra(blockExtra: BlockExtra): (builder: Builder) => void {
@@ -7744,7 +7744,7 @@ export function loadValueFlow(slice: Slice): ValueFlow {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ValueFlow_value_flow", "ValueFlow_value_flow_v2" in loading "ValueFlow", but data does not satisfy any constructor');
 }
 
 export function storeValueFlow(valueFlow: ValueFlow): (builder: Builder) => void {
@@ -7787,7 +7787,7 @@ export function storeValueFlow(valueFlow: ValueFlow): (builder: Builder) => void
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ValueFlow_value_flow", "ValueFlow_value_flow_v2" in loading "ValueFlow", but data does not satisfy any constructor');
 }
 
 // bt_leaf$0 {X:Type} leaf:X = BinTree X;
@@ -7820,7 +7820,7 @@ export function loadBinTree<X>(slice: Slice, loadX: (slice: Slice) => X): BinTre
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "BinTree_bt_leaf", "BinTree_bt_fork" in loading "BinTree", but data does not satisfy any constructor');
 }
 
 export function storeBinTree<X>(binTree: BinTree<X>, storeX: (x: X) => (builder: Builder) => void): (builder: Builder) => void {
@@ -7843,7 +7843,7 @@ export function storeBinTree<X>(binTree: BinTree<X>, storeX: (x: X) => (builder:
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "BinTree_bt_leaf", "BinTree_bt_fork" in loading "BinTree", but data does not satisfy any constructor');
 }
 
 // fsm_none$0 = FutureSplitMerge;
@@ -7882,7 +7882,7 @@ export function loadFutureSplitMerge(slice: Slice): FutureSplitMerge {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "FutureSplitMerge_fsm_none", "FutureSplitMerge_fsm_split", "FutureSplitMerge_fsm_merge" in loading "FutureSplitMerge", but data does not satisfy any constructor');
 }
 
 export function storeFutureSplitMerge(futureSplitMerge: FutureSplitMerge): (builder: Builder) => void {
@@ -7908,7 +7908,7 @@ export function storeFutureSplitMerge(futureSplitMerge: FutureSplitMerge): (buil
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "FutureSplitMerge_fsm_none", "FutureSplitMerge_fsm_split", "FutureSplitMerge_fsm_merge" in loading "FutureSplitMerge", but data does not satisfy any constructor');
 }
 
 /*
@@ -7962,7 +7962,7 @@ export function loadShardDescr(slice: Slice): ShardDescr {
         let fees_collected: CurrencyCollection = loadCurrencyCollection(slice);
         let funds_created: CurrencyCollection = loadCurrencyCollection(slice);
         if ((!(flags == 0))) {
-            throw new Error('');
+            throw new Error('Condition (flags == 0) is not satisfied while loading "ShardDescr_shard_descr" for type "ShardDescr"');
         }
         return {
             kind: 'ShardDescr_shard_descr',
@@ -8011,7 +8011,7 @@ export function loadShardDescr(slice: Slice): ShardDescr {
         let fees_collected: CurrencyCollection = loadCurrencyCollection(slice1);
         let funds_created: CurrencyCollection = loadCurrencyCollection(slice1);
         if ((!(flags == 0))) {
-            throw new Error('');
+            throw new Error('Condition (flags == 0) is not satisfied while loading "ShardDescr_shard_descr_new" for type "ShardDescr"');
         }
         return {
             kind: 'ShardDescr_shard_descr_new',
@@ -8037,7 +8037,7 @@ export function loadShardDescr(slice: Slice): ShardDescr {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ShardDescr_shard_descr", "ShardDescr_shard_descr_new" in loading "ShardDescr", but data does not satisfy any constructor');
 }
 
 export function storeShardDescr(shardDescr: ShardDescr): (builder: Builder) => void {
@@ -8064,7 +8064,7 @@ export function storeShardDescr(shardDescr: ShardDescr): (builder: Builder) => v
             storeCurrencyCollection(shardDescr.fees_collected)(builder);
             storeCurrencyCollection(shardDescr.funds_created)(builder);
             if ((!(shardDescr.flags == 0))) {
-                throw new Error('');
+                throw new Error('Condition (shardDescr.flags == 0) is not satisfied while loading "ShardDescr_shard_descr" for type "ShardDescr"');
             }
         })
 
@@ -8094,12 +8094,12 @@ export function storeShardDescr(shardDescr: ShardDescr): (builder: Builder) => v
             storeCurrencyCollection(shardDescr.funds_created)(cell1);
             builder.storeRef(cell1);
             if ((!(shardDescr.flags == 0))) {
-                throw new Error('');
+                throw new Error('Condition (shardDescr.flags == 0) is not satisfied while loading "ShardDescr_shard_descr_new" for type "ShardDescr"');
             }
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ShardDescr_shard_descr", "ShardDescr_shard_descr_new" in loading "ShardDescr", but data does not satisfy any constructor');
 }
 
 // _ (HashmapE 32 ^(BinTree ShardDescr)) = ShardHashes;
@@ -8166,7 +8166,7 @@ export function loadBinTreeAug<X, Y>(slice: Slice, loadX: (slice: Slice) => X, l
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "BinTreeAug_bta_leaf", "BinTreeAug_bta_fork" in loading "BinTreeAug", but data does not satisfy any constructor');
 }
 
 export function storeBinTreeAug<X, Y>(binTreeAug: BinTreeAug<X, Y>, storeX: (x: X) => (builder: Builder) => void, storeY: (y: Y) => (builder: Builder) => void): (builder: Builder) => void {
@@ -8191,7 +8191,7 @@ export function storeBinTreeAug<X, Y>(binTreeAug: BinTreeAug<X, Y>, storeX: (x: 
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "BinTreeAug_bta_leaf", "BinTreeAug_bta_fork" in loading "BinTreeAug", but data does not satisfy any constructor');
 }
 
 // _ fees:CurrencyCollection create:CurrencyCollection = ShardFeeCreated;
@@ -8429,7 +8429,7 @@ export function loadCreatorStats(slice: Slice): CreatorStats {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "CreatorStats" in loading "CreatorStats", but data does not satisfy any constructor');
 }
 
 export function storeCreatorStats(creatorStats: CreatorStats): (builder: Builder) => void {
@@ -8467,7 +8467,7 @@ export function loadBlockCreateStats(slice: Slice): BlockCreateStats {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "BlockCreateStats_block_create_stats", "BlockCreateStats_block_create_stats_ext" in loading "BlockCreateStats", but data does not satisfy any constructor');
 }
 
 export function storeBlockCreateStats(blockCreateStats: BlockCreateStats): (builder: Builder) => void {
@@ -8490,7 +8490,7 @@ export function storeBlockCreateStats(blockCreateStats: BlockCreateStats): (buil
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "BlockCreateStats_block_create_stats", "BlockCreateStats_block_create_stats_ext" in loading "BlockCreateStats", but data does not satisfy any constructor');
 }
 
 /*
@@ -8534,7 +8534,7 @@ export function loadMcStateExtra(slice: Slice): McStateExtra {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "McStateExtra" in loading "McStateExtra", but data does not satisfy any constructor');
 }
 
 export function storeMcStateExtra(mcStateExtra: McStateExtra): (builder: Builder) => void {
@@ -8569,7 +8569,7 @@ export function loadSigPubKey(slice: Slice): SigPubKey {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "SigPubKey" in loading "SigPubKey", but data does not satisfy any constructor');
 }
 
 export function storeSigPubKey(sigPubKey: SigPubKey): (builder: Builder) => void {
@@ -8594,7 +8594,7 @@ export function loadCryptoSignatureSimple(slice: Slice): CryptoSignatureSimple {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "CryptoSignatureSimple" in loading "CryptoSignatureSimple", but data does not satisfy any constructor');
 }
 
 export function storeCryptoSignatureSimple(cryptoSignatureSimple: CryptoSignatureSimple): (builder: Builder) => void {
@@ -8634,7 +8634,7 @@ export function loadCryptoSignature(slice: Slice): CryptoSignature {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "CryptoSignature_chained_signature", "CryptoSignature__" in loading "CryptoSignature", but data does not satisfy any constructor');
 }
 
 export function storeCryptoSignature(cryptoSignature: CryptoSignature): (builder: Builder) => void {
@@ -8654,7 +8654,7 @@ export function storeCryptoSignature(cryptoSignature: CryptoSignature): (builder
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "CryptoSignature_chained_signature", "CryptoSignature__" in loading "CryptoSignature", but data does not satisfy any constructor');
 }
 
 // sig_pair$_ node_id_short:bits256 sign:CryptoSignature = CryptoSignaturePair;
@@ -8694,7 +8694,7 @@ export function loadCertificate(slice: Slice): Certificate {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "Certificate" in loading "Certificate", but data does not satisfy any constructor');
 }
 
 export function storeCertificate(certificate: Certificate): (builder: Builder) => void {
@@ -8719,7 +8719,7 @@ export function loadCertificateEnv(slice: Slice): CertificateEnv {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "CertificateEnv" in loading "CertificateEnv", but data does not satisfy any constructor');
 }
 
 export function storeCertificateEnv(certificateEnv: CertificateEnv): (builder: Builder) => void {
@@ -8797,7 +8797,7 @@ export function loadMcBlockExtra(slice: Slice): McBlockExtra {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "McBlockExtra" in loading "McBlockExtra", but data does not satisfy any constructor');
 }
 
 export function storeMcBlockExtra(mcBlockExtra: McBlockExtra): (builder: Builder) => void {
@@ -8863,7 +8863,7 @@ export function loadValidatorDescr(slice: Slice): ValidatorDescr {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ValidatorDescr_validator", "ValidatorDescr_validator_addr" in loading "ValidatorDescr", but data does not satisfy any constructor');
 }
 
 export function storeValidatorDescr(validatorDescr: ValidatorDescr): (builder: Builder) => void {
@@ -8884,7 +8884,7 @@ export function storeValidatorDescr(validatorDescr: ValidatorDescr): (builder: B
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ValidatorDescr_validator", "ValidatorDescr_validator_addr" in loading "ValidatorDescr", but data does not satisfy any constructor');
 }
 
 /*
@@ -8908,10 +8908,10 @@ export function loadValidatorSet(slice: Slice): ValidatorSet {
         let main: number = slice.loadUint(16);
         let list: Hashmap<ValidatorDescr> = loadHashmap<ValidatorDescr>(slice, 16, loadValidatorDescr);
         if ((!(main <= total))) {
-            throw new Error('');
+            throw new Error('Condition (main <= total) is not satisfied while loading "ValidatorSet_validators" for type "ValidatorSet"');
         }
         if ((!(main >= 1))) {
-            throw new Error('');
+            throw new Error('Condition (main >= 1) is not satisfied while loading "ValidatorSet_validators" for type "ValidatorSet"');
         }
         return {
             kind: 'ValidatorSet_validators',
@@ -8932,10 +8932,10 @@ export function loadValidatorSet(slice: Slice): ValidatorSet {
         let total_weight: number = slice.loadUint(64);
         let list: HashmapE<ValidatorDescr> = loadHashmapE<ValidatorDescr>(slice, 16, loadValidatorDescr);
         if ((!(main <= total))) {
-            throw new Error('');
+            throw new Error('Condition (main <= total) is not satisfied while loading "ValidatorSet_validators_ext" for type "ValidatorSet"');
         }
         if ((!(main >= 1))) {
-            throw new Error('');
+            throw new Error('Condition (main >= 1) is not satisfied while loading "ValidatorSet_validators_ext" for type "ValidatorSet"');
         }
         return {
             kind: 'ValidatorSet_validators_ext',
@@ -8948,7 +8948,7 @@ export function loadValidatorSet(slice: Slice): ValidatorSet {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ValidatorSet_validators", "ValidatorSet_validators_ext" in loading "ValidatorSet", but data does not satisfy any constructor');
 }
 
 export function storeValidatorSet(validatorSet: ValidatorSet): (builder: Builder) => void {
@@ -8961,10 +8961,10 @@ export function storeValidatorSet(validatorSet: ValidatorSet): (builder: Builder
             builder.storeUint(validatorSet.main, 16);
             storeHashmap<ValidatorDescr>(validatorSet.list, storeValidatorDescr)(builder);
             if ((!(validatorSet.main <= validatorSet.total))) {
-                throw new Error('');
+                throw new Error('Condition (validatorSet.main <= validatorSet.total) is not satisfied while loading "ValidatorSet_validators" for type "ValidatorSet"');
             }
             if ((!(validatorSet.main >= 1))) {
-                throw new Error('');
+                throw new Error('Condition (validatorSet.main >= 1) is not satisfied while loading "ValidatorSet_validators" for type "ValidatorSet"');
             }
         })
 
@@ -8979,15 +8979,15 @@ export function storeValidatorSet(validatorSet: ValidatorSet): (builder: Builder
             builder.storeUint(validatorSet.total_weight, 64);
             storeHashmapE<ValidatorDescr>(validatorSet.list, storeValidatorDescr)(builder);
             if ((!(validatorSet.main <= validatorSet.total))) {
-                throw new Error('');
+                throw new Error('Condition (validatorSet.main <= validatorSet.total) is not satisfied while loading "ValidatorSet_validators_ext" for type "ValidatorSet"');
             }
             if ((!(validatorSet.main >= 1))) {
-                throw new Error('');
+                throw new Error('Condition (validatorSet.main >= 1) is not satisfied while loading "ValidatorSet_validators_ext" for type "ValidatorSet"');
             }
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ValidatorSet_validators", "ValidatorSet_validators_ext" in loading "ValidatorSet", but data does not satisfy any constructor');
 }
 
 // _ config_addr:bits256 = ConfigParam 0;
@@ -9232,13 +9232,13 @@ export function loadConfigParam(slice: Slice, arg0: number): ConfigParam {
         let max_main_validators: number = slice.loadUint(16);
         let min_validators: number = slice.loadUint(16);
         if ((!(max_validators >= max_main_validators))) {
-            throw new Error('');
+            throw new Error('Condition (max_validators >= max_main_validators) is not satisfied while loading "ConfigParam__16" for type "ConfigParam"');
         }
         if ((!(max_main_validators >= min_validators))) {
-            throw new Error('');
+            throw new Error('Condition (max_main_validators >= min_validators) is not satisfied while loading "ConfigParam__16" for type "ConfigParam"');
         }
         if ((!(min_validators >= 1))) {
-            throw new Error('');
+            throw new Error('Condition (min_validators >= 1) is not satisfied while loading "ConfigParam__16" for type "ConfigParam"');
         }
         return {
             kind: 'ConfigParam__16',
@@ -9478,7 +9478,7 @@ export function loadConfigParam(slice: Slice, arg0: number): ConfigParam {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ConfigParam__", "ConfigParam__1", "ConfigParam__2", "ConfigParam__3", "ConfigParam__4", "ConfigParam__5", "ConfigParam__6", "ConfigParam__7", "ConfigParam__8", "ConfigParam__9", "ConfigParam__10", "ConfigParam__11", "ConfigParam__12", "ConfigParam__13", "ConfigParam__14", "ConfigParam__15", "ConfigParam__16", "ConfigParam__17", "ConfigParam__18", "ConfigParam__19", "ConfigParam_config_mc_gas_prices", "ConfigParam_config_gas_prices", "ConfigParam_config_mc_block_limits", "ConfigParam_config_block_limits", "ConfigParam_config_mc_fwd_prices", "ConfigParam_config_fwd_prices", "ConfigParam__26", "ConfigParam__27", "ConfigParam__28", "ConfigParam__29", "ConfigParam__30", "ConfigParam__31", "ConfigParam__32", "ConfigParam__33", "ConfigParam__34", "ConfigParam__35", "ConfigParam__36", "ConfigParam__37", "ConfigParam__38", "ConfigParam__39", "ConfigParam__40", "ConfigParam__41", "ConfigParam__42", "ConfigParam__43", "ConfigParam__44" in loading "ConfigParam", but data does not satisfy any constructor');
 }
 
 export function storeConfigParam(configParam: ConfigParam): (builder: Builder) => void {
@@ -9588,13 +9588,13 @@ export function storeConfigParam(configParam: ConfigParam): (builder: Builder) =
             builder.storeUint(configParam.max_main_validators, 16);
             builder.storeUint(configParam.min_validators, 16);
             if ((!(configParam.max_validators >= configParam.max_main_validators))) {
-                throw new Error('');
+                throw new Error('Condition (configParam.max_validators >= configParam.max_main_validators) is not satisfied while loading "ConfigParam__16" for type "ConfigParam"');
             }
             if ((!(configParam.max_main_validators >= configParam.min_validators))) {
-                throw new Error('');
+                throw new Error('Condition (configParam.max_main_validators >= configParam.min_validators) is not satisfied while loading "ConfigParam__16" for type "ConfigParam"');
             }
             if ((!(configParam.min_validators >= 1))) {
-                throw new Error('');
+                throw new Error('Condition (configParam.min_validators >= 1) is not satisfied while loading "ConfigParam__16" for type "ConfigParam"');
             }
         })
 
@@ -9770,7 +9770,7 @@ export function storeConfigParam(configParam: ConfigParam): (builder: Builder) =
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ConfigParam__", "ConfigParam__1", "ConfigParam__2", "ConfigParam__3", "ConfigParam__4", "ConfigParam__5", "ConfigParam__6", "ConfigParam__7", "ConfigParam__8", "ConfigParam__9", "ConfigParam__10", "ConfigParam__11", "ConfigParam__12", "ConfigParam__13", "ConfigParam__14", "ConfigParam__15", "ConfigParam__16", "ConfigParam__17", "ConfigParam__18", "ConfigParam__19", "ConfigParam_config_mc_gas_prices", "ConfigParam_config_gas_prices", "ConfigParam_config_mc_block_limits", "ConfigParam_config_block_limits", "ConfigParam_config_mc_fwd_prices", "ConfigParam_config_fwd_prices", "ConfigParam__26", "ConfigParam__27", "ConfigParam__28", "ConfigParam__29", "ConfigParam__30", "ConfigParam__31", "ConfigParam__32", "ConfigParam__33", "ConfigParam__34", "ConfigParam__35", "ConfigParam__36", "ConfigParam__37", "ConfigParam__38", "ConfigParam__39", "ConfigParam__40", "ConfigParam__41", "ConfigParam__42", "ConfigParam__43", "ConfigParam__44" in loading "ConfigParam", but data does not satisfy any constructor');
 }
 
 /*
@@ -9789,10 +9789,10 @@ export function loadBurningConfig(slice: Slice): BurningConfig {
         let fee_burn_num: number = slice.loadUint(32);
         let fee_burn_denom: number = slice.loadUint(32);
         if ((!(fee_burn_num <= fee_burn_denom))) {
-            throw new Error('');
+            throw new Error('Condition (fee_burn_num <= fee_burn_denom) is not satisfied while loading "BurningConfig" for type "BurningConfig"');
         }
         if ((!(fee_burn_denom >= 1))) {
-            throw new Error('');
+            throw new Error('Condition (fee_burn_denom >= 1) is not satisfied while loading "BurningConfig" for type "BurningConfig"');
         }
         return {
             kind: 'BurningConfig',
@@ -9802,7 +9802,7 @@ export function loadBurningConfig(slice: Slice): BurningConfig {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "BurningConfig" in loading "BurningConfig", but data does not satisfy any constructor');
 }
 
 export function storeBurningConfig(burningConfig: BurningConfig): (builder: Builder) => void {
@@ -9817,10 +9817,10 @@ export function storeBurningConfig(burningConfig: BurningConfig): (builder: Buil
         builder.storeUint(burningConfig.fee_burn_num, 32);
         builder.storeUint(burningConfig.fee_burn_denom, 32);
         if ((!(burningConfig.fee_burn_num <= burningConfig.fee_burn_denom))) {
-            throw new Error('');
+            throw new Error('Condition (burningConfig.fee_burn_num <= burningConfig.fee_burn_denom) is not satisfied while loading "BurningConfig" for type "BurningConfig"');
         }
         if ((!(burningConfig.fee_burn_denom >= 1))) {
-            throw new Error('');
+            throw new Error('Condition (burningConfig.fee_burn_denom >= 1) is not satisfied while loading "BurningConfig" for type "BurningConfig"');
         }
     })
 
@@ -9840,7 +9840,7 @@ export function loadGlobalVersion(slice: Slice): GlobalVersion {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "GlobalVersion" in loading "GlobalVersion", but data does not satisfy any constructor');
 }
 
 export function storeGlobalVersion(globalVersion: GlobalVersion): (builder: Builder) => void {
@@ -9878,7 +9878,7 @@ export function loadConfigProposalSetup(slice: Slice): ConfigProposalSetup {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ConfigProposalSetup" in loading "ConfigProposalSetup", but data does not satisfy any constructor');
 }
 
 export function storeConfigProposalSetup(configProposalSetup: ConfigProposalSetup): (builder: Builder) => void {
@@ -9912,7 +9912,7 @@ export function loadConfigVotingSetup(slice: Slice): ConfigVotingSetup {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ConfigVotingSetup" in loading "ConfigVotingSetup", but data does not satisfy any constructor');
 }
 
 export function storeConfigVotingSetup(configVotingSetup: ConfigVotingSetup): (builder: Builder) => void {
@@ -9954,7 +9954,7 @@ export function loadConfigProposal(slice: Slice): ConfigProposal {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ConfigProposal" in loading "ConfigProposal", but data does not satisfy any constructor');
 }
 
 export function storeConfigProposal(configProposal: ConfigProposal): (builder: Builder) => void {
@@ -10013,7 +10013,7 @@ export function loadConfigProposalStatus(slice: Slice): ConfigProposalStatus {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ConfigProposalStatus" in loading "ConfigProposalStatus", but data does not satisfy any constructor');
 }
 
 export function storeConfigProposalStatus(configProposalStatus: ConfigProposalStatus): (builder: Builder) => void {
@@ -10063,19 +10063,19 @@ export function loadWorkchainFormat(slice: Slice, arg0: number): WorkchainFormat
         let addr_len_step: number = slice.loadUint(12);
         let workchain_type_id: number = slice.loadUint(32);
         if ((!(min_addr_len >= 64))) {
-            throw new Error('');
+            throw new Error('Condition (min_addr_len >= 64) is not satisfied while loading "WorkchainFormat_wfmt_ext" for type "WorkchainFormat"');
         }
         if ((!(min_addr_len <= max_addr_len))) {
-            throw new Error('');
+            throw new Error('Condition (min_addr_len <= max_addr_len) is not satisfied while loading "WorkchainFormat_wfmt_ext" for type "WorkchainFormat"');
         }
         if ((!(max_addr_len <= 1023))) {
-            throw new Error('');
+            throw new Error('Condition (max_addr_len <= 1023) is not satisfied while loading "WorkchainFormat_wfmt_ext" for type "WorkchainFormat"');
         }
         if ((!(addr_len_step <= 1023))) {
-            throw new Error('');
+            throw new Error('Condition (addr_len_step <= 1023) is not satisfied while loading "WorkchainFormat_wfmt_ext" for type "WorkchainFormat"');
         }
         if ((!(workchain_type_id >= 1))) {
-            throw new Error('');
+            throw new Error('Condition (workchain_type_id >= 1) is not satisfied while loading "WorkchainFormat_wfmt_ext" for type "WorkchainFormat"');
         }
         return {
             kind: 'WorkchainFormat_wfmt_ext',
@@ -10086,7 +10086,7 @@ export function loadWorkchainFormat(slice: Slice, arg0: number): WorkchainFormat
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "WorkchainFormat_wfmt_basic", "WorkchainFormat_wfmt_ext" in loading "WorkchainFormat", but data does not satisfy any constructor');
 }
 
 export function storeWorkchainFormat(workchainFormat: WorkchainFormat): (builder: Builder) => void {
@@ -10106,24 +10106,24 @@ export function storeWorkchainFormat(workchainFormat: WorkchainFormat): (builder
             builder.storeUint(workchainFormat.addr_len_step, 12);
             builder.storeUint(workchainFormat.workchain_type_id, 32);
             if ((!(workchainFormat.min_addr_len >= 64))) {
-                throw new Error('');
+                throw new Error('Condition (workchainFormat.min_addr_len >= 64) is not satisfied while loading "WorkchainFormat_wfmt_ext" for type "WorkchainFormat"');
             }
             if ((!(workchainFormat.min_addr_len <= workchainFormat.max_addr_len))) {
-                throw new Error('');
+                throw new Error('Condition (workchainFormat.min_addr_len <= workchainFormat.max_addr_len) is not satisfied while loading "WorkchainFormat_wfmt_ext" for type "WorkchainFormat"');
             }
             if ((!(workchainFormat.max_addr_len <= 1023))) {
-                throw new Error('');
+                throw new Error('Condition (workchainFormat.max_addr_len <= 1023) is not satisfied while loading "WorkchainFormat_wfmt_ext" for type "WorkchainFormat"');
             }
             if ((!(workchainFormat.addr_len_step <= 1023))) {
-                throw new Error('');
+                throw new Error('Condition (workchainFormat.addr_len_step <= 1023) is not satisfied while loading "WorkchainFormat_wfmt_ext" for type "WorkchainFormat"');
             }
             if ((!(workchainFormat.workchain_type_id >= 1))) {
-                throw new Error('');
+                throw new Error('Condition (workchainFormat.workchain_type_id >= 1) is not satisfied while loading "WorkchainFormat_wfmt_ext" for type "WorkchainFormat"');
             }
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "WorkchainFormat_wfmt_basic", "WorkchainFormat_wfmt_ext" in loading "WorkchainFormat", but data does not satisfy any constructor');
 }
 
 /*
@@ -10149,7 +10149,7 @@ export function loadWcSplitMergeTimings(slice: Slice): WcSplitMergeTimings {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "WcSplitMergeTimings" in loading "WcSplitMergeTimings", but data does not satisfy any constructor');
 }
 
 export function storeWcSplitMergeTimings(wcSplitMergeTimings: WcSplitMergeTimings): (builder: Builder) => void {
@@ -10198,10 +10198,10 @@ export function loadWorkchainDescr(slice: Slice): WorkchainDescr {
         let version: number = slice.loadUint(32);
         let format: WorkchainFormat = loadWorkchainFormat(slice, basic);
         if ((!(actual_min_split <= min_split))) {
-            throw new Error('');
+            throw new Error('Condition (actual_min_split <= min_split) is not satisfied while loading "WorkchainDescr_workchain" for type "WorkchainDescr"');
         }
         if ((!(flags == 0))) {
-            throw new Error('');
+            throw new Error('Condition (flags == 0) is not satisfied while loading "WorkchainDescr_workchain" for type "WorkchainDescr"');
         }
         return {
             kind: 'WorkchainDescr_workchain',
@@ -10236,10 +10236,10 @@ export function loadWorkchainDescr(slice: Slice): WorkchainDescr {
         let format: WorkchainFormat = loadWorkchainFormat(slice, basic);
         let split_merge_timings: WcSplitMergeTimings = loadWcSplitMergeTimings(slice);
         if ((!(actual_min_split <= min_split))) {
-            throw new Error('');
+            throw new Error('Condition (actual_min_split <= min_split) is not satisfied while loading "WorkchainDescr_workchain_v2" for type "WorkchainDescr"');
         }
         if ((!(flags == 0))) {
-            throw new Error('');
+            throw new Error('Condition (flags == 0) is not satisfied while loading "WorkchainDescr_workchain_v2" for type "WorkchainDescr"');
         }
         return {
             kind: 'WorkchainDescr_workchain_v2',
@@ -10259,7 +10259,7 @@ export function loadWorkchainDescr(slice: Slice): WorkchainDescr {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "WorkchainDescr_workchain", "WorkchainDescr_workchain_v2" in loading "WorkchainDescr", but data does not satisfy any constructor');
 }
 
 export function storeWorkchainDescr(workchainDescr: WorkchainDescr): (builder: Builder) => void {
@@ -10279,10 +10279,10 @@ export function storeWorkchainDescr(workchainDescr: WorkchainDescr): (builder: B
             builder.storeUint(workchainDescr.version, 32);
             storeWorkchainFormat(workchainDescr.format)(builder);
             if ((!(workchainDescr.actual_min_split <= workchainDescr.min_split))) {
-                throw new Error('');
+                throw new Error('Condition (workchainDescr.actual_min_split <= workchainDescr.min_split) is not satisfied while loading "WorkchainDescr_workchain" for type "WorkchainDescr"');
             }
             if ((!(workchainDescr.flags == 0))) {
-                throw new Error('');
+                throw new Error('Condition (workchainDescr.flags == 0) is not satisfied while loading "WorkchainDescr_workchain" for type "WorkchainDescr"');
             }
         })
 
@@ -10304,15 +10304,15 @@ export function storeWorkchainDescr(workchainDescr: WorkchainDescr): (builder: B
             storeWorkchainFormat(workchainDescr.format)(builder);
             storeWcSplitMergeTimings(workchainDescr.split_merge_timings)(builder);
             if ((!(workchainDescr.actual_min_split <= workchainDescr.min_split))) {
-                throw new Error('');
+                throw new Error('Condition (workchainDescr.actual_min_split <= workchainDescr.min_split) is not satisfied while loading "WorkchainDescr_workchain_v2" for type "WorkchainDescr"');
             }
             if ((!(workchainDescr.flags == 0))) {
-                throw new Error('');
+                throw new Error('Condition (workchainDescr.flags == 0) is not satisfied while loading "WorkchainDescr_workchain_v2" for type "WorkchainDescr"');
             }
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "WorkchainDescr_workchain", "WorkchainDescr_workchain_v2" in loading "WorkchainDescr", but data does not satisfy any constructor');
 }
 
 // complaint_prices#1a deposit:Grams bit_price:Grams cell_price:Grams = ComplaintPricing;
@@ -10331,7 +10331,7 @@ export function loadComplaintPricing(slice: Slice): ComplaintPricing {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ComplaintPricing" in loading "ComplaintPricing", but data does not satisfy any constructor');
 }
 
 export function storeComplaintPricing(complaintPricing: ComplaintPricing): (builder: Builder) => void {
@@ -10361,7 +10361,7 @@ export function loadBlockCreateFees(slice: Slice): BlockCreateFees {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "BlockCreateFees" in loading "BlockCreateFees", but data does not satisfy any constructor');
 }
 
 export function storeBlockCreateFees(blockCreateFees: BlockCreateFees): (builder: Builder) => void {
@@ -10396,7 +10396,7 @@ export function loadStoragePrices(slice: Slice): StoragePrices {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "StoragePrices" in loading "StoragePrices", but data does not satisfy any constructor');
 }
 
 export function storeStoragePrices(storagePrices: StoragePrices): (builder: Builder) => void {
@@ -10482,7 +10482,7 @@ export function loadGasLimitsPrices(slice: Slice): GasLimitsPrices {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "GasLimitsPrices_gas_prices", "GasLimitsPrices_gas_prices_ext", "GasLimitsPrices_gas_flat_pfx" in loading "GasLimitsPrices", but data does not satisfy any constructor');
 }
 
 export function storeGasLimitsPrices(gasLimitsPrices: GasLimitsPrices): (builder: Builder) => void {
@@ -10520,7 +10520,7 @@ export function storeGasLimitsPrices(gasLimitsPrices: GasLimitsPrices): (builder
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "GasLimitsPrices_gas_prices", "GasLimitsPrices_gas_prices_ext", "GasLimitsPrices_gas_flat_pfx" in loading "GasLimitsPrices", but data does not satisfy any constructor');
 }
 
 /*
@@ -10535,10 +10535,10 @@ export function loadParamLimits(slice: Slice): ParamLimits {
         let soft_limit: number = slice.loadUint(32);
         let hard_limit: number = slice.loadUint(32);
         if ((!(underload <= soft_limit))) {
-            throw new Error('');
+            throw new Error('Condition (underload <= soft_limit) is not satisfied while loading "ParamLimits" for type "ParamLimits"');
         }
         if ((!(soft_limit <= hard_limit))) {
-            throw new Error('');
+            throw new Error('Condition (soft_limit <= hard_limit) is not satisfied while loading "ParamLimits" for type "ParamLimits"');
         }
         return {
             kind: 'ParamLimits',
@@ -10548,7 +10548,7 @@ export function loadParamLimits(slice: Slice): ParamLimits {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ParamLimits" in loading "ParamLimits", but data does not satisfy any constructor');
 }
 
 export function storeParamLimits(paramLimits: ParamLimits): (builder: Builder) => void {
@@ -10558,10 +10558,10 @@ export function storeParamLimits(paramLimits: ParamLimits): (builder: Builder) =
         builder.storeUint(paramLimits.soft_limit, 32);
         builder.storeUint(paramLimits.hard_limit, 32);
         if ((!(paramLimits.underload <= paramLimits.soft_limit))) {
-            throw new Error('');
+            throw new Error('Condition (paramLimits.underload <= paramLimits.soft_limit) is not satisfied while loading "ParamLimits" for type "ParamLimits"');
         }
         if ((!(paramLimits.soft_limit <= paramLimits.hard_limit))) {
-            throw new Error('');
+            throw new Error('Condition (paramLimits.soft_limit <= paramLimits.hard_limit) is not satisfied while loading "ParamLimits" for type "ParamLimits"');
         }
     })
 
@@ -10586,7 +10586,7 @@ export function loadBlockLimits(slice: Slice): BlockLimits {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "BlockLimits" in loading "BlockLimits", but data does not satisfy any constructor');
 }
 
 export function storeBlockLimits(blockLimits: BlockLimits): (builder: Builder) => void {
@@ -10624,7 +10624,7 @@ export function loadMsgForwardPrices(slice: Slice): MsgForwardPrices {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "MsgForwardPrices" in loading "MsgForwardPrices", but data does not satisfy any constructor');
 }
 
 export function storeMsgForwardPrices(msgForwardPrices: MsgForwardPrices): (builder: Builder) => void {
@@ -10676,7 +10676,7 @@ export function loadCatchainConfig(slice: Slice): CatchainConfig {
         let shard_validators_lifetime: number = slice.loadUint(32);
         let shard_validators_num: number = slice.loadUint(32);
         if ((!(flags == 0))) {
-            throw new Error('');
+            throw new Error('Condition (flags == 0) is not satisfied while loading "CatchainConfig_catchain_config_new" for type "CatchainConfig"');
         }
         return {
             kind: 'CatchainConfig_catchain_config_new',
@@ -10689,7 +10689,7 @@ export function loadCatchainConfig(slice: Slice): CatchainConfig {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "CatchainConfig_catchain_config", "CatchainConfig_catchain_config_new" in loading "CatchainConfig", but data does not satisfy any constructor');
 }
 
 export function storeCatchainConfig(catchainConfig: CatchainConfig): (builder: Builder) => void {
@@ -10713,12 +10713,12 @@ export function storeCatchainConfig(catchainConfig: CatchainConfig): (builder: B
             builder.storeUint(catchainConfig.shard_validators_lifetime, 32);
             builder.storeUint(catchainConfig.shard_validators_num, 32);
             if ((!(catchainConfig.flags == 0))) {
-                throw new Error('');
+                throw new Error('Condition (catchainConfig.flags == 0) is not satisfied while loading "CatchainConfig_catchain_config_new" for type "CatchainConfig"');
             }
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "CatchainConfig_catchain_config", "CatchainConfig_catchain_config_new" in loading "CatchainConfig", but data does not satisfy any constructor');
 }
 
 /*
@@ -10766,7 +10766,7 @@ export function loadConsensusConfig(slice: Slice): ConsensusConfig {
         let max_block_bytes: number = slice.loadUint(32);
         let max_collated_bytes: number = slice.loadUint(32);
         if ((!(round_candidates >= 1))) {
-            throw new Error('');
+            throw new Error('Condition (round_candidates >= 1) is not satisfied while loading "ConsensusConfig_consensus_config" for type "ConsensusConfig"');
         }
         return {
             kind: 'ConsensusConfig_consensus_config',
@@ -10794,10 +10794,10 @@ export function loadConsensusConfig(slice: Slice): ConsensusConfig {
         let max_block_bytes: number = slice.loadUint(32);
         let max_collated_bytes: number = slice.loadUint(32);
         if ((!(flags == 0))) {
-            throw new Error('');
+            throw new Error('Condition (flags == 0) is not satisfied while loading "ConsensusConfig_consensus_config_new" for type "ConsensusConfig"');
         }
         if ((!(round_candidates >= 1))) {
-            throw new Error('');
+            throw new Error('Condition (round_candidates >= 1) is not satisfied while loading "ConsensusConfig_consensus_config_new" for type "ConsensusConfig"');
         }
         return {
             kind: 'ConsensusConfig_consensus_config_new',
@@ -10828,10 +10828,10 @@ export function loadConsensusConfig(slice: Slice): ConsensusConfig {
         let max_collated_bytes: number = slice.loadUint(32);
         let proto_version: number = slice.loadUint(16);
         if ((!(flags == 0))) {
-            throw new Error('');
+            throw new Error('Condition (flags == 0) is not satisfied while loading "ConsensusConfig_consensus_config_v3" for type "ConsensusConfig"');
         }
         if ((!(round_candidates >= 1))) {
-            throw new Error('');
+            throw new Error('Condition (round_candidates >= 1) is not satisfied while loading "ConsensusConfig_consensus_config_v3" for type "ConsensusConfig"');
         }
         return {
             kind: 'ConsensusConfig_consensus_config_v3',
@@ -10864,10 +10864,10 @@ export function loadConsensusConfig(slice: Slice): ConsensusConfig {
         let proto_version: number = slice.loadUint(16);
         let catchain_max_blocks_coeff: number = slice.loadUint(32);
         if ((!(flags == 0))) {
-            throw new Error('');
+            throw new Error('Condition (flags == 0) is not satisfied while loading "ConsensusConfig_consensus_config_v4" for type "ConsensusConfig"');
         }
         if ((!(round_candidates >= 1))) {
-            throw new Error('');
+            throw new Error('Condition (round_candidates >= 1) is not satisfied while loading "ConsensusConfig_consensus_config_v4" for type "ConsensusConfig"');
         }
         return {
             kind: 'ConsensusConfig_consensus_config_v4',
@@ -10886,7 +10886,7 @@ export function loadConsensusConfig(slice: Slice): ConsensusConfig {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ConsensusConfig_consensus_config", "ConsensusConfig_consensus_config_new", "ConsensusConfig_consensus_config_v3", "ConsensusConfig_consensus_config_v4" in loading "ConsensusConfig", but data does not satisfy any constructor');
 }
 
 export function storeConsensusConfig(consensusConfig: ConsensusConfig): (builder: Builder) => void {
@@ -10902,7 +10902,7 @@ export function storeConsensusConfig(consensusConfig: ConsensusConfig): (builder
             builder.storeUint(consensusConfig.max_block_bytes, 32);
             builder.storeUint(consensusConfig.max_collated_bytes, 32);
             if ((!(consensusConfig.round_candidates >= 1))) {
-                throw new Error('');
+                throw new Error('Condition (consensusConfig.round_candidates >= 1) is not satisfied while loading "ConsensusConfig_consensus_config" for type "ConsensusConfig"');
             }
         })
 
@@ -10921,10 +10921,10 @@ export function storeConsensusConfig(consensusConfig: ConsensusConfig): (builder
             builder.storeUint(consensusConfig.max_block_bytes, 32);
             builder.storeUint(consensusConfig.max_collated_bytes, 32);
             if ((!(consensusConfig.flags == 0))) {
-                throw new Error('');
+                throw new Error('Condition (consensusConfig.flags == 0) is not satisfied while loading "ConsensusConfig_consensus_config_new" for type "ConsensusConfig"');
             }
             if ((!(consensusConfig.round_candidates >= 1))) {
-                throw new Error('');
+                throw new Error('Condition (consensusConfig.round_candidates >= 1) is not satisfied while loading "ConsensusConfig_consensus_config_new" for type "ConsensusConfig"');
             }
         })
 
@@ -10944,10 +10944,10 @@ export function storeConsensusConfig(consensusConfig: ConsensusConfig): (builder
             builder.storeUint(consensusConfig.max_collated_bytes, 32);
             builder.storeUint(consensusConfig.proto_version, 16);
             if ((!(consensusConfig.flags == 0))) {
-                throw new Error('');
+                throw new Error('Condition (consensusConfig.flags == 0) is not satisfied while loading "ConsensusConfig_consensus_config_v3" for type "ConsensusConfig"');
             }
             if ((!(consensusConfig.round_candidates >= 1))) {
-                throw new Error('');
+                throw new Error('Condition (consensusConfig.round_candidates >= 1) is not satisfied while loading "ConsensusConfig_consensus_config_v3" for type "ConsensusConfig"');
             }
         })
 
@@ -10968,15 +10968,15 @@ export function storeConsensusConfig(consensusConfig: ConsensusConfig): (builder
             builder.storeUint(consensusConfig.proto_version, 16);
             builder.storeUint(consensusConfig.catchain_max_blocks_coeff, 32);
             if ((!(consensusConfig.flags == 0))) {
-                throw new Error('');
+                throw new Error('Condition (consensusConfig.flags == 0) is not satisfied while loading "ConsensusConfig_consensus_config_v4" for type "ConsensusConfig"');
             }
             if ((!(consensusConfig.round_candidates >= 1))) {
-                throw new Error('');
+                throw new Error('Condition (consensusConfig.round_candidates >= 1) is not satisfied while loading "ConsensusConfig_consensus_config_v4" for type "ConsensusConfig"');
             }
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ConsensusConfig_consensus_config", "ConsensusConfig_consensus_config_new", "ConsensusConfig_consensus_config_v3", "ConsensusConfig_consensus_config_v4" in loading "ConsensusConfig", but data does not satisfy any constructor');
 }
 
 // validator_temp_key#3 adnl_addr:bits256 temp_public_key:SigPubKey seqno:# valid_until:uint32 = ValidatorTempKey;
@@ -10997,7 +10997,7 @@ export function loadValidatorTempKey(slice: Slice): ValidatorTempKey {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ValidatorTempKey" in loading "ValidatorTempKey", but data does not satisfy any constructor');
 }
 
 export function storeValidatorTempKey(validatorTempKey: ValidatorTempKey): (builder: Builder) => void {
@@ -11026,7 +11026,7 @@ export function loadValidatorSignedTempKey(slice: Slice): ValidatorSignedTempKey
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ValidatorSignedTempKey" in loading "ValidatorSignedTempKey", but data does not satisfy any constructor');
 }
 
 export function storeValidatorSignedTempKey(validatorSignedTempKey: ValidatorSignedTempKey): (builder: Builder) => void {
@@ -11080,7 +11080,7 @@ export function loadMisbehaviourPunishmentConfig(slice: Slice): MisbehaviourPuni
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "MisbehaviourPunishmentConfig" in loading "MisbehaviourPunishmentConfig", but data does not satisfy any constructor');
 }
 
 export function storeMisbehaviourPunishmentConfig(misbehaviourPunishmentConfig: MisbehaviourPunishmentConfig): (builder: Builder) => void {
@@ -11157,7 +11157,7 @@ export function loadSizeLimitsConfig(slice: Slice): SizeLimitsConfig {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "SizeLimitsConfig_size_limits_config", "SizeLimitsConfig_size_limits_config_v2" in loading "SizeLimitsConfig", but data does not satisfy any constructor');
 }
 
 export function storeSizeLimitsConfig(sizeLimitsConfig: SizeLimitsConfig): (builder: Builder) => void {
@@ -11188,7 +11188,7 @@ export function storeSizeLimitsConfig(sizeLimitsConfig: SizeLimitsConfig): (buil
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "SizeLimitsConfig_size_limits_config", "SizeLimitsConfig_size_limits_config_v2" in loading "SizeLimitsConfig", but data does not satisfy any constructor');
 }
 
 // suspended_address_list#00 addresses:(HashmapE 288 Unit) suspended_until:uint32 = SuspendedAddressList;
@@ -11205,7 +11205,7 @@ export function loadSuspendedAddressList(slice: Slice): SuspendedAddressList {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "SuspendedAddressList" in loading "SuspendedAddressList", but data does not satisfy any constructor');
 }
 
 export function storeSuspendedAddressList(suspendedAddressList: SuspendedAddressList): (builder: Builder) => void {
@@ -11339,7 +11339,7 @@ export function loadJettonBridgeParams(slice: Slice): JettonBridgeParams {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "JettonBridgeParams_jetton_bridge_params_v0", "JettonBridgeParams_jetton_bridge_params_v1" in loading "JettonBridgeParams", but data does not satisfy any constructor');
 }
 
 export function storeJettonBridgeParams(jettonBridgeParams: JettonBridgeParams): (builder: Builder) => void {
@@ -11378,7 +11378,7 @@ export function storeJettonBridgeParams(jettonBridgeParams: JettonBridgeParams):
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "JettonBridgeParams_jetton_bridge_params_v0", "JettonBridgeParams_jetton_bridge_params_v1" in loading "JettonBridgeParams", but data does not satisfy any constructor');
 }
 
 /*
@@ -11422,7 +11422,7 @@ export function loadBlockSignatures(slice: Slice): BlockSignatures {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "BlockSignatures" in loading "BlockSignatures", but data does not satisfy any constructor');
 }
 
 export function storeBlockSignatures(blockSignatures: BlockSignatures): (builder: Builder) => void {
@@ -11455,7 +11455,7 @@ export function loadBlockProof(slice: Slice): BlockProof {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "BlockProof" in loading "BlockProof", but data does not satisfy any constructor');
 }
 
 export function storeBlockProof(blockProof: BlockProof): (builder: Builder) => void {
@@ -11505,7 +11505,7 @@ export function loadProofChain(slice: Slice, arg0: number): ProofChain {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ProofChain_chain_empty", "ProofChain_chain_link" in loading "ProofChain", but data does not satisfy any constructor');
 }
 
 export function storeProofChain(proofChain: ProofChain): (builder: Builder) => void {
@@ -11528,7 +11528,7 @@ export function storeProofChain(proofChain: ProofChain): (builder: Builder) => v
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ProofChain_chain_empty", "ProofChain_chain_link" in loading "ProofChain", but data does not satisfy any constructor');
 }
 
 /*
@@ -11548,10 +11548,10 @@ export function loadTopBlockDescr(slice: Slice): TopBlockDescr {
         let len: number = slice.loadUint(8);
         let chain: ProofChain = loadProofChain(slice, len);
         if ((!(len >= 1))) {
-            throw new Error('');
+            throw new Error('Condition (len >= 1) is not satisfied while loading "TopBlockDescr" for type "TopBlockDescr"');
         }
         if ((!(len <= 8))) {
-            throw new Error('');
+            throw new Error('Condition (len <= 8) is not satisfied while loading "TopBlockDescr" for type "TopBlockDescr"');
         }
         return {
             kind: 'TopBlockDescr',
@@ -11562,7 +11562,7 @@ export function loadTopBlockDescr(slice: Slice): TopBlockDescr {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "TopBlockDescr" in loading "TopBlockDescr", but data does not satisfy any constructor');
 }
 
 export function storeTopBlockDescr(topBlockDescr: TopBlockDescr): (builder: Builder) => void {
@@ -11581,10 +11581,10 @@ export function storeTopBlockDescr(topBlockDescr: TopBlockDescr): (builder: Buil
         builder.storeUint(topBlockDescr.len, 8);
         storeProofChain(topBlockDescr.chain)(builder);
         if ((!(topBlockDescr.len >= 1))) {
-            throw new Error('');
+            throw new Error('Condition (topBlockDescr.len >= 1) is not satisfied while loading "TopBlockDescr" for type "TopBlockDescr"');
         }
         if ((!(topBlockDescr.len <= 8))) {
-            throw new Error('');
+            throw new Error('Condition (topBlockDescr.len <= 8) is not satisfied while loading "TopBlockDescr" for type "TopBlockDescr"');
         }
     })
 
@@ -11606,7 +11606,7 @@ export function loadTopBlockDescrSet(slice: Slice): TopBlockDescrSet {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "TopBlockDescrSet" in loading "TopBlockDescrSet", but data does not satisfy any constructor');
 }
 
 export function storeTopBlockDescrSet(topBlockDescrSet: TopBlockDescrSet): (builder: Builder) => void {
@@ -11648,7 +11648,7 @@ export function loadProducerInfo(slice: Slice): ProducerInfo {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ProducerInfo" in loading "ProducerInfo", but data does not satisfy any constructor');
 }
 
 export function storeProducerInfo(producerInfo: ProducerInfo): (builder: Builder) => void {
@@ -11696,7 +11696,7 @@ export function loadComplaintDescr(slice: Slice): ComplaintDescr {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ComplaintDescr_no_blk_gen", "ComplaintDescr_no_blk_gen_diff" in loading "ComplaintDescr", but data does not satisfy any constructor');
 }
 
 export function storeComplaintDescr(complaintDescr: ComplaintDescr): (builder: Builder) => void {
@@ -11722,7 +11722,7 @@ export function storeComplaintDescr(complaintDescr: ComplaintDescr): (builder: B
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ComplaintDescr_no_blk_gen", "ComplaintDescr_no_blk_gen_diff" in loading "ComplaintDescr", but data does not satisfy any constructor');
 }
 
 // validator_complaint#bc validator_pubkey:bits256 description:^ComplaintDescr created_at:uint32 severity:uint8 reward_addr:uint256 paid:Grams suggested_fine:Grams suggested_fine_part:uint32 = ValidatorComplaint;
@@ -11752,7 +11752,7 @@ export function loadValidatorComplaint(slice: Slice): ValidatorComplaint {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ValidatorComplaint" in loading "ValidatorComplaint", but data does not satisfy any constructor');
 }
 
 export function storeValidatorComplaint(validatorComplaint: ValidatorComplaint): (builder: Builder) => void {
@@ -11791,7 +11791,7 @@ export function loadValidatorComplaintStatus(slice: Slice): ValidatorComplaintSt
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ValidatorComplaintStatus" in loading "ValidatorComplaintStatus", but data does not satisfy any constructor');
 }
 
 export function storeValidatorComplaintStatus(validatorComplaintStatus: ValidatorComplaintStatus): (builder: Builder) => void {
@@ -11907,7 +11907,7 @@ export function loadVmStackValue(slice: Slice): VmStackValue {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "VmStackValue_vm_stk_null", "VmStackValue_vm_stk_tinyint", "VmStackValue_vm_stk_int", "VmStackValue_vm_stk_nan", "VmStackValue_vm_stk_cell", "VmStackValue_vm_stk_slice", "VmStackValue_vm_stk_builder", "VmStackValue_vm_stk_cont", "VmStackValue_vm_stk_tuple" in loading "VmStackValue", but data does not satisfy any constructor');
 }
 
 export function storeVmStackValue(vmStackValue: VmStackValue): (builder: Builder) => void {
@@ -11977,7 +11977,7 @@ export function storeVmStackValue(vmStackValue: VmStackValue): (builder: Builder
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "VmStackValue_vm_stk_null", "VmStackValue_vm_stk_tinyint", "VmStackValue_vm_stk_int", "VmStackValue_vm_stk_nan", "VmStackValue_vm_stk_cell", "VmStackValue_vm_stk_slice", "VmStackValue_vm_stk_builder", "VmStackValue_vm_stk_cont", "VmStackValue_vm_stk_tuple" in loading "VmStackValue", but data does not satisfy any constructor');
 }
 
 /*
@@ -11993,10 +11993,10 @@ export function loadVmCellSlice(slice: Slice): VmCellSlice {
     let st_ref: number = slice.loadUint(bitLen(4));
     let end_ref: number = slice.loadUint(bitLen(4));
     if ((!(st_bits <= end_bits))) {
-        throw new Error('');
+        throw new Error('Condition (st_bits <= end_bits) is not satisfied while loading "VmCellSlice" for type "VmCellSlice"');
     }
     if ((!(st_ref <= end_ref))) {
-        throw new Error('');
+        throw new Error('Condition (st_ref <= end_ref) is not satisfied while loading "VmCellSlice" for type "VmCellSlice"');
     }
     return {
         kind: 'VmCellSlice',
@@ -12019,10 +12019,10 @@ export function storeVmCellSlice(vmCellSlice: VmCellSlice): (builder: Builder) =
         builder.storeUint(vmCellSlice.st_ref, bitLen(4));
         builder.storeUint(vmCellSlice.end_ref, bitLen(4));
         if ((!(vmCellSlice.st_bits <= vmCellSlice.end_bits))) {
-            throw new Error('');
+            throw new Error('Condition (vmCellSlice.st_bits <= vmCellSlice.end_bits) is not satisfied while loading "VmCellSlice" for type "VmCellSlice"');
         }
         if ((!(vmCellSlice.st_ref <= vmCellSlice.end_ref))) {
-            throw new Error('');
+            throw new Error('Condition (vmCellSlice.st_ref <= vmCellSlice.end_ref) is not satisfied while loading "VmCellSlice" for type "VmCellSlice"');
         }
     })
 
@@ -12060,7 +12060,7 @@ export function loadVmTupleRef(slice: Slice, arg0: number): VmTupleRef {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "VmTupleRef_vm_tupref_nil", "VmTupleRef_vm_tupref_single", "VmTupleRef_vm_tupref_any" in loading "VmTupleRef", but data does not satisfy any constructor');
 }
 
 export function storeVmTupleRef(vmTupleRef: VmTupleRef): (builder: Builder) => void {
@@ -12085,7 +12085,7 @@ export function storeVmTupleRef(vmTupleRef: VmTupleRef): (builder: Builder) => v
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "VmTupleRef_vm_tupref_nil", "VmTupleRef_vm_tupref_single", "VmTupleRef_vm_tupref_any" in loading "VmTupleRef", but data does not satisfy any constructor');
 }
 
 // vm_tuple_nil$_ = VmTuple 0;
@@ -12111,7 +12111,7 @@ export function loadVmTuple(slice: Slice, arg0: number): VmTuple {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "VmTuple_vm_tuple_nil", "VmTuple_vm_tuple_tcons" in loading "VmTuple", but data does not satisfy any constructor');
 }
 
 export function storeVmTuple(vmTuple: VmTuple): (builder: Builder) => void {
@@ -12129,7 +12129,7 @@ export function storeVmTuple(vmTuple: VmTuple): (builder: Builder) => void {
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "VmTuple_vm_tuple_nil", "VmTuple_vm_tuple_tcons" in loading "VmTuple", but data does not satisfy any constructor');
 }
 
 // vm_stack#_ depth:(## 24) stack:(VmStackList depth) = VmStack;
@@ -12176,7 +12176,7 @@ export function loadVmStackList(slice: Slice, arg0: number): VmStackList {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "VmStackList_vm_stk_nil", "VmStackList_vm_stk_cons" in loading "VmStackList", but data does not satisfy any constructor');
 }
 
 export function storeVmStackList(vmStackList: VmStackList): (builder: Builder) => void {
@@ -12194,7 +12194,7 @@ export function storeVmStackList(vmStackList: VmStackList): (builder: Builder) =
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "VmStackList_vm_stk_nil", "VmStackList_vm_stk_cons" in loading "VmStackList", but data does not satisfy any constructor');
 }
 
 // _ cregs:(HashmapE 4 VmStackValue) = VmSaveList;
@@ -12472,7 +12472,7 @@ export function loadVmCont(slice: Slice): VmCont {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "VmCont_vmc_std", "VmCont_vmc_envelope", "VmCont_vmc_quit", "VmCont_vmc_quit_exc", "VmCont_vmc_repeat", "VmCont_vmc_until", "VmCont_vmc_again", "VmCont_vmc_while_cond", "VmCont_vmc_while_body", "VmCont_vmc_pushint" in loading "VmCont", but data does not satisfy any constructor');
 }
 
 export function storeVmCont(vmCont: VmCont): (builder: Builder) => void {
@@ -12581,7 +12581,7 @@ export function storeVmCont(vmCont: VmCont): (builder: Builder) => void {
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "VmCont_vmc_std", "VmCont_vmc_envelope", "VmCont_vmc_quit", "VmCont_vmc_quit_exc", "VmCont_vmc_repeat", "VmCont_vmc_until", "VmCont_vmc_again", "VmCont_vmc_while_cond", "VmCont_vmc_while_body", "VmCont_vmc_pushint" in loading "VmCont", but data does not satisfy any constructor');
 }
 
 // _ (HashmapE 256 ^DNSRecord) = DNS_RecordSet;
@@ -12635,7 +12635,7 @@ export function loadTextChunkRef(slice: Slice, arg0: number): TextChunkRef {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "TextChunkRef_chunk_ref_empty", "TextChunkRef_chunk_ref" in loading "TextChunkRef", but data does not satisfy any constructor');
 }
 
 export function storeTextChunkRef(textChunkRef: TextChunkRef): (builder: Builder) => void {
@@ -12652,7 +12652,7 @@ export function storeTextChunkRef(textChunkRef: TextChunkRef): (builder: Builder
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "TextChunkRef_chunk_ref_empty", "TextChunkRef_chunk_ref" in loading "TextChunkRef", but data does not satisfy any constructor');
 }
 
 // text_chunk_empty$_ = TextChunks 0;
@@ -12679,7 +12679,7 @@ export function loadTextChunks(slice: Slice, arg0: number): TextChunks {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "TextChunks_text_chunk_empty", "TextChunks_text_chunk" in loading "TextChunks", but data does not satisfy any constructor');
 }
 
 export function storeTextChunks(textChunks: TextChunks): (builder: Builder) => void {
@@ -12696,7 +12696,7 @@ export function storeTextChunks(textChunks: TextChunks): (builder: Builder) => v
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "TextChunks_text_chunk_empty", "TextChunks_text_chunk" in loading "TextChunks", but data does not satisfy any constructor');
 }
 
 // text$_ chunks:(## 8) rest:(TextChunks chunks) = Text;
@@ -12761,7 +12761,7 @@ export function loadDNSRecord(slice: Slice): DNSRecord {
         let flags: number = slice.loadUint(8);
         let proto_list: ProtoList | undefined = ((flags & (1 << 0)) ? loadProtoList(slice) : undefined);
         if ((!(flags <= 1))) {
-            throw new Error('');
+            throw new Error('Condition (flags <= 1) is not satisfied while loading "DNSRecord_dns_adnl_address" for type "DNSRecord"');
         }
         return {
             kind: 'DNSRecord_dns_adnl_address',
@@ -12777,7 +12777,7 @@ export function loadDNSRecord(slice: Slice): DNSRecord {
         let flags: number = slice.loadUint(8);
         let cap_list: SmcCapList | undefined = ((flags & (1 << 0)) ? loadSmcCapList(slice) : undefined);
         if ((!(flags <= 1))) {
-            throw new Error('');
+            throw new Error('Condition (flags <= 1) is not satisfied while loading "DNSRecord_dns_smc_address" for type "DNSRecord"');
         }
         return {
             kind: 'DNSRecord_dns_smc_address',
@@ -12796,7 +12796,7 @@ export function loadDNSRecord(slice: Slice): DNSRecord {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "DNSRecord_dns_text", "DNSRecord_dns_next_resolver", "DNSRecord_dns_adnl_address", "DNSRecord_dns_smc_address", "DNSRecord_dns_storage_address" in loading "DNSRecord", but data does not satisfy any constructor');
 }
 
 export function storeDNSRecord(dNSRecord: DNSRecord): (builder: Builder) => void {
@@ -12823,7 +12823,7 @@ export function storeDNSRecord(dNSRecord: DNSRecord): (builder: Builder) => void
                 storeProtoList(dNSRecord.proto_list)(builder);
             }
             if ((!(dNSRecord.flags <= 1))) {
-                throw new Error('');
+                throw new Error('Condition (dNSRecord.flags <= 1) is not satisfied while loading "DNSRecord_dns_adnl_address" for type "DNSRecord"');
             }
         })
 
@@ -12837,7 +12837,7 @@ export function storeDNSRecord(dNSRecord: DNSRecord): (builder: Builder) => void
                 storeSmcCapList(dNSRecord.cap_list)(builder);
             }
             if ((!(dNSRecord.flags <= 1))) {
-                throw new Error('');
+                throw new Error('Condition (dNSRecord.flags <= 1) is not satisfied while loading "DNSRecord_dns_smc_address" for type "DNSRecord"');
             }
         })
 
@@ -12849,7 +12849,7 @@ export function storeDNSRecord(dNSRecord: DNSRecord): (builder: Builder) => void
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "DNSRecord_dns_text", "DNSRecord_dns_next_resolver", "DNSRecord_dns_adnl_address", "DNSRecord_dns_smc_address", "DNSRecord_dns_storage_address" in loading "DNSRecord", but data does not satisfy any constructor');
 }
 
 // proto_list_nil$0 = ProtoList;
@@ -12875,7 +12875,7 @@ export function loadProtoList(slice: Slice): ProtoList {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ProtoList_proto_list_nil", "ProtoList_proto_list_next" in loading "ProtoList", but data does not satisfy any constructor');
 }
 
 export function storeProtoList(protoList: ProtoList): (builder: Builder) => void {
@@ -12893,7 +12893,7 @@ export function storeProtoList(protoList: ProtoList): (builder: Builder) => void
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ProtoList_proto_list_nil", "ProtoList_proto_list_next" in loading "ProtoList", but data does not satisfy any constructor');
 }
 
 // proto_http#4854 = Protocol;
@@ -12906,7 +12906,7 @@ export function loadProtocol(slice: Slice): Protocol {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "Protocol" in loading "Protocol", but data does not satisfy any constructor');
 }
 
 export function storeProtocol(protocol: Protocol): (builder: Builder) => void {
@@ -12939,7 +12939,7 @@ export function loadSmcCapList(slice: Slice): SmcCapList {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "SmcCapList_cap_list_nil", "SmcCapList_cap_list_next" in loading "SmcCapList", but data does not satisfy any constructor');
 }
 
 export function storeSmcCapList(smcCapList: SmcCapList): (builder: Builder) => void {
@@ -12957,7 +12957,7 @@ export function storeSmcCapList(smcCapList: SmcCapList): (builder: Builder) => v
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "SmcCapList_cap_list_nil", "SmcCapList_cap_list_next" in loading "SmcCapList", but data does not satisfy any constructor');
 }
 
 // cap_method_seqno#5371 = SmcCapability;
@@ -12999,7 +12999,7 @@ export function loadSmcCapability(slice: Slice): SmcCapability {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "SmcCapability_cap_method_seqno", "SmcCapability_cap_method_pubkey", "SmcCapability_cap_is_wallet", "SmcCapability_cap_name" in loading "SmcCapability", but data does not satisfy any constructor');
 }
 
 export function storeSmcCapability(smcCapability: SmcCapability): (builder: Builder) => void {
@@ -13028,7 +13028,7 @@ export function storeSmcCapability(smcCapability: SmcCapability): (builder: Buil
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "SmcCapability_cap_method_seqno", "SmcCapability_cap_method_pubkey", "SmcCapability_cap_is_wallet", "SmcCapability_cap_name" in loading "SmcCapability", but data does not satisfy any constructor');
 }
 
 /*
@@ -13139,7 +13139,7 @@ export function loadChanState(slice: Slice): ChanState {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ChanState_chan_state_init", "ChanState_chan_state_close", "ChanState_chan_state_payout" in loading "ChanState", but data does not satisfy any constructor');
 }
 
 export function storeChanState(chanState: ChanState): (builder: Builder) => void {
@@ -13177,7 +13177,7 @@ export function storeChanState(chanState: ChanState): (builder: Builder) => void
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ChanState_chan_state_init", "ChanState_chan_state_close", "ChanState_chan_state_payout" in loading "ChanState", but data does not satisfy any constructor');
 }
 
 // chan_promise$_ channel_id:uint64 promise_A:Grams promise_B:Grams = ChanPromise;
@@ -13290,7 +13290,7 @@ export function loadChanMsg(slice: Slice): ChanMsg {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ChanMsg_chan_msg_init", "ChanMsg_chan_msg_close", "ChanMsg_chan_msg_timeout", "ChanMsg_chan_msg_payout" in loading "ChanMsg", but data does not satisfy any constructor');
 }
 
 export function storeChanMsg(chanMsg: ChanMsg): (builder: Builder) => void {
@@ -13326,7 +13326,7 @@ export function storeChanMsg(chanMsg: ChanMsg): (builder: Builder) => void {
         })
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ChanMsg_chan_msg_init", "ChanMsg_chan_msg_close", "ChanMsg_chan_msg_timeout", "ChanMsg_chan_msg_payout" in loading "ChanMsg", but data does not satisfy any constructor');
 }
 
 // chan_signed_msg$_ sig_A:(Maybe ^bits512) sig_B:(Maybe ^bits512) msg:ChanMsg = ChanSignedMsg;
@@ -13389,7 +13389,7 @@ export function loadChanOp(slice: Slice): ChanOp {
         }
 
     }
-    throw new Error('');
+    throw new Error('Expected one of "ChanOp" in loading "ChanOp", but data does not satisfy any constructor');
 }
 
 export function storeChanOp(chanOp: ChanOp): (builder: Builder) => void {
