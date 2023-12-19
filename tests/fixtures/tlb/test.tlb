@@ -129,3 +129,12 @@ bool_false$0 = Bool;
 bool_true$1 = Bool;
 
 _ a:Bool = BoolUser;
+
+anycast_info$_ depth:(#<= 30) { depth >= 1 }
+   rewrite_pfx:(bits depth) = Anycast;
+addr_std$10 anycast:(Maybe Anycast) 
+   workchain_id:int8 address:bits256  = MsgAddressInt;
+addr_var$11 anycast:(Maybe Anycast) addr_len:(## 9) 
+   workchain_id:int32 address:(bits addr_len) = MsgAddressInt;
+
+_ src:MsgAddressInt = AddressUser;

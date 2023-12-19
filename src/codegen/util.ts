@@ -438,9 +438,14 @@ function opCodeSetsEqual(a: string[], b: string[]) {
 
 export function checkAndRemovePrimitives(tlbCode: TLBCode, input: string[]) {
     let toDelete: string[] = []
-    tlbCode.types.forEach((tlbType: TLBType, name: string) => {
-        if (name == 'Bool') {
-            let opCodesExpected: string[] = [ '4702fd23', 'f0e8d7f' ]
+
+    let typesToDelete = new Map<string, string[]>();
+    typesToDelete.set('Bool', [ '4702fd23', 'f0e8d7f' ]);
+    typesToDelete.set('MsgAddressInt', [ 'd7b672a', '6d593e8a' ])
+
+    typesToDelete.forEach((opCodesExpected: string[], typeName: string) => {
+        let tlbType = tlbCode.types.get(typeName);
+        if (tlbType) {
             let opCodesActual: string[] = []
             tlbType.constructors.forEach(constructor => {
                 opCodesActual.push(calculateOpcode(constructor.declaration, input))
@@ -448,9 +453,10 @@ export function checkAndRemovePrimitives(tlbCode: TLBCode, input: string[]) {
             if (!opCodeSetsEqual(opCodesExpected, opCodesActual)) {
                 throw new Error('Bool primitive type is not correct in scheme')
             }
-            toDelete.push('Bool')
+            toDelete.push(typeName)
         }
     })
+    
     toDelete.forEach((name: string) => {
         tlbCode.types.delete(name)
     })

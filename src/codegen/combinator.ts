@@ -163,6 +163,8 @@ export function handleCombinator(expr: ParserExpression, fieldName: string, isFi
       exprForParam = {argLoadExpr: tNumericLiteral(theNum), argStoreExpr: tNumericLiteral(theNum), paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'}
     } else if (expr.name == 'Bool') {
       exprForParam = {argLoadExpr: undefined, argStoreExpr: undefined, paramType: 'boolean', fieldLoadSuffix: 'Boolean', fieldStoreSuffix: 'Bit'}
+    } else if (expr.name == 'MsgAddressInt') {
+      exprForParam = {argLoadExpr: undefined, argStoreExpr: undefined, paramType: 'Address', fieldLoadSuffix: 'Address', fieldStoreSuffix: 'Address'}
     } else {
       if (constructor.variablesMap.get(expr.name)?.type == '#') {
         result.loadExpr = getVarExprByName(expr.name, constructor)

@@ -16,6 +16,7 @@ export function generate(tree: Program, input: string) {
   jsCodeDeclarations.push(tImportDeclaration(tIdentifier('beginCell'), tStringLiteral('ton')))
   jsCodeDeclarations.push(tImportDeclaration(tIdentifier('BitString'), tStringLiteral('ton')))
   jsCodeDeclarations.push(tImportDeclaration(tIdentifier('Cell'), tStringLiteral('ton')))
+  jsCodeDeclarations.push(tImportDeclaration(tIdentifier('Address'), tStringLiteral('ton')))
 
   let jsCodeConstructorDeclarations: GenDeclaration[] = []
   let jsCodeFunctionsDeclarations: GenDeclaration[] = []

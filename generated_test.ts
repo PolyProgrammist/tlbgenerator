@@ -3,6 +3,7 @@ import { Slice } from 'ton'
 import { beginCell } from 'ton'
 import { BitString } from 'ton'
 import { Cell } from 'ton'
+import { Address } from 'ton'
 export interface Simple {
     readonly kind: 'Simple';
     readonly a: number;
@@ -481,6 +482,17 @@ export interface RefCombinatorInRef {
 export interface BoolUser {
     readonly kind: 'BoolUser';
     readonly a: boolean;
+}
+
+export interface Anycast {
+    readonly kind: 'Anycast';
+    readonly depth: number;
+    readonly rewrite_pfx: BitString;
+}
+
+export interface AddressUser {
+    readonly kind: 'AddressUser';
+    readonly src: Address;
 }
 
 export function bitLen(n: number) {
@@ -2492,6 +2504,54 @@ export function loadBoolUser(slice: Slice): BoolUser {
 export function storeBoolUser(boolUser: BoolUser): (builder: Builder) => void {
     return ((builder: Builder) => {
         builder.storeBit(boolUser.a);
+    })
+
+}
+
+/*
+anycast_info$_ depth:(#<= 30) { depth >= 1 }
+   rewrite_pfx:(bits depth) = Anycast;
+*/
+
+export function loadAnycast(slice: Slice): Anycast {
+    let depth: number = slice.loadUint(bitLen(30));
+    let rewrite_pfx: BitString = slice.loadBits(depth);
+    if ((!(depth >= 1))) {
+        throw new Error('Condition (depth >= 1) is not satisfied while loading "Anycast" for type "Anycast"');
+    }
+    return {
+        kind: 'Anycast',
+        depth: depth,
+        rewrite_pfx: rewrite_pfx,
+    }
+
+}
+
+export function storeAnycast(anycast: Anycast): (builder: Builder) => void {
+    return ((builder: Builder) => {
+        builder.storeUint(anycast.depth, bitLen(30));
+        builder.storeBits(anycast.rewrite_pfx);
+        if ((!(anycast.depth >= 1))) {
+            throw new Error('Condition (anycast.depth >= 1) is not satisfied while loading "Anycast" for type "Anycast"');
+        }
+    })
+
+}
+
+// _ src:MsgAddressInt = AddressUser;
+
+export function loadAddressUser(slice: Slice): AddressUser {
+    let src: Address = slice.loadAddress();
+    return {
+        kind: 'AddressUser',
+        src: src,
+    }
+
+}
+
+export function storeAddressUser(addressUser: AddressUser): (builder: Builder) => void {
+    return ((builder: Builder) => {
+        builder.storeAddress(addressUser.src);
     })
 
 }

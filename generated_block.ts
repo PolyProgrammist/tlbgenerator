@@ -3,6 +3,7 @@ import { Slice } from 'ton'
 import { beginCell } from 'ton'
 import { BitString } from 'ton'
 import { Cell } from 'ton'
+import { Address } from 'ton'
 export interface Unit {
     readonly kind: 'Unit';
 }
@@ -272,28 +273,11 @@ export interface Anycast {
     readonly rewrite_pfx: BitString;
 }
 
-export type MsgAddressInt = MsgAddressInt_addr_std | MsgAddressInt_addr_var;
-
-export interface MsgAddressInt_addr_std {
-    readonly kind: 'MsgAddressInt_addr_std';
-    readonly anycast: Maybe<Anycast>;
-    readonly workchain_id: number;
-    readonly address: BitString;
-}
-
-export interface MsgAddressInt_addr_var {
-    readonly kind: 'MsgAddressInt_addr_var';
-    readonly anycast: Maybe<Anycast>;
-    readonly addr_len: number;
-    readonly workchain_id: number;
-    readonly address: BitString;
-}
-
 export type MsgAddress = MsgAddress__ | MsgAddress__1;
 
 export interface MsgAddress__ {
     readonly kind: 'MsgAddress__';
-    readonly _: MsgAddressInt;
+    readonly _: Address;
 }
 
 export interface MsgAddress__1 {
@@ -343,8 +327,8 @@ export interface CommonMsgInfo_int_msg_info {
     readonly ihr_disabled: boolean;
     readonly bounce: boolean;
     readonly bounced: boolean;
-    readonly src: MsgAddressInt;
-    readonly dest: MsgAddressInt;
+    readonly src: Address;
+    readonly dest: Address;
     readonly value: CurrencyCollection;
     readonly ihr_fee: Grams;
     readonly fwd_fee: Grams;
@@ -355,13 +339,13 @@ export interface CommonMsgInfo_int_msg_info {
 export interface CommonMsgInfo_ext_in_msg_info {
     readonly kind: 'CommonMsgInfo_ext_in_msg_info';
     readonly src: MsgAddressExt;
-    readonly dest: MsgAddressInt;
+    readonly dest: Address;
     readonly import_fee: Grams;
 }
 
 export interface CommonMsgInfo_ext_out_msg_info {
     readonly kind: 'CommonMsgInfo_ext_out_msg_info';
-    readonly src: MsgAddressInt;
+    readonly src: Address;
     readonly dest: MsgAddressExt;
     readonly created_lt: number;
     readonly created_at: number;
@@ -375,7 +359,7 @@ export interface CommonMsgInfoRelaxed_int_msg_info {
     readonly bounce: boolean;
     readonly bounced: boolean;
     readonly src: MsgAddress;
-    readonly dest: MsgAddressInt;
+    readonly dest: Address;
     readonly value: CurrencyCollection;
     readonly ihr_fee: Grams;
     readonly fwd_fee: Grams;
@@ -655,7 +639,7 @@ export interface Account_account_none {
 
 export interface Account_account {
     readonly kind: 'Account_account';
-    readonly addr: MsgAddressInt;
+    readonly addr: Address;
     readonly storage_stat: StorageInfo;
     readonly storage: AccountStorage;
 }
@@ -957,7 +941,7 @@ export interface SmartContractInfo {
     readonly trans_lt: number;
     readonly rand_seed: BitString;
     readonly balance_remaining: CurrencyCollection;
-    readonly myself: MsgAddressInt;
+    readonly myself: Address;
     readonly global_config: Maybe<Slice>;
 }
 
@@ -2380,7 +2364,7 @@ export interface DNSRecord_dns_text {
 
 export interface DNSRecord_dns_next_resolver {
     readonly kind: 'DNSRecord_dns_next_resolver';
-    readonly resolver: MsgAddressInt;
+    readonly resolver: Address;
 }
 
 export interface DNSRecord_dns_adnl_address {
@@ -2392,7 +2376,7 @@ export interface DNSRecord_dns_adnl_address {
 
 export interface DNSRecord_dns_smc_address {
     readonly kind: 'DNSRecord_dns_smc_address';
-    readonly smc_addr: MsgAddressInt;
+    readonly smc_addr: Address;
     readonly flags: number;
     readonly cap_list: SmcCapList | undefined;
 }
@@ -2455,8 +2439,8 @@ export interface ChanConfig {
     readonly close_timeout: number;
     readonly a_key: BitString;
     readonly b_key: BitString;
-    readonly a_addr: MsgAddressInt;
-    readonly b_addr: MsgAddressInt;
+    readonly a_addr: Address;
+    readonly b_addr: Address;
     readonly channel_id: number;
     readonly min_A_extra: Grams;
 }
@@ -3659,78 +3643,13 @@ export function storeAnycast(anycast: Anycast): (builder: Builder) => void {
 
 }
 
-/*
-addr_std$10 anycast:(Maybe Anycast) 
-   workchain_id:int8 address:bits256  = MsgAddressInt;
-*/
-
-/*
-addr_var$11 anycast:(Maybe Anycast) addr_len:(## 9) 
-   workchain_id:int32 address:(bits addr_len) = MsgAddressInt;
-*/
-
-export function loadMsgAddressInt(slice: Slice): MsgAddressInt {
-    if (((slice.remainingBits >= 2) && (slice.preloadUint(2) == 0b10))) {
-        slice.loadUint(2);
-        let anycast: Maybe<Anycast> = loadMaybe<Anycast>(slice, loadAnycast);
-        let workchain_id: number = slice.loadInt(8);
-        let address: BitString = slice.loadBits(256);
-        return {
-            kind: 'MsgAddressInt_addr_std',
-            anycast: anycast,
-            workchain_id: workchain_id,
-            address: address,
-        }
-
-    }
-    if (((slice.remainingBits >= 2) && (slice.preloadUint(2) == 0b11))) {
-        slice.loadUint(2);
-        let anycast: Maybe<Anycast> = loadMaybe<Anycast>(slice, loadAnycast);
-        let addr_len: number = slice.loadUint(9);
-        let workchain_id: number = slice.loadInt(32);
-        let address: BitString = slice.loadBits(addr_len);
-        return {
-            kind: 'MsgAddressInt_addr_var',
-            anycast: anycast,
-            addr_len: addr_len,
-            workchain_id: workchain_id,
-            address: address,
-        }
-
-    }
-    throw new Error('Expected one of "MsgAddressInt_addr_std", "MsgAddressInt_addr_var" in loading "MsgAddressInt", but data does not satisfy any constructor');
-}
-
-export function storeMsgAddressInt(msgAddressInt: MsgAddressInt): (builder: Builder) => void {
-    if ((msgAddressInt.kind == 'MsgAddressInt_addr_std')) {
-        return ((builder: Builder) => {
-            builder.storeUint(0b10, 2);
-            storeMaybe<Anycast>(msgAddressInt.anycast, storeAnycast)(builder);
-            builder.storeInt(msgAddressInt.workchain_id, 8);
-            builder.storeBits(msgAddressInt.address);
-        })
-
-    }
-    if ((msgAddressInt.kind == 'MsgAddressInt_addr_var')) {
-        return ((builder: Builder) => {
-            builder.storeUint(0b11, 2);
-            storeMaybe<Anycast>(msgAddressInt.anycast, storeAnycast)(builder);
-            builder.storeUint(msgAddressInt.addr_len, 9);
-            builder.storeInt(msgAddressInt.workchain_id, 32);
-            builder.storeBits(msgAddressInt.address);
-        })
-
-    }
-    throw new Error('Expected one of "MsgAddressInt_addr_std", "MsgAddressInt_addr_var" in loading "MsgAddressInt", but data does not satisfy any constructor');
-}
-
 // _ _:MsgAddressInt = MsgAddress;
 
 // _ _:MsgAddressExt = MsgAddress;
 
 export function loadMsgAddress(slice: Slice): MsgAddress {
     if (true) {
-        let _: MsgAddressInt = loadMsgAddressInt(slice);
+        let _: Address = slice.loadAddress();
         return {
             kind: 'MsgAddress__',
             _: _,
@@ -3751,7 +3670,7 @@ export function loadMsgAddress(slice: Slice): MsgAddress {
 export function storeMsgAddress(msgAddress: MsgAddress): (builder: Builder) => void {
     if ((msgAddress.kind == 'MsgAddress__')) {
         return ((builder: Builder) => {
-            storeMsgAddressInt(msgAddress._)(builder);
+            builder.storeAddress(msgAddress._);
         })
 
     }
@@ -3926,8 +3845,8 @@ export function loadCommonMsgInfo(slice: Slice): CommonMsgInfo {
         let ihr_disabled: boolean = slice.loadBoolean();
         let bounce: boolean = slice.loadBoolean();
         let bounced: boolean = slice.loadBoolean();
-        let src: MsgAddressInt = loadMsgAddressInt(slice);
-        let dest: MsgAddressInt = loadMsgAddressInt(slice);
+        let src: Address = slice.loadAddress();
+        let dest: Address = slice.loadAddress();
         let value: CurrencyCollection = loadCurrencyCollection(slice);
         let ihr_fee: Grams = loadGrams(slice);
         let fwd_fee: Grams = loadGrams(slice);
@@ -3951,7 +3870,7 @@ export function loadCommonMsgInfo(slice: Slice): CommonMsgInfo {
     if (((slice.remainingBits >= 2) && (slice.preloadUint(2) == 0b10))) {
         slice.loadUint(2);
         let src: MsgAddressExt = loadMsgAddressExt(slice);
-        let dest: MsgAddressInt = loadMsgAddressInt(slice);
+        let dest: Address = slice.loadAddress();
         let import_fee: Grams = loadGrams(slice);
         return {
             kind: 'CommonMsgInfo_ext_in_msg_info',
@@ -3963,7 +3882,7 @@ export function loadCommonMsgInfo(slice: Slice): CommonMsgInfo {
     }
     if (((slice.remainingBits >= 2) && (slice.preloadUint(2) == 0b11))) {
         slice.loadUint(2);
-        let src: MsgAddressInt = loadMsgAddressInt(slice);
+        let src: Address = slice.loadAddress();
         let dest: MsgAddressExt = loadMsgAddressExt(slice);
         let created_lt: number = slice.loadUint(64);
         let created_at: number = slice.loadUint(32);
@@ -3986,8 +3905,8 @@ export function storeCommonMsgInfo(commonMsgInfo: CommonMsgInfo): (builder: Buil
             builder.storeBit(commonMsgInfo.ihr_disabled);
             builder.storeBit(commonMsgInfo.bounce);
             builder.storeBit(commonMsgInfo.bounced);
-            storeMsgAddressInt(commonMsgInfo.src)(builder);
-            storeMsgAddressInt(commonMsgInfo.dest)(builder);
+            builder.storeAddress(commonMsgInfo.src);
+            builder.storeAddress(commonMsgInfo.dest);
             storeCurrencyCollection(commonMsgInfo.value)(builder);
             storeGrams(commonMsgInfo.ihr_fee)(builder);
             storeGrams(commonMsgInfo.fwd_fee)(builder);
@@ -4000,7 +3919,7 @@ export function storeCommonMsgInfo(commonMsgInfo: CommonMsgInfo): (builder: Buil
         return ((builder: Builder) => {
             builder.storeUint(0b10, 2);
             storeMsgAddressExt(commonMsgInfo.src)(builder);
-            storeMsgAddressInt(commonMsgInfo.dest)(builder);
+            builder.storeAddress(commonMsgInfo.dest);
             storeGrams(commonMsgInfo.import_fee)(builder);
         })
 
@@ -4008,7 +3927,7 @@ export function storeCommonMsgInfo(commonMsgInfo: CommonMsgInfo): (builder: Buil
     if ((commonMsgInfo.kind == 'CommonMsgInfo_ext_out_msg_info')) {
         return ((builder: Builder) => {
             builder.storeUint(0b11, 2);
-            storeMsgAddressInt(commonMsgInfo.src)(builder);
+            builder.storeAddress(commonMsgInfo.src);
             storeMsgAddressExt(commonMsgInfo.dest)(builder);
             builder.storeUint(commonMsgInfo.created_lt, 64);
             builder.storeUint(commonMsgInfo.created_at, 32);
@@ -4037,7 +3956,7 @@ export function loadCommonMsgInfoRelaxed(slice: Slice): CommonMsgInfoRelaxed {
         let bounce: boolean = slice.loadBoolean();
         let bounced: boolean = slice.loadBoolean();
         let src: MsgAddress = loadMsgAddress(slice);
-        let dest: MsgAddressInt = loadMsgAddressInt(slice);
+        let dest: Address = slice.loadAddress();
         let value: CurrencyCollection = loadCurrencyCollection(slice);
         let ihr_fee: Grams = loadGrams(slice);
         let fwd_fee: Grams = loadGrams(slice);
@@ -4084,7 +4003,7 @@ export function storeCommonMsgInfoRelaxed(commonMsgInfoRelaxed: CommonMsgInfoRel
             builder.storeBit(commonMsgInfoRelaxed.bounce);
             builder.storeBit(commonMsgInfoRelaxed.bounced);
             storeMsgAddress(commonMsgInfoRelaxed.src)(builder);
-            storeMsgAddressInt(commonMsgInfoRelaxed.dest)(builder);
+            builder.storeAddress(commonMsgInfoRelaxed.dest);
             storeCurrencyCollection(commonMsgInfoRelaxed.value)(builder);
             storeGrams(commonMsgInfoRelaxed.ihr_fee)(builder);
             storeGrams(commonMsgInfoRelaxed.fwd_fee)(builder);
@@ -5390,7 +5309,7 @@ export function loadAccount(slice: Slice): Account {
     }
     if (((slice.remainingBits >= 1) && (slice.preloadUint(1) == 0b1))) {
         slice.loadUint(1);
-        let addr: MsgAddressInt = loadMsgAddressInt(slice);
+        let addr: Address = slice.loadAddress();
         let storage_stat: StorageInfo = loadStorageInfo(slice);
         let storage: AccountStorage = loadAccountStorage(slice);
         return {
@@ -5414,7 +5333,7 @@ export function storeAccount(account: Account): (builder: Builder) => void {
     if ((account.kind == 'Account_account')) {
         return ((builder: Builder) => {
             builder.storeUint(0b1, 1);
-            storeMsgAddressInt(account.addr)(builder);
+            builder.storeAddress(account.addr);
             storeStorageInfo(account.storage_stat)(builder);
             storeAccountStorage(account.storage)(builder);
         })
@@ -6721,7 +6640,7 @@ export function loadSmartContractInfo(slice: Slice): SmartContractInfo {
         let trans_lt: number = slice.loadUint(64);
         let rand_seed: BitString = slice.loadBits(256);
         let balance_remaining: CurrencyCollection = loadCurrencyCollection(slice);
-        let myself: MsgAddressInt = loadMsgAddressInt(slice);
+        let myself: Address = slice.loadAddress();
         let global_config: Maybe<Slice> = loadMaybe<Slice>(slice, ((slice: Slice) => {
             return slice
 
@@ -6753,7 +6672,7 @@ export function storeSmartContractInfo(smartContractInfo: SmartContractInfo): (b
         builder.storeUint(smartContractInfo.trans_lt, 64);
         builder.storeBits(smartContractInfo.rand_seed);
         storeCurrencyCollection(smartContractInfo.balance_remaining)(builder);
-        storeMsgAddressInt(smartContractInfo.myself)(builder);
+        builder.storeAddress(smartContractInfo.myself);
         storeMaybe<Slice>(smartContractInfo.global_config, ((arg: Slice) => {
             return ((builder: Builder) => {
                 builder.storeSlice(arg);
@@ -12700,7 +12619,7 @@ export function loadDNSRecord(slice: Slice): DNSRecord {
     }
     if (((slice.remainingBits >= 16) && (slice.preloadUint(16) == 0xba93))) {
         slice.loadUint(16);
-        let resolver: MsgAddressInt = loadMsgAddressInt(slice);
+        let resolver: Address = slice.loadAddress();
         return {
             kind: 'DNSRecord_dns_next_resolver',
             resolver: resolver,
@@ -12725,7 +12644,7 @@ export function loadDNSRecord(slice: Slice): DNSRecord {
     }
     if (((slice.remainingBits >= 16) && (slice.preloadUint(16) == 0x9fd3))) {
         slice.loadUint(16);
-        let smc_addr: MsgAddressInt = loadMsgAddressInt(slice);
+        let smc_addr: Address = slice.loadAddress();
         let flags: number = slice.loadUint(8);
         let cap_list: SmcCapList | undefined = ((flags & (1 << 0)) ? loadSmcCapList(slice) : undefined);
         if ((!(flags <= 1))) {
@@ -12762,7 +12681,7 @@ export function storeDNSRecord(dNSRecord: DNSRecord): (builder: Builder) => void
     if ((dNSRecord.kind == 'DNSRecord_dns_next_resolver')) {
         return ((builder: Builder) => {
             builder.storeUint(0xba93, 16);
-            storeMsgAddressInt(dNSRecord.resolver)(builder);
+            builder.storeAddress(dNSRecord.resolver);
         })
 
     }
@@ -12783,7 +12702,7 @@ export function storeDNSRecord(dNSRecord: DNSRecord): (builder: Builder) => void
     if ((dNSRecord.kind == 'DNSRecord_dns_smc_address')) {
         return ((builder: Builder) => {
             builder.storeUint(0x9fd3, 16);
-            storeMsgAddressInt(dNSRecord.smc_addr)(builder);
+            builder.storeAddress(dNSRecord.smc_addr);
             builder.storeUint(dNSRecord.flags, 8);
             if ((dNSRecord.cap_list != undefined)) {
                 storeSmcCapList(dNSRecord.cap_list)(builder);
@@ -12994,9 +12913,9 @@ export function loadChanConfig(slice: Slice): ChanConfig {
     let a_key: BitString = slice.loadBits(256);
     let b_key: BitString = slice.loadBits(256);
     let slice1 = slice.loadRef().beginParse();
-    let a_addr: MsgAddressInt = loadMsgAddressInt(slice1);
+    let a_addr: Address = slice1.loadAddress();
     let slice2 = slice.loadRef().beginParse();
-    let b_addr: MsgAddressInt = loadMsgAddressInt(slice2);
+    let b_addr: Address = slice2.loadAddress();
     let channel_id: number = slice.loadUint(64);
     let min_A_extra: Grams = loadGrams(slice);
     return {
@@ -13020,10 +12939,10 @@ export function storeChanConfig(chanConfig: ChanConfig): (builder: Builder) => v
         builder.storeBits(chanConfig.a_key);
         builder.storeBits(chanConfig.b_key);
         let cell1 = beginCell();
-        storeMsgAddressInt(chanConfig.a_addr)(cell1);
+        cell1.storeAddress(chanConfig.a_addr);
         builder.storeRef(cell1);
         let cell2 = beginCell();
-        storeMsgAddressInt(chanConfig.b_addr)(cell2);
+        cell2.storeAddress(chanConfig.b_addr);
         builder.storeRef(cell2);
         builder.storeUint(chanConfig.channel_id, 64);
         storeGrams(chanConfig.min_A_extra)(builder);
