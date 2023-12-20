@@ -1,4 +1,4 @@
-import { CodeBuilder } from "./CodeBuilder";
+import { CodeBuilder } from "./generators/CodeBuilder";
 import util from 'util'
 
 export interface ASTNode {

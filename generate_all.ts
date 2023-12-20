@@ -6,7 +6,7 @@ import { parse } from './src'
 import { ast } from './src'
 import { generate } from './src/codegen/main'
 import { Program } from './src/ast/nodes'
-import { CodeBuilder } from './src/codegen/CodeBuilder'
+import { CodeBuilder } from './src/codegen/generators/CodeBuilder'
 
 
 const fixturesDir = path.resolve(__dirname, 'tests/fixtures')
