@@ -2,7 +2,7 @@ import { BuiltinZeroArgs, FieldCurlyExprDef, FieldNamedDef, Program, Declaration
 import { tIdentifier, tArrowFunctionExpression, tArrowFunctionType, tBinaryExpression, tBinaryNumericLiteral, tDeclareVariable, tExpressionStatement, tFunctionCall, tFunctionDeclaration, tIfStatement, tImportDeclaration, tMemberExpression, tNumericLiteral, tObjectExpression, tObjectProperty, tReturnStatement, tStringLiteral, tStructDeclaration, tTypeParametersExpression, tTypeWithParameters, tTypedIdentifier, tUnionTypeDeclaration, toCode, GenDeclaration, TypeWithParameters, ArrowFunctionExpression, tUnionTypeExpression, tUnaryOpExpression, StructDeclaration, FunctionDeclaration, tComment } from './generators/typescript/tsgen'
 import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructor, TLBParameter, TLBVariable, TLBConstructorTag } from './ast'
 import { Expression, Statement, Identifier, BinaryExpression, ASTNode, TypeExpression, TypeParametersExpression, ObjectProperty, TypedIdentifier } from './generators/typescript/tsgen'
-import { fillConstructors, firstLower, getCurrentSlice, bitLen, convertToMathExpr, splitForTypeValue, deriveMathExpression, getStringDeclaration } from '../utils'
+import { fillConstructors, firstLower, getCurrentSlice, bitLen, convertToMathExpr, splitForTypeValue, deriveMathExpression, getStringDeclaration } from './utils'
 import { getCondition } from "./generators/typescript/utils"
 import { getTypeParametersExpression } from "./generators/typescript/utils"
 import { convertToAST } from "./generators/typescript/utils"
@@ -10,8 +10,8 @@ import { constructorNodes } from '../parsing'
 import { handleType } from './type_handler'
 import { handleField } from './field_handler'
 import { getParamVarExpr } from './generators/typescript/utils'
-import { getSubStructName } from '../utils'
-import { goodVariableName } from '../utils'
+import { getSubStructName } from './utils'
+import { goodVariableName } from './utils'
 import { CodeBuilder } from './generators/CodeBuilder'
 
 export function generate(tree: Program, input: string) {

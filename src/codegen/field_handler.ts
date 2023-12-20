@@ -2,14 +2,14 @@ import { BuiltinZeroArgs, FieldCurlyExprDef, FieldNamedDef, Program, Declaration
 import { tIdentifier, tArrowFunctionExpression, tArrowFunctionType, tBinaryExpression, tBinaryNumericLiteral, tDeclareVariable, tExpressionStatement, tFunctionCall, tFunctionDeclaration, tIfStatement, tImportDeclaration, tMemberExpression, tNumericLiteral, tObjectExpression, tObjectProperty, tReturnStatement, tStringLiteral, tStructDeclaration, tTypeParametersExpression, tTypeWithParameters, tTypedIdentifier, GenDeclaration, tUnionTypeDeclaration, toCode, TypeWithParameters, ArrowFunctionExpression, FunctionDeclaration } from './generators/typescript/tsgen'
 import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructor, TLBParameter, TLBVariable } from './ast'
 import { Expression, Statement, Identifier, BinaryExpression, ASTNode, TypeExpression, TypeParametersExpression, ObjectProperty, TypedIdentifier } from './generators/typescript/tsgen'
-import { fillConstructors, firstLower, getCurrentSlice, bitLen, convertToMathExpr, splitForTypeValue, deriveMathExpression } from '../utils'
+import { fillConstructors, firstLower, getCurrentSlice, bitLen, convertToMathExpr, splitForTypeValue, deriveMathExpression } from './utils'
 import { getCondition } from "./generators/typescript/utils"
 import { getTypeParametersExpression } from "./generators/typescript/utils"
 import { convertToAST } from "./generators/typescript/utils"
 import { constructorNodes } from '../parsing'
 import { handleType } from './type_handler'
 import { addLoadProperty, getNegationDerivationFunctionBody, getParamVarExpr, sliceLoad } from './generators/typescript/utils'
-import { goodVariableName } from '../utils'
+import { goodVariableName } from './utils'
 
 export function handleField(field: FieldDefinition, slicePrefix: Array<number>, tlbCode: TLBCode, constructor: TLBConstructor, constructorLoadStatements: Statement[], subStructStoreStatements: Statement[], subStructProperties: TypedIdentifier[], subStructLoadProperties: ObjectProperty[], variableCombinatorName: string, variableSubStructName: string, jsCodeFunctionsDeclarations: GenDeclaration[], fieldIndex: string) {
   let currentSlice = getCurrentSlice(slicePrefix, 'slice');
