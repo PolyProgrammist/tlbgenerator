@@ -1,5 +1,5 @@
 import { Declaration } from "../../src/ast/nodes";
-import { Expression } from "../../src/codegen/tsgen";
+import { Expression } from "./generators/typescript/tsgen";
 
 export class TLBBinaryOp {
     constructor(
