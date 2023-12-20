@@ -13,15 +13,21 @@ import { getParamVarExpr } from './generators/typescript/utils'
 import { getSubStructName } from './utils'
 import { goodVariableName } from './utils'
 import { CodeBuilder } from './generators/CodeBuilder'
+import { CodeGenerator } from './generators/generator'
+import { TypescriptGenerator } from './generators/typescript/generator'
 
 export function generate(tree: Program, input: string) {
+  let codeGenerator: CodeGenerator = new TypescriptGenerator();
+  codeGenerator.addTonCoreClassUsage('Builder')
+  codeGenerator.addTonCoreClassUsage('Slice')
+  codeGenerator.addTonCoreClassUsage('beginCell')
+  codeGenerator.addTonCoreClassUsage('BitString')
+  codeGenerator.addTonCoreClassUsage('Cell')
+  codeGenerator.addTonCoreClassUsage('Address')
   let jsCodeDeclarations: GenDeclaration[] = []
-  jsCodeDeclarations.push(tImportDeclaration(tIdentifier('Builder'), tStringLiteral('ton'))) // importDeclaration([importSpecifier(identifier('Builder'), identifier('Builder'))], stringLiteral('../boc/Builder')))
-  jsCodeDeclarations.push(tImportDeclaration(tIdentifier('Slice'), tStringLiteral('ton')))  // importDeclaration([importSpecifier(identifier('Slice'), identifier('Slice'))], stringLiteral('../boc/Slice')))
-  jsCodeDeclarations.push(tImportDeclaration(tIdentifier('beginCell'), tStringLiteral('ton')))
-  jsCodeDeclarations.push(tImportDeclaration(tIdentifier('BitString'), tStringLiteral('ton')))
-  jsCodeDeclarations.push(tImportDeclaration(tIdentifier('Cell'), tStringLiteral('ton')))
-  jsCodeDeclarations.push(tImportDeclaration(tIdentifier('Address'), tStringLiteral('ton')))
+  codeGenerator.jsCodeDeclarations.forEach(declaration => {
+    jsCodeDeclarations.push(declaration)
+  })
 
   let jsCodeConstructorDeclarations: GenDeclaration[] = []
   let jsCodeFunctionsDeclarations: GenDeclaration[] = []
