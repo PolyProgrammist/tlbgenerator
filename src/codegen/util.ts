@@ -1,9 +1,8 @@
 import { SimpleExpr, NameExpr, NumberExpr, MathExpr, FieldBuiltinDef, NegateExpr, Declaration, CompareExpr, FieldCurlyExprDef, FieldNamedDef } from "../ast/nodes";
 import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructorTag, TLBConstructor, TLBParameter, TLBVariable } from "../codegen/ast"
-import { calculateOpcode, goodVariableName, isBadVarName } from "./helpers";
-import { Identifier, Expression, BinaryExpression } from "./tsgen";
-import { tIdentifier, tArrowFunctionExpression, tArrowFunctionType, tBinaryExpression, tBinaryNumericLiteral, tDeclareVariable, tExpressionStatement, tFunctionCall, tFunctionDeclaration, tIfStatement, tImportDeclaration, tMemberExpression, tNumericLiteral, tObjectExpression, tObjectProperty, tReturnStatement, tStringLiteral, tStructDeclaration, tTypeParametersExpression, tTypeWithParameters, tTypedIdentifier, tUnionTypeDeclaration, toCode } from './tsgen'
+import { tArrowFunctionExpression, tArrowFunctionType, tBinaryNumericLiteral, tDeclareVariable, tExpressionStatement, tFunctionCall, tFunctionDeclaration, tIfStatement, tImportDeclaration, tObjectExpression, tObjectProperty, tReturnStatement, tStringLiteral, tStructDeclaration, tTypeWithParameters, tTypedIdentifier, tUnionTypeDeclaration, toCode } from './tsgen'
 import util from 'util'
+import * as crc32 from "crc-32";
 
 export function convertToMathExpr(mathExpr: SimpleExpr | NameExpr | NumberExpr | CompareExpr, negated: boolean = false): TLBMathExpr {
     if (mathExpr instanceof NameExpr) {
@@ -40,31 +39,6 @@ export function convertToMathExpr(mathExpr: SimpleExpr | NameExpr | NumberExpr |
         }
     }
     return { n: 0, variables: new Set<string>(), hasNeg: false };
-}
-
-export function convertToAST(mathExpr: TLBMathExpr, constructor: TLBConstructor, calculate: boolean = true, objectId?: Identifier): Expression {
-    if (calculate) {
-        mathExpr = getCalculatedExpression(mathExpr, constructor)
-    }
-    if (mathExpr instanceof TLBVarExpr) {
-        let varName = mathExpr.x;
-        varName = goodVariableName(varName, '0');
-        if (objectId != undefined) {
-            return tMemberExpression(objectId, tIdentifier(varName));
-        }
-        return tIdentifier(varName);
-    }
-    if (mathExpr instanceof TLBNumberExpr) {
-        return tNumericLiteral(mathExpr.n)
-    }
-    if (mathExpr instanceof TLBBinaryOp) {
-        let operation: string = mathExpr.operation;
-        if (operation == '=') {
-            operation = '=='
-        }
-        return tBinaryExpression(convertToAST(mathExpr.left, constructor, calculate, objectId), operation, convertToAST(mathExpr.right, constructor, calculate, objectId));
-    }
-    return tIdentifier('');
 }
 
 export function getNegatedVariable(mathExpr: TLBMathExpr): string | undefined {
@@ -131,15 +105,15 @@ export function reorganizeExpression(mathExpr: TLBMathExpr, variable: string): T
     return { n: 0, variables: new Set<string>(), hasNeg: false }
 }
 
-export function getXname(myMathExpr: TLBMathExpr): string {
+export function getVariableName(myMathExpr: TLBMathExpr): string {
     if (myMathExpr instanceof TLBVarExpr) {
         return myMathExpr.x;
     }
     if (myMathExpr instanceof TLBBinaryOp) {
         if (myMathExpr.left.variables.size) {
-            return getXname(myMathExpr.left);
+            return getVariableName(myMathExpr.left);
         } else {
-            return getXname(myMathExpr.right);
+            return getVariableName(myMathExpr.right);
         }
     }
     return '';
@@ -147,9 +121,8 @@ export function getXname(myMathExpr: TLBMathExpr): string {
 
 export function deriveMathExpression(mathExpr: MathExpr | NameExpr | NumberExpr | CompareExpr) {
     let myMathExpr = convertToMathExpr(mathExpr);
-    // let derived = convertToAST(myMathExpr)
     return {
-        name: getXname(myMathExpr),
+        name: getVariableName(myMathExpr),
         derived: myMathExpr,
     }
 }
@@ -189,17 +162,6 @@ export function bitLen(n: number) {
     return n.toString(2).length;
 }
 
-export function getTypeParametersExpression(parameters: Array<TLBParameter>) {
-    let structTypeParameters: Array<Identifier> = []
-    parameters.forEach(element => {
-        if (element.variable.type == 'Type') {
-            structTypeParameters.push(tIdentifier(element.variable.name))
-        }
-    });
-    let structTypeParametersExpr = tTypeParametersExpression(structTypeParameters);
-    return structTypeParametersExpr;
-}
-
 function constructorPriority(c: TLBConstructor): number {
     let result = 0;
     if (c.tag.bitLen > 0) {
@@ -223,19 +185,6 @@ export function compareConstructors(a: TLBConstructor, b: TLBConstructor): numbe
         return -1;
     }
     return 0;
-}
-
-export function getCondition(conditions: Array<BinaryExpression>): Expression {
-    let cnd = conditions[0];
-    if (cnd) {
-        if (conditions.length > 1) {
-            return tBinaryExpression(cnd, '&&', getCondition(conditions.slice(1)));
-        } else {
-            return cnd
-        }
-    } else {
-        return tIdentifier('true');
-    }
 }
 
 export function checkConstructors(tlbType: TLBType) {
@@ -544,3 +493,70 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
     });
     checkAndRemovePrimitives(tlbCode, input);
 }
+export function isBadVarName(name: string): boolean {
+  let tsReserved = [
+    'abstract', 'arguments', 'await', 'boolean',
+    'break', 'byte', 'case', 'catch',
+    'char', 'class', 'const', 'continue',
+    'debugger', 'default', 'delete', 'do',
+    'double', 'else', 'enum', 'eval',
+    'export', 'extends', 'false', 'final',
+    'finally', 'float', 'for', 'function',
+    'goto', 'if', 'implements', 'import',
+    'in', 'instanceof', 'int', 'interface',
+    'let', 'long', 'native', 'new',
+    'null', 'package', 'private', 'protected',
+    'public', 'return', 'short', 'static',
+    'super', 'switch', 'synchronized', 'this',
+    'throw', 'throws', 'transient', 'true',
+    'try', 'typeof', 'var', 'void',
+    'volatile', 'while', 'with', 'yield'
+  ]
+  if (tsReserved.includes(name)) {
+    return true
+  }
+  if (name.startsWith('slice')) {
+    return true
+  }
+  if (name.startsWith('cell')) {
+    return true
+  }
+  if (name == 'builder') {
+    return true
+  }
+  return false
+}export function goodVariableName(name: string, possibleSuffix: string = '0'): string {
+  if (name.startsWith('slice') || name.startsWith('cell')) {
+    name = '_' + name
+  }
+  while (isBadVarName(name)) {
+    name += possibleSuffix
+  }
+  return name
+}
+export function getSubStructName(tlbType: TLBType, constructor: TLBConstructor): string {
+  if (tlbType.constructors.length > 1) {
+    return tlbType.name + '_' + constructor.name
+  } else {
+    return tlbType.name
+  }
+}
+export function calculateOpcode(declaration: Declaration, input: string[]): string {
+  let scheme = getStringDeclaration(declaration, input)
+  let constructor = scheme.substring(0, scheme.indexOf(' '))
+  const rest = scheme.substring(scheme.indexOf(' '))
+  if (constructor.includes('#')) {
+    constructor = constructor.substring(0, constructor.indexOf('#'))
+  }
+  scheme =
+    constructor +
+    ' ' +
+    rest
+      .replace(/\(/g, '')
+      .replace(/\)/g, '')
+      .replace(/\s+/g, ' ')
+      .replace(/;/g, '')
+      .trim()
+  return (BigInt(crc32.str(scheme)) & BigInt(2147483647)).toString(16)
+}
+
