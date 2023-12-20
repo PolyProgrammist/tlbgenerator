@@ -1,6 +1,6 @@
-import { SimpleExpr, NameExpr, NumberExpr, MathExpr, FieldBuiltinDef, NegateExpr, Declaration, CompareExpr, FieldCurlyExprDef, FieldNamedDef } from "../ast/nodes";
-import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructorTag, TLBConstructor, TLBParameter, TLBVariable } from "./ast"
-import { tArrowFunctionExpression, tArrowFunctionType, tBinaryNumericLiteral, tDeclareVariable, tExpressionStatement, tFunctionCall, tFunctionDeclaration, tIfStatement, tImportDeclaration, tObjectExpression, tObjectProperty, tReturnStatement, tStringLiteral, tStructDeclaration, tTypeWithParameters, tTypedIdentifier, tUnionTypeDeclaration, toCode } from './generators/typescript/tsgen'
+import { SimpleExpr, NameExpr, NumberExpr, MathExpr, FieldBuiltinDef, NegateExpr, Declaration, CompareExpr, FieldCurlyExprDef, FieldNamedDef } from "./ast/nodes";
+import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructorTag, TLBConstructor, TLBParameter, TLBVariable } from "./codegen/ast"
+import { tArrowFunctionExpression, tArrowFunctionType, tBinaryNumericLiteral, tDeclareVariable, tExpressionStatement, tFunctionCall, tFunctionDeclaration, tIfStatement, tImportDeclaration, tObjectExpression, tObjectProperty, tReturnStatement, tStringLiteral, tStructDeclaration, tTypeWithParameters, tTypedIdentifier, tUnionTypeDeclaration, toCode } from './codegen/generators/typescript/tsgen'
 import util from 'util'
 import * as crc32 from "crc-32";
 
