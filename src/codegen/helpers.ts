@@ -4,7 +4,7 @@ import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, 
 import { Expression, Statement, Identifier, BinaryExpression, ASTNode, TypeExpression, TypeParametersExpression, ObjectProperty, TypedIdentifier } from './tsgen'
 import { fillConstructors, firstLower, getTypeParametersExpression, getCurrentSlice, bitLen, convertToAST, convertToMathExpr, getCondition, splitForTypeValue, deriveMathExpression, getStringDeclaration } from './util'
 import { constructorNodes } from '../parsing'
-import { handleCombinator } from './combinator'
+import { handleType } from './type_handler'
 import * as crc32 from 'crc-32';
 
 

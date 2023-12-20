@@ -4,8 +4,8 @@ import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, 
 import { Expression, Statement, Identifier, BinaryExpression, ASTNode, TypeExpression, TypeParametersExpression, ObjectProperty, TypedIdentifier } from './tsgen'
 import { fillConstructors, firstLower, getTypeParametersExpression, getCurrentSlice, bitLen, convertToAST, convertToMathExpr, getCondition, splitForTypeValue, deriveMathExpression, getStringDeclaration } from './util'
 import { constructorNodes } from '../parsing'
-import { handleCombinator } from './combinator'
-import { handleField } from './field'
+import { handleType } from './type_handler'
+import { handleField } from './field_handler'
 import { getParamVarExpr, getSubStructName, goodVariableName } from './helpers'
 import { CodeBuilder } from './CodeBuilder'
 
