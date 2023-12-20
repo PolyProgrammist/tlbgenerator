@@ -4,6 +4,10 @@ import { beginCell } from 'ton'
 import { BitString } from 'ton'
 import { Cell } from 'ton'
 import { Address } from 'ton'
+export function bitLen(n: number) {
+    return n.toString(2).length;;
+}
+
 export interface Simple {
     readonly kind: 'Simple';
     readonly a: number;
@@ -493,10 +497,6 @@ export interface Anycast {
 export interface AddressUser {
     readonly kind: 'AddressUser';
     readonly src: Address;
-}
-
-export function bitLen(n: number) {
-    return n.toString(2).length;;
 }
 
 // tmpa$_ a:# b:# = Simple;

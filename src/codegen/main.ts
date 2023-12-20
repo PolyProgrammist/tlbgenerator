@@ -18,12 +18,16 @@ import { TypescriptGenerator } from './generators/typescript/generator'
 
 export function generate(tree: Program, input: string) {
   let codeGenerator: CodeGenerator = new TypescriptGenerator();
+  
   codeGenerator.addTonCoreClassUsage('Builder')
   codeGenerator.addTonCoreClassUsage('Slice')
   codeGenerator.addTonCoreClassUsage('beginCell')
   codeGenerator.addTonCoreClassUsage('BitString')
   codeGenerator.addTonCoreClassUsage('Cell')
   codeGenerator.addTonCoreClassUsage('Address')
+
+  codeGenerator.addBitLenFunction();
+
   let jsCodeDeclarations: GenDeclaration[] = []
   codeGenerator.jsCodeDeclarations.forEach(declaration => {
     jsCodeDeclarations.push(declaration)
@@ -32,9 +36,6 @@ export function generate(tree: Program, input: string) {
   let jsCodeConstructorDeclarations: GenDeclaration[] = []
   let jsCodeFunctionsDeclarations: GenDeclaration[] = []
 
-  jsCodeFunctionsDeclarations.push(tFunctionDeclaration(tIdentifier('bitLen'), tTypeParametersExpression([]), null, [tTypedIdentifier(tIdentifier('n'), tIdentifier('number'))], [
-    tExpressionStatement(tIdentifier('return n.toString(2).length;'))
-  ]))
 
 
   let tlbCode: TLBCode = { types: new Map<string, TLBType>() }

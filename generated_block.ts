@@ -4,6 +4,10 @@ import { beginCell } from 'ton'
 import { BitString } from 'ton'
 import { Cell } from 'ton'
 import { Address } from 'ton'
+export function bitLen(n: number) {
+    return n.toString(2).length;;
+}
+
 export interface Unit {
     readonly kind: 'Unit';
 }
@@ -2530,10 +2534,6 @@ export interface ChanData {
     readonly kind: 'ChanData';
     readonly config: ChanConfig;
     readonly state: ChanState;
-}
-
-export function bitLen(n: number) {
-    return n.toString(2).length;;
 }
 
 // unit$_ = Unit;
