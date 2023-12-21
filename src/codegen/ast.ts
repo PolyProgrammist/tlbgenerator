@@ -47,6 +47,23 @@ export type TLBVariable = {
     calculated: boolean
 }
 
+export type TLBNumberType = {
+    bits: TLBMathExpr
+}
+
+export type TLBNamedType = {
+    name: string
+    arguments: TLBVariable[]
+}
+
+export type TLBFieldType = TLBNumberType | TLBNamedType;
+
+export type TLBField = {
+    name: string
+    anonymous: boolean
+    fieldType: TLBFieldType
+}
+
 export type TLBParameter = {
     variable: TLBVariable,
     paramExpr: TLBMathExpr,
@@ -65,6 +82,7 @@ export type TLBConstructor = {
     variablesMap: Map<string, TLBVariable>
     parametersMap: Map<string, TLBParameter>
     name: string
+    fields: Array<TLBField>
     declaration: Declaration
     tag: TLBConstructorTag
     constraints: Array<TLBMathExpr>
