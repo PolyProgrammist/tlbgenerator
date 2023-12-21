@@ -1714,7 +1714,7 @@ export interface ConfigProposal {
     readonly kind: 'ConfigProposal';
     readonly param_id: number;
     readonly param_value: Maybe<Slice>;
-    readonly if_hash_equal: Maybe<number>;
+    readonly if_hash_equal: Maybe<bigint>;
 }
 
 export interface ConfigProposalStatus {
@@ -2008,7 +2008,7 @@ export interface OracleBridgeParams {
     readonly kind: 'OracleBridgeParams';
     readonly bridge_address: BitString;
     readonly oracle_mutlisig_address: BitString;
-    readonly oracles: HashmapE<number>;
+    readonly oracles: HashmapE<bigint>;
     readonly external_chain_address: BitString;
 }
 
@@ -2028,7 +2028,7 @@ export interface JettonBridgeParams_jetton_bridge_params_v0 {
     readonly kind: 'JettonBridgeParams_jetton_bridge_params_v0';
     readonly bridge_address: BitString;
     readonly oracles_address: BitString;
-    readonly oracles: HashmapE<number>;
+    readonly oracles: HashmapE<bigint>;
     readonly state_flags: number;
     readonly burn_bridge_fee: Coins;
 }
@@ -2037,7 +2037,7 @@ export interface JettonBridgeParams_jetton_bridge_params_v1 {
     readonly kind: 'JettonBridgeParams_jetton_bridge_params_v1';
     readonly bridge_address: BitString;
     readonly oracles_address: BitString;
-    readonly oracles: HashmapE<number>;
+    readonly oracles: HashmapE<bigint>;
     readonly state_flags: number;
     readonly prices: JettonBridgePrices;
     readonly external_chain_address: BitString;
@@ -9813,8 +9813,8 @@ export function loadConfigProposal(slice: Slice): ConfigProposal {
             return slice1
 
         }));
-        let if_hash_equal: Maybe<number> = loadMaybe<number>(slice, ((slice: Slice) => {
-            return slice.loadUint(256)
+        let if_hash_equal: Maybe<bigint> = loadMaybe<bigint>(slice, ((slice: Slice) => {
+            return slice.loadUintBig(256)
 
         }));
         return {
@@ -9841,7 +9841,7 @@ export function storeConfigProposal(configProposal: ConfigProposal): (builder: B
             })
 
         }))(builder);
-        storeMaybe<number>(configProposal.if_hash_equal, ((arg: number) => {
+        storeMaybe<bigint>(configProposal.if_hash_equal, ((arg: bigint) => {
             return ((builder: Builder) => {
                 builder.storeUint(arg, 256);
             })
@@ -11093,8 +11093,8 @@ export function storeSuspendedAddressList(suspendedAddressList: SuspendedAddress
 export function loadOracleBridgeParams(slice: Slice): OracleBridgeParams {
     let bridge_address: BitString = slice.loadBits(256);
     let oracle_mutlisig_address: BitString = slice.loadBits(256);
-    let oracles: HashmapE<number> = loadHashmapE<number>(slice, 256, ((slice: Slice) => {
-        return slice.loadUint(256)
+    let oracles: HashmapE<bigint> = loadHashmapE<bigint>(slice, 256, ((slice: Slice) => {
+        return slice.loadUintBig(256)
 
     }));
     let external_chain_address: BitString = slice.loadBits(256);
@@ -11112,7 +11112,7 @@ export function storeOracleBridgeParams(oracleBridgeParams: OracleBridgeParams):
     return ((builder: Builder) => {
         builder.storeBits(oracleBridgeParams.bridge_address);
         builder.storeBits(oracleBridgeParams.oracle_mutlisig_address);
-        storeHashmapE<number>(oracleBridgeParams.oracles, ((arg: number) => {
+        storeHashmapE<bigint>(oracleBridgeParams.oracles, ((arg: bigint) => {
             return ((builder: Builder) => {
                 builder.storeUint(arg, 256);
             })
@@ -11171,8 +11171,8 @@ export function loadJettonBridgeParams(slice: Slice): JettonBridgeParams {
         slice.loadUint(8);
         let bridge_address: BitString = slice.loadBits(256);
         let oracles_address: BitString = slice.loadBits(256);
-        let oracles: HashmapE<number> = loadHashmapE<number>(slice, 256, ((slice: Slice) => {
-            return slice.loadUint(256)
+        let oracles: HashmapE<bigint> = loadHashmapE<bigint>(slice, 256, ((slice: Slice) => {
+            return slice.loadUintBig(256)
 
         }));
         let state_flags: number = slice.loadUint(8);
@@ -11191,8 +11191,8 @@ export function loadJettonBridgeParams(slice: Slice): JettonBridgeParams {
         slice.loadUint(8);
         let bridge_address: BitString = slice.loadBits(256);
         let oracles_address: BitString = slice.loadBits(256);
-        let oracles: HashmapE<number> = loadHashmapE<number>(slice, 256, ((slice: Slice) => {
-            return slice.loadUint(256)
+        let oracles: HashmapE<bigint> = loadHashmapE<bigint>(slice, 256, ((slice: Slice) => {
+            return slice.loadUintBig(256)
 
         }));
         let state_flags: number = slice.loadUint(8);
@@ -11219,7 +11219,7 @@ export function storeJettonBridgeParams(jettonBridgeParams: JettonBridgeParams):
             builder.storeUint(0x00, 8);
             builder.storeBits(jettonBridgeParams.bridge_address);
             builder.storeBits(jettonBridgeParams.oracles_address);
-            storeHashmapE<number>(jettonBridgeParams.oracles, ((arg: number) => {
+            storeHashmapE<bigint>(jettonBridgeParams.oracles, ((arg: bigint) => {
                 return ((builder: Builder) => {
                     builder.storeUint(arg, 256);
                 })
@@ -11235,7 +11235,7 @@ export function storeJettonBridgeParams(jettonBridgeParams: JettonBridgeParams):
             builder.storeUint(0x01, 8);
             builder.storeBits(jettonBridgeParams.bridge_address);
             builder.storeBits(jettonBridgeParams.oracles_address);
-            storeHashmapE<number>(jettonBridgeParams.oracles, ((arg: number) => {
+            storeHashmapE<bigint>(jettonBridgeParams.oracles, ((arg: bigint) => {
                 return ((builder: Builder) => {
                     builder.storeUint(arg, 256);
                 })

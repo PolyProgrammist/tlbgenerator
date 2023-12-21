@@ -60,7 +60,8 @@ export function getType(expr: ParserExpression, fieldName: string, isField: bool
       } else {
         let argumentTypes: TLBFieldType[] = []
         expr.args.forEach((arg) => {
-
+          let thefield = getType(arg, fieldName, false, needArg, variableCombinatorName, variableSubStructName, constructor, fieldTypeName, argIndex, tlbCode);
+          argumentTypes.push(thefield)
         });
         // let typeExpression: TypeParametersExpression = tTypeParametersExpression([]);
         // let loadFunctionsArray: Array<Expression> = []
