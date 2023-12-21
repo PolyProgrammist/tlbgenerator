@@ -1,6 +1,6 @@
 import { BuiltinZeroArgs, FieldCurlyExprDef, FieldNamedDef, Program, Declaration, BuiltinOneArgExpr, NumberExpr, NameExpr, CombinatorExpr, FieldBuiltinDef, MathExpr, SimpleExpr, NegateExpr, CellRefExpr, FieldDefinition, FieldAnonymousDef, CondExpr, CompareExpr, Expression as ParserExpression, TypeExpr } from '../../../ast/nodes'
 import { tIdentifier, tArrowFunctionExpression, tArrowFunctionType, tBinaryExpression, tBinaryNumericLiteral, tDeclareVariable, tExpressionStatement, tFunctionCall, tFunctionDeclaration, tIfStatement, tImportDeclaration, tMemberExpression, tNumericLiteral, tObjectExpression, tObjectProperty, tReturnStatement, tStringLiteral, tStructDeclaration, tTypeParametersExpression, tTypeWithParameters, tTypedIdentifier, tUnionTypeDeclaration, toCode, TypeWithParameters, ArrowFunctionExpression, tMultiStatement, tUnionTypeExpression, tTernaryExpression, FunctionDeclaration, GenDeclaration } from './tsgen'
-import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructor, TLBParameter, TLBVariable, TLBFieldType } from '../../ast'
+import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructor, TLBParameter, TLBVariable, TLBFieldType, TLBNumberType } from '../../ast'
 import { Expression, Statement, Identifier, BinaryExpression, ASTNode, TypeExpression, TypeParametersExpression, ObjectProperty, TypedIdentifier } from './tsgen'
 import { fillConstructors, firstLower, getCurrentSlice, bitLen, convertToMathExpr, splitForTypeValue, deriveMathExpression } from '../../utils'
 import { getCondition } from "./utils"
@@ -27,6 +27,18 @@ type ExprForParam = {
   fieldStoreSuffix: string
 }
 
+function isBigInt(fieldType: TLBNumberType) {
+  if (fieldType.bits instanceof TLBNumberExpr) {
+    if (fieldType.bits.n <= 63) {
+      return false;
+    }
+  }
+  if (fieldType.maxBits && fieldType.maxBits <= 63) {
+    return false;
+  }
+  return true;
+}
+
 export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fieldName: string, isField: boolean, needArg: boolean, variableCombinatorName: string, variableSubStructName: string, currentSlice: string, currentCell: string, constructor: TLBConstructor, jsCodeFunctionsDeclarations: GenDeclaration[], fieldTypeName: string, argIndex: number, tlbCode: TLBCode, subStructLoadProperties: ObjectProperty[]): FieldInfoType {
   let theSlice = 'slice';
   let theCell = 'builder';
@@ -48,10 +60,14 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
   if (fieldType.kind == 'TLBNumberType') {
     exprForParam = {
       argLoadExpr: convertToAST(fieldType.bits, constructor, true),
-      argStoreExpr: convertToAST(fieldType.bits, constructor, true, tIdentifier(variableCombinatorName)),
+      argStoreExpr: convertToAST(fieldType.bits, constructor, false, tIdentifier(variableCombinatorName)),
       paramType: 'number',
       fieldLoadSuffix: fieldType.signed ? 'Int' : 'Uint',
       fieldStoreSuffix: fieldType.signed ? 'Int': 'Uint'
+    }
+    if (isBigInt(fieldType)) {
+      exprForParam.fieldLoadSuffix += 'Big';
+      exprForParam.paramType = 'bigint';
     }
   }
   
@@ -79,11 +95,14 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
         if (!parameter) {
           throw new Error('')
         }
-        exprForParam = {
-          argLoadExpr: getParamVarExpr(parameter, constructor), 
-          argStoreExpr: tMemberExpression(tIdentifier(variableCombinatorName), tIdentifier(goodVariableName(expr.arg.name))), 
-          paramType: 'bigint', fieldLoadSuffix: 'UintBig', fieldStoreSuffix: 'Uint'
-        }
+        // if (exprForParam == undefined) {
+          exprForParam = {
+            argLoadExpr: getParamVarExpr(parameter, constructor), 
+            argStoreExpr: tMemberExpression(tIdentifier(variableCombinatorName), tIdentifier(goodVariableName(expr.arg.name))), 
+            paramType: 'bigint', fieldLoadSuffix: 'UintBig', fieldStoreSuffix: 'Uint'
+          }
+        // }
+       
       } // TODO: handle other cases
     } else if (expr.name == '#<') {
       if (expr.arg instanceof NumberExpr || expr.arg instanceof NameExpr) {

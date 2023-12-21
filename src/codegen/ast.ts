@@ -61,6 +61,7 @@ export type TLBNumberType = {
     kind: 'TLBNumberType'
     bits: TLBMathExpr
     signed: boolean
+    maxBits: number | undefined
 }
 
 export type TLBBitsType = {
