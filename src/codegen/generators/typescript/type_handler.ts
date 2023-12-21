@@ -309,7 +309,8 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
       result.typeParamExpr = tIdentifier(exprForParam.paramType)
     }
   } else if (expr instanceof NumberExpr) {
-    result.loadExpr = tNumericLiteral(expr.num)
+    result.loadExpr = convertToAST(new TLBNumberExpr(expr.num), constructor, true);
+    result.storeExpr = tExpressionStatement(result.loadExpr);
   } else if (expr instanceof NegateExpr && expr.expr instanceof NameExpr) { // TODO: handle other case
     let getParameterFunctionId = tIdentifier(variableSubStructName + '_get_' + expr.expr.name)
     jsCodeFunctionsDeclarations.push(tFunctionDeclaration(getParameterFunctionId, tTypeParametersExpression([]), tIdentifier('number'), [tTypedIdentifier(tIdentifier(goodVariableName(fieldName)), tIdentifier(fieldTypeName))], getNegationDerivationFunctionBody(tlbCode, fieldTypeName, argIndex, fieldName)))
