@@ -14,13 +14,13 @@ export function convertToMathExpr(mathExpr: SimpleExpr | NameExpr | NumberExpr |
     if (mathExpr instanceof MathExpr) {
         let left = convertToMathExpr(mathExpr.left, negated)
         let right = convertToMathExpr(mathExpr.right, negated)
-        return new TLBBinaryOp(left, right, mathExpr.op, new Set([...left.variables, ...right.variables]), left.hasNeg || right.hasNeg)
+        return new TLBBinaryOp(left, right, mathExpr.op)
     }
     if (mathExpr instanceof CompareExpr) {
         let left = convertToMathExpr(mathExpr.left, negated);
         let right = convertToMathExpr(mathExpr.right, negated);
         let operation: string = mathExpr.op;
-        return new TLBBinaryOp(left, right, operation, new Set([...left.variables, ...right.variables]), left.hasNeg || right.hasNeg)
+        return new TLBBinaryOp(left, right, operation)
     }
     if (mathExpr instanceof NegateExpr) {
         if (mathExpr.expr instanceof MathExpr || mathExpr.expr instanceof NameExpr || mathExpr.expr instanceof NumberExpr) {
@@ -87,8 +87,6 @@ export function reorganizeExpression(mathExpr: TLBMathExpr, variable: string): T
                 mathExpr.left,
                 other,
                 op,
-                new Set([...mathExpr.left.variables, ...other.variables]),
-                mathExpr.right.hasNeg || other.hasNeg
             )
             mathExpr = new TLBBinaryOp(
                 leftSide,

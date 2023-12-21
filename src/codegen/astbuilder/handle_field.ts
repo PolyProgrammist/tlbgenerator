@@ -1,5 +1,5 @@
 import { BuiltinOneArgExpr, BuiltinZeroArgs, CellRefExpr, CombinatorExpr, CondExpr, FieldExprDef, FieldNamedDef, MathExpr, NameExpr, NegateExpr, NumberExpr, Expression as ParserExpression } from "../../ast/nodes";
-import { TLBCode, TLBConstructor, TLBField, TLBFieldType, TLBNumberExpr, TLBNumberType, TLBType } from "../ast";
+import { TLBBinaryOp, TLBCode, TLBConstructor, TLBField, TLBFieldType, TLBNumberExpr, TLBNumberType, TLBType, TLBUnaryOp } from "../ast";
 import { GenDeclaration, ObjectProperty } from "../generators/typescript/tsgen";
 import { convertToMathExpr, firstLower, getSubStructName, goodVariableName, splitForTypeValue } from "../utils";
 
@@ -41,6 +41,11 @@ export function getType(expr: ParserExpression, fieldName: string, isField: bool
         } // TODO: handle other cases
       } else if (expr.name == '#<') {
         if (expr.arg instanceof NumberExpr || expr.arg instanceof NameExpr) {
+            // let left = convertToMathExpr(expr.arg);
+            // let right = new TLBNumberExpr(1)
+            // let argMinusOne = new TLBBinaryOp(left, right, '-', new Set([...left.variables, ...right.variables]), left.hasNeg || right.hasNeg)
+            // let theBitLen = new TLBUnaryOp(argMinusOne, '.', argMinusOne.variables, argMinusOne.hasNeg);
+            // return {bits: }
         //   exprForParam = {
         //     argLoadExpr: tFunctionCall(tIdentifier('bitLen'), [tBinaryExpression(convertToAST(convertToMathExpr(expr.arg), constructor, true), '-', tNumericLiteral(1))]), 
         //     argStoreExpr: tFunctionCall(tIdentifier('bitLen'), [tBinaryExpression(convertToAST(convertToMathExpr(expr.arg), constructor, true, tIdentifier(variableCombinatorName)), '-', tNumericLiteral(1))]), 

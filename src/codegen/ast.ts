@@ -5,8 +5,8 @@ export class TLBBinaryOp {
         readonly left: TLBMathExpr,
         readonly right: TLBMathExpr,
         readonly operation: string,
-        readonly variables: Set<string>,
-        readonly hasNeg: boolean
+        readonly variables: Set<string> = new Set([...left.variables, ...right.variables]),
+        readonly hasNeg: boolean = left.hasNeg || right.hasNeg
     ) {
     }
 }
@@ -18,6 +18,18 @@ export class TLBNumberExpr {
         readonly hasNeg: boolean = false
     ) {
 
+    }
+}
+
+export class TLBUnaryOp {
+    constructor(
+        readonly value: TLBMathExpr,
+        readonly operation: string, 
+        readonly variables: Set<string>,
+        readonly hasNeg: boolean
+    ) {
+        hasNeg = value.hasNeg
+        variables = value.variables
     }
 }
 
@@ -33,7 +45,7 @@ export class TLBVarExpr {
     }
 }
 
-export type TLBMathExpr = TLBBinaryOp | TLBNumberExpr | TLBVarExpr;
+export type TLBMathExpr = TLBBinaryOp | TLBNumberExpr | TLBVarExpr | TLBUnaryOp;
 
 export type TLBVariableType = 'Type' | '#';
 
