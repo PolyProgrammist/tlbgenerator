@@ -98,7 +98,12 @@ export type TLBUndefinedType = {
     kind: 'TLBUndefinedType'
 }
 
-export type TLBFieldType = TLBNumberType | TLBBitsType | TLBNamedType | TLBBoolType | TLBAddressType | TLBCellType | TLBUndefinedType | TLBMathExprType;
+export type TLBNegatedType = {
+    kind: 'TLBNegatedType'
+    variableName: string
+}
+
+export type TLBFieldType = TLBNumberType | TLBBitsType | TLBNamedType | TLBBoolType | TLBAddressType | TLBCellType | TLBUndefinedType | TLBMathExprType | TLBNegatedType;
 
 export type TLBField = {
     name: string

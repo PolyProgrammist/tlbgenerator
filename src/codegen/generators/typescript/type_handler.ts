@@ -96,6 +96,12 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
     result.loadExpr = convertToAST(fieldType.expr, constructor, true);
     result.storeExpr = tExpressionStatement(result.loadExpr)
   }
+
+  if (fieldType.kind == 'TLBNegatedType') {
+    let getParameterFunctionId = tIdentifier(variableSubStructName + '_get_' + fieldType.variableName)
+    jsCodeFunctionsDeclarations.push(tFunctionDeclaration(getParameterFunctionId, tTypeParametersExpression([]), tIdentifier('number'), [tTypedIdentifier(tIdentifier(goodVariableName(fieldName)), tIdentifier(fieldTypeName))], getNegationDerivationFunctionBody(tlbCode, fieldTypeName, argIndex, fieldName)))
+    result.negatedVariablesLoads.push({name: fieldType.variableName, expression: tFunctionCall(getParameterFunctionId, [tIdentifier(goodVariableName(fieldName))])})
+  }
   
   if (expr instanceof BuiltinZeroArgs) {
     if (expr.name == '#') {
@@ -319,9 +325,11 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
       result.storeExpr = tExpressionStatement(result.loadExpr);
     }
   } else if (expr instanceof NegateExpr && expr.expr instanceof NameExpr) { // TODO: handle other case
-    let getParameterFunctionId = tIdentifier(variableSubStructName + '_get_' + expr.expr.name)
-    jsCodeFunctionsDeclarations.push(tFunctionDeclaration(getParameterFunctionId, tTypeParametersExpression([]), tIdentifier('number'), [tTypedIdentifier(tIdentifier(goodVariableName(fieldName)), tIdentifier(fieldTypeName))], getNegationDerivationFunctionBody(tlbCode, fieldTypeName, argIndex, fieldName)))
-    result.negatedVariablesLoads.push({name: expr.expr.name, expression: tFunctionCall(getParameterFunctionId, [tIdentifier(goodVariableName(fieldName))])})
+    if (fieldType.kind == 'TLBUndefinedType') {
+      let getParameterFunctionId = tIdentifier(variableSubStructName + '_get_' + expr.expr.name)
+      jsCodeFunctionsDeclarations.push(tFunctionDeclaration(getParameterFunctionId, tTypeParametersExpression([]), tIdentifier('number'), [tTypedIdentifier(tIdentifier(goodVariableName(fieldName)), tIdentifier(fieldTypeName))], getNegationDerivationFunctionBody(tlbCode, fieldTypeName, argIndex, fieldName)))
+      result.negatedVariablesLoads.push({name: expr.expr.name, expression: tFunctionCall(getParameterFunctionId, [tIdentifier(goodVariableName(fieldName))])})
+    }
   } else if (expr instanceof CellRefExpr) {
     let currentSlice = getCurrentSlice([1, 0], 'slice');
     let currentCell = getCurrentSlice([1, 0], 'cell');

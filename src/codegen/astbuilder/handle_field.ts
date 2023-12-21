@@ -141,6 +141,7 @@ export function getType(expr: ParserExpression, fieldName: string, isField: bool
       return {kind: 'TLBExprMathType', expr: new TLBNumberExpr(expr.num)}
       //   result.loadExpr = tNumericLiteral(expr.num)
     } else if (expr instanceof NegateExpr && expr.expr instanceof NameExpr) { // TODO: handle other case
+      return {kind: 'TLBNegatedType', variableName: expr.expr.name}
     //   let getParameterFunctionId = tIdentifier(variableSubStructName + '_get_' + expr.expr.name)
     //   jsCodeFunctionsDeclarations.push(tFunctionDeclaration(getParameterFunctionId, tTypeParametersExpression([]), tIdentifier('number'), [tTypedIdentifier(tIdentifier(goodVariableName(fieldName)), tIdentifier(fieldTypeName))], getNegationDerivationFunctionBody(tlbCode, fieldTypeName, argIndex, fieldName)))
     //   result.negatedVariablesLoads.push({name: expr.expr.name, expression: tFunctionCall(getParameterFunctionId, [tIdentifier(goodVariableName(fieldName))])})
