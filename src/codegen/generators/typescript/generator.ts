@@ -1,8 +1,9 @@
 import { TLBCode, TLBType } from "../../ast";
 import { handleField } from "../../field_handler";
 import { firstLower, getStringDeclaration, getSubStructName, goodVariableName } from "../../utils";
+import { CodeBuilder } from "../CodeBuilder";
 import { CodeGenerator } from "../generator";
-import { BinaryExpression, GenDeclaration, ObjectProperty, Statement, StructDeclaration, TypeExpression, TypeParametersExpression, TypedIdentifier, tArrowFunctionExpression, tArrowFunctionType, tBinaryExpression, tComment, tExpressionStatement, tFunctionCall, tFunctionDeclaration, tIdentifier, tIfStatement, tImportDeclaration, tMemberExpression, tNumericLiteral, tObjectExpression, tObjectProperty, tReturnStatement, tStringLiteral, tStructDeclaration, tTypeParametersExpression, tTypeWithParameters, tTypedIdentifier, tUnaryOpExpression, tUnionTypeDeclaration, tUnionTypeExpression, toCode } from "./tsgen";
+import { BinaryExpression, GenDeclaration, ObjectProperty, Statement, StructDeclaration, TheNode, TypeExpression, TypeParametersExpression, TypedIdentifier, tArrowFunctionExpression, tArrowFunctionType, tBinaryExpression, tComment, tExpressionStatement, tFunctionCall, tFunctionDeclaration, tIdentifier, tIfStatement, tImportDeclaration, tMemberExpression, tNumericLiteral, tObjectExpression, tObjectProperty, tReturnStatement, tStringLiteral, tStructDeclaration, tTypeParametersExpression, tTypeWithParameters, tTypedIdentifier, tUnaryOpExpression, tUnionTypeDeclaration, tUnionTypeExpression, toCode } from "./tsgen";
 import { convertToAST, getCondition, getParamVarExpr, getTypeParametersExpression } from "./utils";
 
 export class TypescriptGenerator implements CodeGenerator {
@@ -162,5 +163,9 @@ export class TypescriptGenerator implements CodeGenerator {
 
         jsCodeFunctionsDeclarations.push(loadFunction)
         jsCodeFunctionsDeclarations.push(storeFunction)
+    }
+
+    toCode(node: TheNode, code: CodeBuilder = new CodeBuilder()): CodeBuilder {
+        return toCode(node, code);
     }
 }

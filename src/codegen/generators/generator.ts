@@ -1,5 +1,6 @@
 import { TLBCode, TLBType } from "../ast"
-import { GenDeclaration as TSGenDeclaration } from "./typescript/tsgen"
+import { CodeBuilder } from "./CodeBuilder"
+import { GenDeclaration as TSGenDeclaration, TheNode } from "./typescript/tsgen"
 
 export interface CodeGenerator {
     jsCodeDeclarations: CommonGenDeclaration[]
@@ -7,6 +8,7 @@ export interface CodeGenerator {
     addTonCoreClassUsage(name: string): void
     addBitLenFunction(): void
     addTlbType(tlbType: TLBType, tlbCode: TLBCode, input: string[], jsCodeConstructorDeclarations: CommonGenDeclaration[], jsCodeFunctionsDeclarations: CommonGenDeclaration[]): void
+    toCode(node: TheNode, code: CodeBuilder): CodeBuilder
 }
 
 export type CommonGenDeclaration = TSGenDeclaration;
