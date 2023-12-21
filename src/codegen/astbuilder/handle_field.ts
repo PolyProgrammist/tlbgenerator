@@ -116,6 +116,7 @@ export function getType(expr: ParserExpression, fieldName: string, isField: bool
         //   result.loadExpr = getVarExprByName(expr.name, constructor)
         //   result.storeExpr = tExpressionStatement(result.loadExpr);
         } else {
+          return {kind: 'TLBNamedType', name: expr.name, arguments: []}
         //   result.typeParamExpr = tIdentifier(expr.name);
         //   if (isField) {
         //     result.loadExpr = tFunctionCall(tIdentifier('load' + expr.name), [tIdentifier(theSlice)])
@@ -254,7 +255,7 @@ export function getType(expr: ParserExpression, fieldName: string, isField: bool
     // }
   
     // result.storeExpr2 = storeExpr2
-    return {kind: 'TLBNamedType', name: 'hello', arguments: []}// {new TLBNumberExpr(3)};
+    return {kind: 'TLBNamedType', name: 'tmplololokekeke', arguments: []}// {new TLBNumberExpr(3)};
   }
   
 

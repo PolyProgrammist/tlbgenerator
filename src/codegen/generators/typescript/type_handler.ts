@@ -260,14 +260,18 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
         result.loadExpr = getVarExprByName(expr.name, constructor)
         result.storeExpr = tExpressionStatement(result.loadExpr);
       } else {
-        result.typeParamExpr = tIdentifier(expr.name);
+        let typeName = expr.name
+        if (fieldType.kind == 'TLBNamedType' && fieldType.name != 'tmplololokekeke') {
+          typeName = fieldType.name;
+        }
+        result.typeParamExpr = tIdentifier(typeName);
         if (isField) {
-          result.loadExpr = tFunctionCall(tIdentifier('load' + expr.name), [tIdentifier(theSlice)])
-          result.storeExpr = tExpressionStatement(tFunctionCall(tFunctionCall(tIdentifier('store' + expr.name), insideStoreParameters), [tIdentifier(currentCell)]))
-          storeExpr2 = tExpressionStatement(tFunctionCall(tFunctionCall(tIdentifier('store' + expr.name), insideStoreParameters2), [tIdentifier(currentCell)]))
+          result.loadExpr = tFunctionCall(tIdentifier('load' + typeName), [tIdentifier(theSlice)])
+          result.storeExpr = tExpressionStatement(tFunctionCall(tFunctionCall(tIdentifier('store' + typeName), insideStoreParameters), [tIdentifier(currentCell)]))
+          storeExpr2 = tExpressionStatement(tFunctionCall(tFunctionCall(tIdentifier('store' + typeName), insideStoreParameters2), [tIdentifier(currentCell)]))
         } else {
-          result.loadExpr = tIdentifier('load' + expr.name)
-          result.storeExpr = tExpressionStatement(tIdentifier('store' + expr.name))
+          result.loadExpr = tIdentifier('load' + typeName)
+          result.storeExpr = tExpressionStatement(tIdentifier('store' + typeName))
         }
       }
     }
