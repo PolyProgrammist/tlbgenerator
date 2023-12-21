@@ -55,34 +55,8 @@ export class TypescriptGenerator implements CodeGenerator {
                 }
             })
 
-            let minifieldindex = -1;
-            for (let fieldIndex = 0; fieldIndex < declaration.fields.length; fieldIndex++) {
-
-                let field = declaration.fields.at(fieldIndex);
-                             
-
-                if (field) {
-                    if (field instanceof FieldNamedDef || field instanceof FieldExprDef) {
-                        if (field instanceof FieldExprDef && field.expr instanceof NameExpr && field.expr.name == '_') {
-                            continue;
-                        }
-                        if (field.expr instanceof CombinatorExpr || field.expr instanceof NameExpr || field.expr instanceof BuiltinZeroArgs || field.expr instanceof BuiltinOneArgExpr || field.expr instanceof MathExpr || field.expr instanceof CondExpr) {
-                            minifieldindex++;
-                        }
-                    }
-
-                    let tlbfield: TLBField | undefined = undefined;
-                    if (minifieldindex >= 0) {
-                        constructor.fields.at(minifieldindex);
-                    }
-                    if (tlbfield == undefined) {
-                        tlbfield = {name: 'hey', fieldType: {kind: 'TLBNamedType', name: 'hello', arguments: []}, anonymous: false}
-                    }   
-
-                    handleField(tlbfield, field, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, fieldIndex.toString());
-                    
-                }            
-            }
+            let fieldIndex = 0;
+            declaration?.fields.forEach(element => { handleField({name: 'hey', fieldType: {kind: 'TLBNamedType', name: 'hello', arguments: []}, anonymous: false}, element, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, fieldIndex.toString()); fieldIndex++; })
 
             subStructsUnion.push(tTypeWithParameters(tIdentifier(subStructName), structTypeParametersExpr));
 

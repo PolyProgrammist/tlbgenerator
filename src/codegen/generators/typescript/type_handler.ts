@@ -64,12 +64,15 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
   } else if (expr instanceof BuiltinOneArgExpr) {
     if (expr.name.toString() == '##' || expr.name.toString() == '(##)') {
       if (expr.arg instanceof NumberExpr) {
-        exprForParam = {
-          argLoadExpr: tNumericLiteral(expr.arg.num), 
-          argStoreExpr: tNumericLiteral(expr.arg.num), 
-          paramType: expr.arg.num <= 63 ? 'number' : 'bigint', 
-          fieldLoadSuffix:  expr.arg.num <= 63 ? 'Uint' : 'UintBig', fieldStoreSuffix: 'Uint'
+        if (exprForParam == undefined) {
+          exprForParam = {
+            argLoadExpr: tNumericLiteral(expr.arg.num), 
+            argStoreExpr: tNumericLiteral(expr.arg.num), 
+            paramType: expr.arg.num <= 63 ? 'number' : 'bigint', 
+            fieldLoadSuffix:  expr.arg.num <= 63 ? 'Uint' : 'UintBig', fieldStoreSuffix: 'Uint'
+          }
         }
+        
       }
       if (expr.arg instanceof NameExpr) {
         let parameter = constructor.parametersMap.get(expr.arg.name)

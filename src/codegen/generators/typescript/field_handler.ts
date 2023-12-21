@@ -6,6 +6,7 @@ import { fillConstructors, firstLower, getCurrentSlice, bitLen, convertToMathExp
 import { handleType } from './type_handler'
 import { addLoadProperty, getNegationDerivationFunctionBody, getParamVarExpr, sliceLoad } from './utils'
 import { goodVariableName } from '../../utils'
+import { getType } from '../../astbuilder/handle_field'
 
 export function handleField(field: TLBField, fieldDefinition: FieldDefinition, slicePrefix: Array<number>, tlbCode: TLBCode, constructor: TLBConstructor, constructorLoadStatements: Statement[], subStructStoreStatements: Statement[], subStructProperties: TypedIdentifier[], subStructLoadProperties: ObjectProperty[], variableCombinatorName: string, variableSubStructName: string, jsCodeFunctionsDeclarations: GenDeclaration[], fieldIndex: string) {
   let currentSlice = getCurrentSlice(slicePrefix, 'slice');
@@ -82,7 +83,9 @@ export function handleField(field: TLBField, fieldDefinition: FieldDefinition, s
         tmpTypeName = fieldDefinition.expr.name;
       }
 
-      let fieldInfo = handleType(field.fieldType, fieldDefinition.expr, fieldName, true, false, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, tmpTypeName, 0, tlbCode, subStructLoadProperties);
+      let thefield = getType(fieldDefinition.expr, fieldName, true, false, variableCombinatorName, variableSubStructName, constructor, tmpTypeName, 0, tlbCode);
+
+      let fieldInfo = handleType(thefield, fieldDefinition.expr, fieldName, true, false, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, tmpTypeName, 0, tlbCode, subStructLoadProperties);
       if (fieldInfo.loadExpr) {
         addLoadProperty(goodVariableName(fieldName), fieldInfo.loadExpr, fieldInfo.typeParamExpr, constructorLoadStatements, subStructLoadProperties);
       }
