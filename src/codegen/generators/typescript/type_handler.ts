@@ -74,7 +74,9 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
   
   if (expr instanceof BuiltinZeroArgs) {
     if (expr.name == '#') {
-      exprForParam = {argLoadExpr: tNumericLiteral(32), argStoreExpr: tNumericLiteral(32), paramType: 'number', fieldLoadSuffix: 'Uint', fieldStoreSuffix: 'Uint'}
+      if (exprForParam == undefined) {
+        exprForParam = {argLoadExpr: tNumericLiteral(32), argStoreExpr: tNumericLiteral(32), paramType: 'number', fieldLoadSuffix: 'Uint', fieldStoreSuffix: 'Uint'}
+      }
     } else {
       throw new Error('Expression not supported' + expr)
     }
