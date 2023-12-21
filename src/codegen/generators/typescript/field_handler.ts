@@ -82,7 +82,7 @@ export function handleField(field: TLBField, fieldDefinition: FieldDefinition, s
         tmpTypeName = fieldDefinition.expr.name;
       }
 
-      let fieldInfo = handleType(fieldDefinition.expr, fieldName, true, false, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, tmpTypeName, 0, tlbCode, subStructLoadProperties);
+      let fieldInfo = handleType(field.fieldType, fieldDefinition.expr, fieldName, true, false, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, tmpTypeName, 0, tlbCode, subStructLoadProperties);
       if (fieldInfo.loadExpr) {
         addLoadProperty(goodVariableName(fieldName), fieldInfo.loadExpr, fieldInfo.typeParamExpr, constructorLoadStatements, subStructLoadProperties);
       }

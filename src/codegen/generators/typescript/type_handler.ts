@@ -1,6 +1,6 @@
 import { BuiltinZeroArgs, FieldCurlyExprDef, FieldNamedDef, Program, Declaration, BuiltinOneArgExpr, NumberExpr, NameExpr, CombinatorExpr, FieldBuiltinDef, MathExpr, SimpleExpr, NegateExpr, CellRefExpr, FieldDefinition, FieldAnonymousDef, CondExpr, CompareExpr, Expression as ParserExpression, TypeExpr } from '../../../ast/nodes'
 import { tIdentifier, tArrowFunctionExpression, tArrowFunctionType, tBinaryExpression, tBinaryNumericLiteral, tDeclareVariable, tExpressionStatement, tFunctionCall, tFunctionDeclaration, tIfStatement, tImportDeclaration, tMemberExpression, tNumericLiteral, tObjectExpression, tObjectProperty, tReturnStatement, tStringLiteral, tStructDeclaration, tTypeParametersExpression, tTypeWithParameters, tTypedIdentifier, tUnionTypeDeclaration, toCode, TypeWithParameters, ArrowFunctionExpression, tMultiStatement, tUnionTypeExpression, tTernaryExpression, FunctionDeclaration, GenDeclaration } from './tsgen'
-import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructor, TLBParameter, TLBVariable } from '../../ast'
+import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructor, TLBParameter, TLBVariable, TLBFieldType } from '../../ast'
 import { Expression, Statement, Identifier, BinaryExpression, ASTNode, TypeExpression, TypeParametersExpression, ObjectProperty, TypedIdentifier } from './tsgen'
 import { fillConstructors, firstLower, getCurrentSlice, bitLen, convertToMathExpr, splitForTypeValue, deriveMathExpression } from '../../utils'
 import { getCondition } from "./utils"
@@ -27,7 +27,7 @@ type ExprForParam = {
   fieldStoreSuffix: string
 }
 
-export function handleType(expr: ParserExpression, fieldName: string, isField: boolean, needArg: boolean, variableCombinatorName: string, variableSubStructName: string, currentSlice: string, currentCell: string, constructor: TLBConstructor, jsCodeFunctionsDeclarations: GenDeclaration[], fieldTypeName: string, argIndex: number, tlbCode: TLBCode, subStructLoadProperties: ObjectProperty[]): FieldInfoType {
+export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fieldName: string, isField: boolean, needArg: boolean, variableCombinatorName: string, variableSubStructName: string, currentSlice: string, currentCell: string, constructor: TLBConstructor, jsCodeFunctionsDeclarations: GenDeclaration[], fieldTypeName: string, argIndex: number, tlbCode: TLBCode, subStructLoadProperties: ObjectProperty[]): FieldInfoType {
   let theSlice = 'slice';
   let theCell = 'builder';
   if (isField) {
@@ -122,7 +122,7 @@ export function handleType(expr: ParserExpression, fieldName: string, isField: b
       let argIndex = -1;
       expr.args.forEach((arg) => {
         argIndex++;
-        let subExprInfo = handleType(arg, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
+        let subExprInfo = handleType(fieldType, arg, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
         if (subExprInfo.typeParamExpr) {
           typeExpression.typeParameters.push(subExprInfo.typeParamExpr);
         }
@@ -198,7 +198,7 @@ export function handleType(expr: ParserExpression, fieldName: string, isField: b
     let currentSlice = getCurrentSlice([1, 0], 'slice');
     let currentCell = getCurrentSlice([1, 0], 'cell');
 
-    let subExprInfo = handleType(expr.expr, fieldName, true, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
+    let subExprInfo = handleType(fieldType, expr.expr, fieldName, true, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
     if (subExprInfo.loadExpr) {
       result.typeParamExpr = subExprInfo.typeParamExpr;
       result.storeExpr = subExprInfo.storeExpr;
@@ -224,7 +224,7 @@ export function handleType(expr: ParserExpression, fieldName: string, isField: b
     if (fieldTypeName == '') {
       if (expr.op == '*') {
         let arrayLength = convertToAST(convertToMathExpr(expr.left), constructor, true);
-        let subExprInfo = handleType(expr.right, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
+        let subExprInfo = handleType(fieldType, expr.right, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
         let currentParam = insideStoreParameters[0]
         let currentParam2 = insideStoreParameters2[0]
         if (subExprInfo.loadExpr) {
@@ -247,7 +247,7 @@ export function handleType(expr: ParserExpression, fieldName: string, isField: b
       result.storeExpr = tExpressionStatement(result.loadExpr);
     }
   } else if (expr instanceof CondExpr) {
-    let subExprInfo = handleType(expr.condExpr, fieldName, true, false, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
+    let subExprInfo = handleType(fieldType, expr.condExpr, fieldName, true, false, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
     if (subExprInfo.typeParamExpr) {
       result.typeParamExpr = tUnionTypeExpression([subExprInfo.typeParamExpr, tIdentifier('undefined')])
     }

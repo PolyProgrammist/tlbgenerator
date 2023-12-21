@@ -66,7 +66,6 @@ export class TypescriptGenerator implements CodeGenerator {
 
                 if (field) {
                     handleField(tlbfield, field, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, fieldIndex.toString());
-
                     if (field instanceof FieldNamedDef || field instanceof FieldExprDef) {
                         if (field instanceof FieldExprDef && field.expr instanceof NameExpr && field.expr.name == '_') {
                             continue;
@@ -75,8 +74,7 @@ export class TypescriptGenerator implements CodeGenerator {
                             minifieldindex++;
                         }
                     }
-                }
-            
+                }            
             }
 
             subStructsUnion.push(tTypeWithParameters(tIdentifier(subStructName), structTypeParametersExpr));
