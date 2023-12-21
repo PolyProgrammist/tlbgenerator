@@ -183,7 +183,7 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
       }
     } else {
       let typeName = expr.name
-      if (fieldType.kind == 'TLBNamedType' && fieldType.name != 'tmplololokekeke') {
+      if (fieldType.kind == 'TLBNamedType') {
         typeName = fieldType.name;
       }
       
