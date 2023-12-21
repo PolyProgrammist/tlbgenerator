@@ -74,7 +74,7 @@ export type TLBBitsType = {
 export type TLBNamedType = {
     kind: 'TLBNamedType'
     name: string
-    arguments: TLBVariable[]
+    arguments: TLBFieldType[]
 }
 
 export type TLBBoolType = {

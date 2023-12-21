@@ -58,6 +58,10 @@ export function getType(expr: ParserExpression, fieldName: string, isField: bool
       } else if (expr.name == 'bits' && expr.args.length == 1 && (expr.args[0] instanceof MathExpr || expr.args[0] instanceof NumberExpr || expr.args[0] instanceof NameExpr)) {
         return { kind: 'TLBBitsType', bits: convertToMathExpr(expr.args[0]) }
       } else {
+        let argumentTypes: TLBFieldType[] = []
+        expr.args.forEach((arg) => {
+
+        });
         // let typeExpression: TypeParametersExpression = tTypeParametersExpression([]);
         // let loadFunctionsArray: Array<Expression> = []
         // let storeFunctionsArray: Array<Expression> = []
@@ -85,6 +89,7 @@ export function getType(expr: ParserExpression, fieldName: string, isField: bool
         // result.loadExpr = tFunctionCall(tIdentifier('load' + expr.name), insideLoadParameters.concat(loadFunctionsArray), currentTypeParameters);
         // result.storeExpr = tExpressionStatement(tFunctionCall(tFunctionCall(tIdentifier('store' + expr.name), insideStoreParameters.concat(storeFunctionsArray), currentTypeParameters), [tIdentifier(theCell)]))
         // storeExpr2 = tExpressionStatement(tFunctionCall(tFunctionCall(tIdentifier('store' + expr.name), insideStoreParameters2.concat(storeFunctionsArray), currentTypeParameters), [tIdentifier(theCell)]))
+        return { kind: 'TLBNamedType', name: expr.name, arguments: argumentTypes}
       } 
     //   if (exprForParam) {
     //     result.typeParamExpr = tIdentifier(exprForParam.paramType);
