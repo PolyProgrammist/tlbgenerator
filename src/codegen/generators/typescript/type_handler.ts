@@ -79,6 +79,18 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
         paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'
     }
   }
+
+  if (fieldType.kind == 'TLBCellType') {
+    exprForParam = {argLoadExpr: tIdentifier(theSlice), argStoreExpr: tIdentifier(theSlice), paramType: 'Slice', fieldLoadSuffix: 'Slice', fieldStoreSuffix: 'Slice'}
+  }
+
+  if (fieldType.kind == 'TLBBoolType') {
+    exprForParam = {argLoadExpr: undefined, argStoreExpr: undefined, paramType: 'boolean', fieldLoadSuffix: 'Boolean', fieldStoreSuffix: 'Bit'}
+  }
+
+  if (fieldType.kind == 'TLBAddressType') {
+    exprForParam = {argLoadExpr: undefined, argStoreExpr: undefined, paramType: 'Address', fieldLoadSuffix: 'Address', fieldStoreSuffix: 'Address'}
+  }
   
   if (expr instanceof BuiltinZeroArgs) {
     if (expr.name == '#') {
@@ -220,7 +232,9 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
         exprForParam = {argLoadExpr: tNumericLiteral(256), argStoreExpr: tNumericLiteral(256), paramType: 'number', fieldLoadSuffix: 'Uint', fieldStoreSuffix: 'Uint'}
       }
     } else if (expr.name == 'Any' || expr.name == 'Cell') {
-      exprForParam = {argLoadExpr: tIdentifier(theSlice), argStoreExpr: tIdentifier(theSlice), paramType: 'Slice', fieldLoadSuffix: 'Slice', fieldStoreSuffix: 'Slice'}
+      if (exprForParam == undefined) {
+        exprForParam = {argLoadExpr: tIdentifier(theSlice), argStoreExpr: tIdentifier(theSlice), paramType: 'Slice', fieldLoadSuffix: 'Slice', fieldStoreSuffix: 'Slice'}
+      }
     } else if ((theNum = splitForTypeValue(expr.name, 'int')) != undefined) {
       exprForParam = {argLoadExpr: tNumericLiteral(theNum), argStoreExpr: tNumericLiteral(theNum), paramType: 'number', fieldLoadSuffix: 'Int', fieldStoreSuffix: 'Int'}
     } else if ((theNum = splitForTypeValue(expr.name, 'uint')) != undefined) {
