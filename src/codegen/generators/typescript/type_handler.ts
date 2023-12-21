@@ -336,7 +336,7 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
 
     let subExprInfo: FieldInfoType;
     if (fieldType.kind == 'TLBCellInsideType') {
-      subExprInfo = handleType(fieldType.inside, expr.expr, fieldName, true, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties)
+      subExprInfo = handleType(fieldType.value, expr.expr, fieldName, true, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties)
     } else if (fieldType.kind == 'TLBUndefinedType') {
       subExprInfo = handleType({kind: 'TLBUndefinedType'}, expr.expr, fieldName, true, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
     } else {
@@ -367,8 +367,17 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
   } else if (expr instanceof MathExpr) {
     if (fieldTypeName == '') {
       if (expr.op == '*') {
-        let arrayLength = convertToAST(convertToMathExpr(expr.left), constructor, true);
-        let subExprInfo = handleType(fieldType, expr.right, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
+        let arrayLength: Expression
+        let subExprInfo: FieldInfoType
+        if (fieldType.kind == 'TLBMultipleType') {
+          arrayLength = convertToAST(fieldType.times, constructor, true);
+          subExprInfo = handleType(fieldType.value, expr.right, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
+        } else if (fieldType.kind == 'TLBUndefinedType') {
+          arrayLength = convertToAST(convertToMathExpr(expr.left), constructor, true);
+          subExprInfo = handleType(fieldType, expr.right, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
+        } else {
+          throw new Error('')
+        }
         let currentParam = insideStoreParameters[0]
         let currentParam2 = insideStoreParameters2[0]
         if (subExprInfo.loadExpr) {

@@ -151,7 +151,7 @@ export function getType(expr: ParserExpression, fieldName: string, isField: bool
 
       let subExprInfo = getType(expr.expr, fieldName, true, true, variableCombinatorName, variableSubStructName, constructor, fieldTypeName, argIndex, tlbCode);
 
-      return {kind: 'TLBCellInsideType', inside: subExprInfo}
+      return {kind: 'TLBCellInsideType', value: subExprInfo}
   
     //   if (subExprInfo.loadExpr) {
     //     result.typeParamExpr = subExprInfo.typeParamExpr;
@@ -177,6 +177,9 @@ export function getType(expr: ParserExpression, fieldName: string, isField: bool
     } else if (expr instanceof MathExpr) {
       if (fieldTypeName == '') {
         if (expr.op == '*') {
+          let subExprInfo = getType(expr.right, fieldName, false, needArg, variableCombinatorName, variableSubStructName, constructor, fieldTypeName, argIndex, tlbCode);
+
+          return {kind: 'TLBMultipleType', times: convertToMathExpr(expr.left), value: subExprInfo}
         //   let arrayLength = convertToAST(convertToMathExpr(expr.left), constructor, true);
         //   let subExprInfo = handleType(expr.right, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
         //   let currentParam = insideStoreParameters[0]

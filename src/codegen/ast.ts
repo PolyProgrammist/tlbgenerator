@@ -1,4 +1,4 @@
-import { Declaration } from "../../src/ast/nodes";
+import { Declaration, MathExpr } from "../../src/ast/nodes";
 
 export class TLBBinaryOp {
     constructor(
@@ -105,10 +105,16 @@ export type TLBNegatedType = {
 
 export type TLBCellInsideType = {
     kind: 'TLBCellInsideType'
-    inside: TLBFieldType
+    value: TLBFieldType
 }
 
-export type TLBFieldType = TLBNumberType | TLBBitsType | TLBNamedType | TLBBoolType | TLBAddressType | TLBCellType | TLBUndefinedType | TLBMathExprType | TLBNegatedType | TLBCellInsideType;
+export type TLBMultipleType = {
+    kind: 'TLBMultipleType'
+    value: TLBFieldType
+    times: TLBMathExpr
+}
+
+export type TLBFieldType = TLBNumberType | TLBBitsType | TLBNamedType | TLBBoolType | TLBAddressType | TLBCellType | TLBUndefinedType | TLBMathExprType | TLBNegatedType | TLBCellInsideType | TLBMultipleType;
 
 export type TLBField = {
     name: string
