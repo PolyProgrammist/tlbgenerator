@@ -43,11 +43,8 @@ export function generate(tree: Program, input: string) {
   let splittedInput = input.split('\n')
   fillConstructors(tree.declarations, tlbCode, splittedInput);
 
-  tlbCode.types.forEach((tlbType: TLBType, combinatorName: string) => {
-    let variableCombinatorName = goodVariableName(firstLower(combinatorName), '0')
-    if (combinatorName == undefined) {
-      return;
-    }
+  tlbCode.types.forEach((tlbType: TLBType) => {
+    let variableCombinatorName = goodVariableName(firstLower(tlbType.name), '0')
     let subStructsUnion: TypeExpression[] = []
     let subStructDeclarations: StructDeclaration[] = []
 
@@ -154,7 +151,7 @@ export function generate(tree: Program, input: string) {
     }
 
     let loadFunctionParameters = [tTypedIdentifier(tIdentifier('slice'), tIdentifier('Slice'))]
-    let storeFunctionParameters = [tTypedIdentifier(tIdentifier(variableCombinatorName), tTypeWithParameters(tIdentifier(combinatorName), structTypeParametersExpr))]
+    let storeFunctionParameters = [tTypedIdentifier(tIdentifier(variableCombinatorName), tTypeWithParameters(tIdentifier(tlbType.name), structTypeParametersExpr))]
 
     let anyConstructor = tlbType.constructors[0];
     if (anyConstructor) {
@@ -178,12 +175,12 @@ export function generate(tree: Program, input: string) {
       });
     }
 
-    let loadFunction = tFunctionDeclaration(tIdentifier('load' + combinatorName), structTypeParametersExpr, tTypeWithParameters(tIdentifier(combinatorName), structTypeParametersExpr), loadFunctionParameters, loadStatements);
+    let loadFunction = tFunctionDeclaration(tIdentifier('load' + tlbType.name), structTypeParametersExpr, tTypeWithParameters(tIdentifier(tlbType.name), structTypeParametersExpr), loadFunctionParameters, loadStatements);
 
-    let storeFunction = tFunctionDeclaration(tIdentifier('store' + combinatorName), structTypeParametersExpr, tIdentifier('(builder: Builder) => void'), storeFunctionParameters, storeStatements)
+    let storeFunction = tFunctionDeclaration(tIdentifier('store' + tlbType.name), structTypeParametersExpr, tIdentifier('(builder: Builder) => void'), storeFunctionParameters, storeStatements)
 
     if (tlbType.constructors.length > 1) {
-      let unionTypeDecl = tUnionTypeDeclaration(tTypeWithParameters(tIdentifier(combinatorName), structTypeParametersExpr), tUnionTypeExpression(subStructsUnion))
+      let unionTypeDecl = tUnionTypeDeclaration(tTypeWithParameters(tIdentifier(tlbType.name), structTypeParametersExpr), tUnionTypeExpression(subStructsUnion))
       jsCodeConstructorDeclarations.push(unionTypeDecl)
     }
     subStructDeclarations.forEach(element => {
