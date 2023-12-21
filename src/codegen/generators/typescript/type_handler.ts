@@ -44,6 +44,16 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
 
   insideStoreParameters = [tMemberExpression(tIdentifier(variableCombinatorName), tIdentifier(goodVariableName(fieldName)))];
   let insideStoreParameters2: Expression[] = [tIdentifier('arg')]
+
+  if (fieldType.kind == 'TLBNumberType') {
+    exprForParam = {
+      argLoadExpr: convertToAST(fieldType.bits, constructor, true),
+      argStoreExpr: convertToAST(fieldType.bits, constructor, true, tIdentifier(variableCombinatorName)),
+      paramType: 'number',
+      fieldLoadSuffix: fieldType.signed ? 'Int' : 'Uint',
+      fieldStoreSuffix: fieldType.signed ? 'Int': 'Uint'
+    }
+  }
   
   if (expr instanceof BuiltinZeroArgs) {
     if (expr.name == '#') {

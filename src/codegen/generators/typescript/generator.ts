@@ -55,17 +55,13 @@ export class TypescriptGenerator implements CodeGenerator {
                 }
             })
 
-            let minifieldindex = 0;
+            let minifieldindex = -1;
             for (let fieldIndex = 0; fieldIndex < declaration.fields.length; fieldIndex++) {
 
                 let field = declaration.fields.at(fieldIndex);
-                let tlbfield: TLBField | undefined = constructor.fields.at(minifieldindex);
-                if (tlbfield == undefined) {
-                    tlbfield = {name: 'hey', fieldType: {kind: 'TLBNamedType', name: 'hello', arguments: []}, anonymous: false}
-                }                
+                             
 
                 if (field) {
-                    handleField(tlbfield, field, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, fieldIndex.toString());
                     if (field instanceof FieldNamedDef || field instanceof FieldExprDef) {
                         if (field instanceof FieldExprDef && field.expr instanceof NameExpr && field.expr.name == '_') {
                             continue;
@@ -74,6 +70,17 @@ export class TypescriptGenerator implements CodeGenerator {
                             minifieldindex++;
                         }
                     }
+
+                    let tlbfield: TLBField | undefined = undefined;
+                    if (minifieldindex >= 0) {
+                        constructor.fields.at(minifieldindex);
+                    }
+                    if (tlbfield == undefined) {
+                        tlbfield = {name: 'hey', fieldType: {kind: 'TLBNamedType', name: 'hello', arguments: []}, anonymous: false}
+                    }   
+
+                    handleField(tlbfield, field, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, fieldIndex.toString());
+                    
                 }            
             }
 
