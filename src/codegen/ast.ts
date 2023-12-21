@@ -53,6 +53,7 @@ export type TLBVariable = {
     type: TLBVariableType
     name: string
     deriveExpr?: TLBMathExpr
+    initialExpr?: TLBMathExpr
 
     calculated: boolean
 }
@@ -61,6 +62,7 @@ export type TLBNumberType = {
     kind: 'TLBNumberType'
     bits: TLBMathExpr
     signed: boolean
+    storeBits: TLBMathExpr
     maxBits: number | undefined
 }
 

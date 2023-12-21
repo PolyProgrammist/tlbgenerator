@@ -8,6 +8,7 @@ import { getTypeParametersExpression } from "./utils"
 import { convertToAST } from "./utils"
 import { getNegationDerivationFunctionBody, getParamVarExpr, getVarExprByName, simpleCycle, sliceLoad } from './utils'
 import { goodVariableName } from '../../utils'
+import util  from 'util'
 
 type FieldInfoType = {
   typeParamExpr: TypeExpression | undefined
@@ -58,9 +59,11 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
   let insideStoreParameters2: Expression[] = [tIdentifier('arg')]
 
   if (fieldType.kind == 'TLBNumberType') {
+    let tmp = convertToAST(fieldType.bits, constructor, false, tIdentifier(variableCombinatorName));
+
     exprForParam = {
       argLoadExpr: convertToAST(fieldType.bits, constructor, true),
-      argStoreExpr: convertToAST(fieldType.bits, constructor, false, tIdentifier(variableCombinatorName)),
+      argStoreExpr: convertToAST(fieldType.storeBits, constructor, false, tIdentifier(variableCombinatorName)),
       paramType: 'number',
       fieldLoadSuffix: fieldType.signed ? 'Int' : 'Uint',
       fieldStoreSuffix: fieldType.signed ? 'Int': 'Uint'
@@ -95,14 +98,14 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
         if (!parameter) {
           throw new Error('')
         }
-        // if (exprForParam == undefined) {
+        if (exprForParam == undefined) {
           exprForParam = {
             argLoadExpr: getParamVarExpr(parameter, constructor), 
             argStoreExpr: tMemberExpression(tIdentifier(variableCombinatorName), tIdentifier(goodVariableName(expr.arg.name))), 
             paramType: 'bigint', fieldLoadSuffix: 'UintBig', fieldStoreSuffix: 'Uint'
           }
-        // }
-       
+        }
+        
       } // TODO: handle other cases
     } else if (expr.name == '#<') {
       if (expr.arg instanceof NumberExpr || expr.arg instanceof NameExpr) {

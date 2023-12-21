@@ -440,6 +440,7 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
                     if (variable) {
                         if (variable.type == '#') {
                             variable.deriveExpr = new TLBVarExpr(element.name);
+                            variable.initialExpr = variable.deriveExpr;
                         }
                         parameter = { variable: variable, paramExpr: new TLBVarExpr(element.name) };
                     }
@@ -453,6 +454,7 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
                         parameter = { variable: variable, paramExpr: derivedExpr.derived };
                         parameter.argName = 'arg' + argumentIndex;
                         parameter.variable.deriveExpr = reorganizeWithArg(convertToMathExpr(element), parameter.argName, parameter.variable.name);
+                        parameter.variable.initialExpr = new TLBVarExpr(parameter.variable.name)
                     } else {
                         throw new Error('')
                     }
@@ -466,14 +468,15 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
                     if (variable) {
                         variable.negated = true;
                         variable.const = toBeConst;
+                        variable.initialExpr = derivedExpr.derived
                         parameter = { variable: variable, paramExpr: derivedExpr.derived}
                     } else if (derivedExpr.name == '' && toBeConst) {
-                        parameter = { variable: { negated: true, const: toBeConst, type: '#', name: derivedExpr.name, deriveExpr: derivedExpr.derived, calculated: false }, paramExpr: derivedExpr.derived };
+                        parameter = { variable: { negated: true, const: toBeConst, type: '#', name: derivedExpr.name, deriveExpr: derivedExpr.derived, initialExpr: derivedExpr.derived, calculated: false }, paramExpr: derivedExpr.derived };
                     } else {
                         throw new Error('Cannot identify combinator arg')
                     }
                 } else if (element instanceof NumberExpr) {
-                    parameter = { variable: { negated: false, const: true, type: '#', name: '', deriveExpr: new TLBNumberExpr(element.num), calculated: false }, paramExpr: new TLBNumberExpr(element.num) }
+                    parameter = { variable: { negated: false, const: true, type: '#', name: '', deriveExpr: new TLBNumberExpr(element.num), initialExpr: new TLBNumberExpr(element.num), calculated: false }, paramExpr: new TLBNumberExpr(element.num) }
                 } else {
                     throw new Error('Cannot identify combinator arg: ' + element)
                 }
