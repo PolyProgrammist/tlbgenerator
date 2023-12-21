@@ -94,7 +94,7 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
   
   if (expr instanceof BuiltinZeroArgs) {
     if (expr.name == '#') {
-      if (exprForParam == undefined) {
+      if (fieldType.kind == 'TLBUndefinedType') {
         exprForParam = {argLoadExpr: tNumericLiteral(32), argStoreExpr: tNumericLiteral(32), paramType: 'number', fieldLoadSuffix: 'Uint', fieldStoreSuffix: 'Uint'}
       }
     } else {
@@ -103,7 +103,7 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
   } else if (expr instanceof BuiltinOneArgExpr) {
     if (expr.name.toString() == '##' || expr.name.toString() == '(##)') {
       if (expr.arg instanceof NumberExpr) {
-        if (exprForParam == undefined) {
+        if (fieldType.kind == 'TLBUndefinedType') {
           exprForParam = {
             argLoadExpr: tNumericLiteral(expr.arg.num), 
             argStoreExpr: tNumericLiteral(expr.arg.num), 
@@ -118,7 +118,7 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
         if (!parameter) {
           throw new Error('')
         }
-        if (exprForParam == undefined) {
+        if (fieldType.kind == 'TLBUndefinedType') {
           exprForParam = {
             argLoadExpr: getParamVarExpr(parameter, constructor), 
             argStoreExpr: tMemberExpression(tIdentifier(variableCombinatorName), tIdentifier(goodVariableName(expr.arg.name))), 
@@ -129,7 +129,7 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
       } // TODO: handle other cases
     } else if (expr.name == '#<') {
       if (expr.arg instanceof NumberExpr || expr.arg instanceof NameExpr) {
-        if (exprForParam == undefined) {
+        if (fieldType.kind == 'TLBUndefinedType') {
           exprForParam = {
             argLoadExpr: tFunctionCall(tIdentifier('bitLen'), [tBinaryExpression(convertToAST(convertToMathExpr(expr.arg), constructor, true), '-', tNumericLiteral(1))]), 
             argStoreExpr: tFunctionCall(tIdentifier('bitLen'), [tBinaryExpression(convertToAST(convertToMathExpr(expr.arg), constructor, true, tIdentifier(variableCombinatorName)), '-', tNumericLiteral(1))]), 
@@ -139,7 +139,7 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
       } // TODO: handle other cases
     } else if (expr.name == '#<=') {
       if (expr.arg instanceof NumberExpr || expr.arg instanceof NameExpr) {
-        if (exprForParam == undefined) {
+        if (fieldType.kind == 'TLBUndefinedType') {
           exprForParam = {
             argLoadExpr: tFunctionCall(tIdentifier('bitLen'), [convertToAST(convertToMathExpr(expr.arg), constructor, true)]), 
             argStoreExpr: tFunctionCall(tIdentifier('bitLen'), [convertToAST(convertToMathExpr(expr.arg), constructor, true, tIdentifier(variableCombinatorName))]), 
@@ -152,7 +152,7 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
     if (expr.name == 'int' && expr.args.length == 1 && (expr.args[0] instanceof MathExpr || expr.args[0] instanceof NumberExpr || expr.args[0] instanceof NameExpr)) {
       let myMathExpr = convertToMathExpr(expr.args[0])
       let isSmallInt = (expr.args[0] instanceof NumberExpr && expr.args[0].num <= 63)
-      if (exprForParam == undefined) {
+      if (fieldType.kind == 'TLBUndefinedType') {
         exprForParam = {
           argLoadExpr: convertToAST(myMathExpr, constructor),
           argStoreExpr: convertToAST(myMathExpr, constructor, false, tIdentifier(variableSubStructName)),
@@ -163,7 +163,7 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
     } else if (expr.name == 'uint' && expr.args.length == 1 && (expr.args[0] instanceof MathExpr || expr.args[0] instanceof NumberExpr || expr.args[0] instanceof NameExpr)) {
       let myMathExpr = convertToMathExpr(expr.args[0])
       let isSmallInt = (expr.args[0] instanceof NumberExpr && expr.args[0].num <= 63)
-      if (exprForParam == undefined) {
+      if (fieldType.kind == 'TLBUndefinedType') {
         exprForParam = {
           argLoadExpr: convertToAST(myMathExpr, constructor),
           argStoreExpr: convertToAST(myMathExpr, constructor, false, tIdentifier(variableSubStructName)),
@@ -174,7 +174,7 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
       
     } else if (expr.name == 'bits' && expr.args.length == 1 && (expr.args[0] instanceof MathExpr || expr.args[0] instanceof NumberExpr || expr.args[0] instanceof NameExpr)) {
       let myMathExpr = convertToMathExpr(expr.args[0])
-      if (exprForParam == undefined) {
+      if (fieldType.kind == 'TLBUndefinedType') {
         exprForParam = {
           argLoadExpr: convertToAST(myMathExpr, constructor),
           argStoreExpr: convertToAST(myMathExpr, constructor, false, tIdentifier(variableSubStructName)),
@@ -221,43 +221,43 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
   } else if (expr instanceof NameExpr) {
     let theNum;
     if (expr.name == 'Int') {
-      if (exprForParam == undefined) {
+      if (fieldType.kind == 'TLBUndefinedType') {
         exprForParam = {argLoadExpr: tNumericLiteral(257), argStoreExpr: tNumericLiteral(257), paramType: 'number', fieldLoadSuffix: 'Int', fieldStoreSuffix: 'Int'}
       }
     } else if (expr.name == 'Bits') {
-      if (exprForParam == undefined) {
+      if (fieldType.kind == 'TLBUndefinedType') {
         exprForParam = {argLoadExpr: tNumericLiteral(1023), argStoreExpr: tNumericLiteral(1023), paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'}
       }
     } else if (expr.name == 'Bit') {
-      if (exprForParam == undefined) {
+      if (fieldType.kind == 'TLBUndefinedType') {
               exprForParam = {argLoadExpr: tNumericLiteral(1), argStoreExpr: tNumericLiteral(1), paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'}
       }
     } else if (expr.name == 'Uint') {
-      if (exprForParam == undefined) {
+      if (fieldType.kind == 'TLBUndefinedType') {
         exprForParam = {argLoadExpr: tNumericLiteral(256), argStoreExpr: tNumericLiteral(256), paramType: 'number', fieldLoadSuffix: 'Uint', fieldStoreSuffix: 'Uint'}
       }
     } else if (expr.name == 'Any' || expr.name == 'Cell') {
-      if (exprForParam == undefined) {
+      if (fieldType.kind == 'TLBUndefinedType') {
         exprForParam = {argLoadExpr: tIdentifier(theSlice), argStoreExpr: tIdentifier(theSlice), paramType: 'Slice', fieldLoadSuffix: 'Slice', fieldStoreSuffix: 'Slice'}
       }
     } else if ((theNum = splitForTypeValue(expr.name, 'int')) != undefined) {
-      if (exprForParam == undefined) {
+      if (fieldType.kind == 'TLBUndefinedType') {
         exprForParam = {argLoadExpr: tNumericLiteral(theNum), argStoreExpr: tNumericLiteral(theNum), paramType: 'number', fieldLoadSuffix: 'Int', fieldStoreSuffix: 'Int'}
       }
     } else if ((theNum = splitForTypeValue(expr.name, 'uint')) != undefined) {
-      if (exprForParam == undefined) {
+      if (fieldType.kind == 'TLBUndefinedType') {
               exprForParam = {argLoadExpr: tNumericLiteral(theNum), argStoreExpr: tNumericLiteral(theNum), paramType: 'number', fieldLoadSuffix: 'Uint', fieldStoreSuffix: 'Uint'}
       }
     } else if ((theNum = splitForTypeValue(expr.name, 'bits')) != undefined) {
-      if (exprForParam == undefined) {
+      if (fieldType.kind == 'TLBUndefinedType') {
         exprForParam = {argLoadExpr: tNumericLiteral(theNum), argStoreExpr: tNumericLiteral(theNum), paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'}
       }
     } else if (expr.name == 'Bool') {
-      if (exprForParam == undefined) {
+      if (fieldType.kind == 'TLBUndefinedType') {
         exprForParam = {argLoadExpr: undefined, argStoreExpr: undefined, paramType: 'boolean', fieldLoadSuffix: 'Boolean', fieldStoreSuffix: 'Bit'}
       }
     } else if (expr.name == 'MsgAddressInt') {
-      if (exprForParam == undefined) {
+      if (fieldType.kind == 'TLBUndefinedType') {
         exprForParam = {argLoadExpr: undefined, argStoreExpr: undefined, paramType: 'Address', fieldLoadSuffix: 'Address', fieldStoreSuffix: 'Address'}
       }
     } else {
