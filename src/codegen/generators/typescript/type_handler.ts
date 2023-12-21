@@ -192,9 +192,6 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
       let storeFunctionsArray: Array<Expression> = []
       let argIndex = -1;
       if (fieldType.kind == 'TLBNamedType') {
-        if (constructor.declaration.combinator.name == 'CombArgCellRef') {
-          console.log(util.inspect(fieldType, false, null, true))
-        }
         fieldType.arguments.forEach(arg => {
           argIndex++;
           let exprArg = expr.args[argIndex];
