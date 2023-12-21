@@ -41,7 +41,7 @@ function isBigInt(fieldType: TLBNumberType) {
 }
 
 export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fieldName: string, isField: boolean, needArg: boolean, variableCombinatorName: string, variableSubStructName: string, currentSlice: string, currentCell: string, constructor: TLBConstructor, jsCodeFunctionsDeclarations: GenDeclaration[], fieldTypeName: string, argIndex: number, tlbCode: TLBCode, subStructLoadProperties: ObjectProperty[]): FieldInfoType {
-  let theSlice = 'slice';
+  let theSlice = 'slice'; // TODO: use slice from field
   let theCell = 'builder';
   if (isField) {
     theSlice = currentSlice;
@@ -55,7 +55,7 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
 
   let insideStoreParameters: Expression[];
 
-  insideStoreParameters = [tMemberExpression(tIdentifier(variableCombinatorName), tIdentifier(goodVariableName(fieldName)))];
+  insideStoreParameters = [tMemberExpression(tIdentifier(variableCombinatorName), tIdentifier(goodVariableName(fieldName)))]; // TODO: use only field
   let insideStoreParameters2: Expression[] = [tIdentifier('arg')]
 
   if (fieldType.kind == 'TLBNumberType') {
