@@ -256,14 +256,16 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
         exprForParam = {argLoadExpr: undefined, argStoreExpr: undefined, paramType: 'Address', fieldLoadSuffix: 'Address', fieldStoreSuffix: 'Address'}
       }
     } else {
-      if (constructor.variablesMap.get(expr.name)?.type == '#') {
-        result.loadExpr = getVarExprByName(expr.name, constructor)
+      let typeName = expr.name
+      if (fieldType.kind == 'TLBNamedType' && fieldType.name != 'tmplololokekeke') {
+        typeName = fieldType.name;
+      }
+
+      if (constructor.variablesMap.get(typeName)?.type == '#') {
+        result.loadExpr = getVarExprByName(typeName, constructor)
         result.storeExpr = tExpressionStatement(result.loadExpr);
       } else {
-        let typeName = expr.name
-        if (fieldType.kind == 'TLBNamedType' && fieldType.name != 'tmplololokekeke') {
-          typeName = fieldType.name;
-        }
+        
         result.typeParamExpr = tIdentifier(typeName);
         if (isField) {
           result.loadExpr = tFunctionCall(tIdentifier('load' + typeName), [tIdentifier(theSlice)])
