@@ -49,6 +49,7 @@ export type TLBVariable = {
 
 export type TLBNumberType = {
     bits: TLBMathExpr
+    signed: boolean
 }
 
 export type TLBNamedType = {
