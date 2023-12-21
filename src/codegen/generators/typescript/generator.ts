@@ -54,8 +54,18 @@ export class TypescriptGenerator implements CodeGenerator {
                 }
             })
 
-            let fieldIndex = 0;
-            declaration?.fields.forEach(element => { handleField(element, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, fieldIndex.toString()); fieldIndex++; })
+            for (let fieldIndex = 0; fieldIndex < declaration.fields.length; fieldIndex++) {
+
+                let element = declaration.fields.at(fieldIndex);
+                // let field = constructor.fields.at(fieldIndex);
+                // if (field == undefined) {
+                //     field = {kind: 'TLBNamedType', name: 'hello', arguments: []}
+                // }
+                // if (field && element)
+                if (element)
+                handleField({name: 'hey', fieldType: {kind: 'TLBNamedType', name: 'hello', arguments: []}, anonymous: false}, element, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, fieldIndex.toString());
+            
+            }
 
             subStructsUnion.push(tTypeWithParameters(tIdentifier(subStructName), structTypeParametersExpr));
 
