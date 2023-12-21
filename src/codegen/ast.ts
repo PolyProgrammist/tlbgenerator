@@ -58,16 +58,35 @@ export type TLBVariable = {
 }
 
 export type TLBNumberType = {
+    kind: 'TLBNumberType'
     bits: TLBMathExpr
     signed: boolean
 }
 
+export type TLBBitsType = {
+    kind: 'TLBBitsType'
+    bits: TLBMathExpr
+}
+
 export type TLBNamedType = {
+    kind: 'TLBNamedType'
     name: string
     arguments: TLBVariable[]
 }
 
-export type TLBFieldType = TLBNumberType | TLBNamedType;
+export type TLBBoolType = {
+    kind: 'TLBBoolType'
+}
+
+export type TLBAddressType = {
+    kind: 'TLBAddressType'
+}
+
+export type TLBCellType = {
+    kind: 'TLBCellType'
+}
+
+export type TLBFieldType = TLBNumberType | TLBBitsType | TLBNamedType | TLBBoolType | TLBAddressType | TLBCellType;
 
 export type TLBField = {
     name: string

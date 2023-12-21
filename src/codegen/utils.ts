@@ -1,6 +1,7 @@
 import { SimpleExpr, NameExpr, NumberExpr, MathExpr, FieldBuiltinDef, NegateExpr, Declaration, CompareExpr, FieldCurlyExprDef, FieldNamedDef } from "../ast/nodes";
 import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructorTag, TLBConstructor, TLBParameter, TLBVariable } from "./ast"
 import * as crc32 from "crc-32";
+import { fillFields } from "./astbuilder/handle_field";
 
 export function convertToMathExpr(mathExpr: SimpleExpr | NameExpr | NumberExpr | CompareExpr, negated: boolean = false): TLBMathExpr {
     if (mathExpr instanceof NameExpr) {
@@ -487,6 +488,7 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
         fixNaming(tlbType);
         tlbType.constructors.sort(compareConstructors)
     });
+    // fillFields(tlbCode);
     checkAndRemovePrimitives(tlbCode, input);
 }
 export function isBadVarName(name: string): boolean {

@@ -23,43 +23,38 @@ export function getType(expr: ParserExpression, fieldName: string, isField: bool
     
     if (expr instanceof BuiltinZeroArgs) {
       if (expr.name == '#') {
-        return {bits: new TLBNumberExpr(32), signed: false}
+        return { kind: 'TLBNumberType', bits: new TLBNumberExpr(32), signed: false}
       } else {
         throw new Error('Expression not supported' + expr)
       }
     } else if (expr instanceof BuiltinOneArgExpr) {
       if (expr.name.toString() == '##' || expr.name.toString() == '(##)') {
         if (expr.arg instanceof NumberExpr) {
-            return { bits: new TLBNumberExpr(expr.arg.num), signed: false }
+            return { kind: 'TLBNumberType', bits: new TLBNumberExpr(expr.arg.num), signed: false }
         }
         if (expr.arg instanceof NameExpr) {
           let parameter = constructor.parametersMap.get(expr.arg.name)
           if (!parameter || !parameter.variable.deriveExpr) {
             throw new Error('')
           }
-          return { bits: parameter.variable.deriveExpr, signed: false }
+          return { kind: 'TLBNumberType', bits: parameter.variable.deriveExpr, signed: false }
         } // TODO: handle other cases
       } else if (expr.name == '#<') {
         if (expr.arg instanceof NumberExpr || expr.arg instanceof NameExpr) {
-            return {bits: new TLBUnaryOp(new TLBBinaryOp(convertToMathExpr(expr.arg), new TLBNumberExpr(1), '-'), '.'), signed: false}
+            return { kind: 'TLBNumberType', bits: new TLBUnaryOp(new TLBBinaryOp(convertToMathExpr(expr.arg), new TLBNumberExpr(1), '-'), '.'), signed: false}
         } // TODO: handle other cases
       } else if (expr.name == '#<=') {
         if (expr.arg instanceof NumberExpr || expr.arg instanceof NameExpr) {
-            return {bits: new TLBUnaryOp(convertToMathExpr(expr.arg), '.'), signed: false}
+            return { kind: 'TLBNumberType', bits: new TLBUnaryOp(convertToMathExpr(expr.arg), '.'), signed: false}
         } // TODO: handle other cases
       } 
     } else if (expr instanceof CombinatorExpr) {
       if (expr.name == 'int' && expr.args.length == 1 && (expr.args[0] instanceof MathExpr || expr.args[0] instanceof NumberExpr || expr.args[0] instanceof NameExpr)) {
-        return {bits: convertToMathExpr(expr.args[0]), signed: true}
+        return { kind: 'TLBNumberType', bits: convertToMathExpr(expr.args[0]), signed: true}
       } else if (expr.name == 'uint' && expr.args.length == 1 && (expr.args[0] instanceof MathExpr || expr.args[0] instanceof NumberExpr || expr.args[0] instanceof NameExpr)) {
-        return {bits: convertToMathExpr(expr.args[0]), signed: false}
+        return { kind: 'TLBNumberType', bits: convertToMathExpr(expr.args[0]), signed: false}
       } else if (expr.name == 'bits' && expr.args.length == 1 && (expr.args[0] instanceof MathExpr || expr.args[0] instanceof NumberExpr || expr.args[0] instanceof NameExpr)) {
-        let myMathExpr = convertToMathExpr(expr.args[0])
-        // exprForParam = {
-        //   argLoadExpr: convertToAST(myMathExpr, constructor),
-        //   argStoreExpr: convertToAST(myMathExpr, constructor, false, tIdentifier(variableSubStructName)),
-        //   paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'
-        // }
+        return { kind: 'TLBBitsType', bits: convertToMathExpr(expr.args[0]) }
       } else {
         // let typeExpression: TypeParametersExpression = tTypeParametersExpression([]);
         // let loadFunctionsArray: Array<Expression> = []
@@ -95,25 +90,25 @@ export function getType(expr: ParserExpression, fieldName: string, isField: bool
     } else if (expr instanceof NameExpr) {
       let theNum;
       if (expr.name == 'Int') {
-        // exprForParam = {argLoadExpr: tNumericLiteral(257), argStoreExpr: tNumericLiteral(257), paramType: 'number', fieldLoadSuffix: 'Int', fieldStoreSuffix: 'Int'}
+        return { kind: 'TLBNumberType', bits: new TLBNumberExpr(257), signed: true}
       } else if (expr.name == 'Bits') {
-        // exprForParam = {argLoadExpr: tNumericLiteral(1023), argStoreExpr: tNumericLiteral(1023), paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'}
+        return { kind: 'TLBBitsType', bits: new TLBNumberExpr(1023) }
       } else if (expr.name == 'Bit') {
-        // exprForParam = {argLoadExpr: tNumericLiteral(1), argStoreExpr: tNumericLiteral(1), paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'}
+        return { kind: 'TLBBitsType', bits: new TLBNumberExpr(1) }
       } else if (expr.name == 'Uint') {
-        // exprForParam = {argLoadExpr: tNumericLiteral(256), argStoreExpr: tNumericLiteral(256), paramType: 'number', fieldLoadSuffix: 'Uint', fieldStoreSuffix: 'Uint'}
+        return { kind: 'TLBNumberType', bits: new TLBNumberExpr(257), signed: false}
       } else if (expr.name == 'Any' || expr.name == 'Cell') {
-        // exprForParam = {argLoadExpr: tIdentifier(theSlice), argStoreExpr: tIdentifier(theSlice), paramType: 'Slice', fieldLoadSuffix: 'Slice', fieldStoreSuffix: 'Slice'}
+        return { kind: 'TLBCellType'}
       } else if ((theNum = splitForTypeValue(expr.name, 'int')) != undefined) {
-        // exprForParam = {argLoadExpr: tNumericLiteral(theNum), argStoreExpr: tNumericLiteral(theNum), paramType: 'number', fieldLoadSuffix: 'Int', fieldStoreSuffix: 'Int'}
+        return { kind: 'TLBNumberType', bits: new TLBNumberExpr(theNum), signed: true}
       } else if ((theNum = splitForTypeValue(expr.name, 'uint')) != undefined) {
-        // exprForParam = {argLoadExpr: tNumericLiteral(theNum), argStoreExpr: tNumericLiteral(theNum), paramType: 'number', fieldLoadSuffix: 'Uint', fieldStoreSuffix: 'Uint'}
+        return { kind: 'TLBNumberType', bits: new TLBNumberExpr(theNum), signed: false}
       } else if ((theNum = splitForTypeValue(expr.name, 'bits')) != undefined) {
-        // exprForParam = {argLoadExpr: tNumericLiteral(theNum), argStoreExpr: tNumericLiteral(theNum), paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'}
+        return { kind: 'TLBBitsType', bits: new TLBNumberExpr(theNum) }
       } else if (expr.name == 'Bool') {
-        // exprForParam = {argLoadExpr: undefined, argStoreExpr: undefined, paramType: 'boolean', fieldLoadSuffix: 'Boolean', fieldStoreSuffix: 'Bit'}
+        return { kind: 'TLBBoolType'}
       } else if (expr.name == 'MsgAddressInt') {
-        // exprForParam = {argLoadExpr: undefined, argStoreExpr: undefined, paramType: 'Address', fieldLoadSuffix: 'Address', fieldStoreSuffix: 'Address'}
+        return { kind: 'TLBAddressType' }
       } else {
         if (constructor.variablesMap.get(expr.name)?.type == '#') {
         //   result.loadExpr = getVarExprByName(expr.name, constructor)
@@ -143,7 +138,7 @@ export function getType(expr: ParserExpression, fieldName: string, isField: bool
     //   let currentSlice = getCurrentSlice([1, 0], 'slice');
     //   let currentCell = getCurrentSlice([1, 0], 'cell');
   
-      let subExprInfo = handleType(expr.expr, fieldName, true, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
+      let subExprInfo = getType(expr.expr, fieldName, true, true, variableCombinatorName, variableSubStructName, constructor, fieldTypeName, argIndex, tlbCode);
     //   if (subExprInfo.loadExpr) {
     //     result.typeParamExpr = subExprInfo.typeParamExpr;
     //     result.storeExpr = subExprInfo.storeExpr;
