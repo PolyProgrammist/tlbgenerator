@@ -59,8 +59,6 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
   let insideStoreParameters2: Expression[] = [tIdentifier('arg')]
 
   if (fieldType.kind == 'TLBNumberType') {
-    let tmp = convertToAST(fieldType.bits, constructor, false, tIdentifier(variableCombinatorName));
-
     exprForParam = {
       argLoadExpr: convertToAST(fieldType.bits, constructor, true),
       argStoreExpr: convertToAST(fieldType.storeBits, constructor, false, tIdentifier(variableCombinatorName)),
@@ -90,7 +88,7 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
             paramType: expr.arg.num <= 63 ? 'number' : 'bigint', 
             fieldLoadSuffix:  expr.arg.num <= 63 ? 'Uint' : 'UintBig', fieldStoreSuffix: 'Uint'
           }
-        }
+        } 
         
       }
       if (expr.arg instanceof NameExpr) {
@@ -109,18 +107,22 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
       } // TODO: handle other cases
     } else if (expr.name == '#<') {
       if (expr.arg instanceof NumberExpr || expr.arg instanceof NameExpr) {
-        exprForParam = {
-          argLoadExpr: tFunctionCall(tIdentifier('bitLen'), [tBinaryExpression(convertToAST(convertToMathExpr(expr.arg), constructor, true), '-', tNumericLiteral(1))]), 
-          argStoreExpr: tFunctionCall(tIdentifier('bitLen'), [tBinaryExpression(convertToAST(convertToMathExpr(expr.arg), constructor, true, tIdentifier(variableCombinatorName)), '-', tNumericLiteral(1))]), 
-          paramType: 'number', fieldLoadSuffix: 'Uint', fieldStoreSuffix: 'Uint'
+        if (exprForParam == undefined) {
+          exprForParam = {
+            argLoadExpr: tFunctionCall(tIdentifier('bitLen'), [tBinaryExpression(convertToAST(convertToMathExpr(expr.arg), constructor, true), '-', tNumericLiteral(1))]), 
+            argStoreExpr: tFunctionCall(tIdentifier('bitLen'), [tBinaryExpression(convertToAST(convertToMathExpr(expr.arg), constructor, true, tIdentifier(variableCombinatorName)), '-', tNumericLiteral(1))]), 
+            paramType: 'number', fieldLoadSuffix: 'Uint', fieldStoreSuffix: 'Uint'
+          }
         }
       } // TODO: handle other cases
     } else if (expr.name == '#<=') {
       if (expr.arg instanceof NumberExpr || expr.arg instanceof NameExpr) {
-        exprForParam = {
-          argLoadExpr: tFunctionCall(tIdentifier('bitLen'), [convertToAST(convertToMathExpr(expr.arg), constructor, true)]), 
-          argStoreExpr: tFunctionCall(tIdentifier('bitLen'), [convertToAST(convertToMathExpr(expr.arg), constructor, true, tIdentifier(variableCombinatorName))]), 
-          paramType: 'number', fieldLoadSuffix: 'Uint', fieldStoreSuffix: 'Uint'
+        if (exprForParam == undefined) {
+          exprForParam = {
+            argLoadExpr: tFunctionCall(tIdentifier('bitLen'), [convertToAST(convertToMathExpr(expr.arg), constructor, true)]), 
+            argStoreExpr: tFunctionCall(tIdentifier('bitLen'), [convertToAST(convertToMathExpr(expr.arg), constructor, true, tIdentifier(variableCombinatorName))]), 
+            paramType: 'number', fieldLoadSuffix: 'Uint', fieldStoreSuffix: 'Uint'
+          }
         }
       } // TODO: handle other cases
     } 
@@ -128,21 +130,26 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
     if (expr.name == 'int' && expr.args.length == 1 && (expr.args[0] instanceof MathExpr || expr.args[0] instanceof NumberExpr || expr.args[0] instanceof NameExpr)) {
       let myMathExpr = convertToMathExpr(expr.args[0])
       let isSmallInt = (expr.args[0] instanceof NumberExpr && expr.args[0].num <= 63)
-      exprForParam = {
-        argLoadExpr: convertToAST(myMathExpr, constructor),
-        argStoreExpr: convertToAST(myMathExpr, constructor, false, tIdentifier(variableSubStructName)),
-        paramType: isSmallInt ? 'number' : 'bigint', 
-        fieldLoadSuffix: isSmallInt ? 'Int' : 'IntBig', fieldStoreSuffix: 'Int'
+      if (exprForParam == undefined) {
+        exprForParam = {
+          argLoadExpr: convertToAST(myMathExpr, constructor),
+          argStoreExpr: convertToAST(myMathExpr, constructor, false, tIdentifier(variableSubStructName)),
+          paramType: isSmallInt ? 'number' : 'bigint', 
+          fieldLoadSuffix: isSmallInt ? 'Int' : 'IntBig', fieldStoreSuffix: 'Int'
+        }
       }
     } else if (expr.name == 'uint' && expr.args.length == 1 && (expr.args[0] instanceof MathExpr || expr.args[0] instanceof NumberExpr || expr.args[0] instanceof NameExpr)) {
       let myMathExpr = convertToMathExpr(expr.args[0])
       let isSmallInt = (expr.args[0] instanceof NumberExpr && expr.args[0].num <= 63)
-      exprForParam = {
-        argLoadExpr: convertToAST(myMathExpr, constructor),
-        argStoreExpr: convertToAST(myMathExpr, constructor, false, tIdentifier(variableSubStructName)),
-        paramType: (expr.args[0] instanceof NumberExpr && expr.args[0].num <= 63) ? 'number' : 'bigint', 
-        fieldLoadSuffix: isSmallInt ? 'Uint' : 'UintBig', fieldStoreSuffix: 'Uint'
+      if (exprForParam == undefined) {
+        exprForParam = {
+          argLoadExpr: convertToAST(myMathExpr, constructor),
+          argStoreExpr: convertToAST(myMathExpr, constructor, false, tIdentifier(variableSubStructName)),
+          paramType: (expr.args[0] instanceof NumberExpr && expr.args[0].num <= 63) ? 'number' : 'bigint', 
+          fieldLoadSuffix: isSmallInt ? 'Uint' : 'UintBig', fieldStoreSuffix: 'Uint'
+        }
       }
+      
     } else if (expr.name == 'bits' && expr.args.length == 1 && (expr.args[0] instanceof MathExpr || expr.args[0] instanceof NumberExpr || expr.args[0] instanceof NameExpr)) {
       let myMathExpr = convertToMathExpr(expr.args[0])
       exprForParam = {
@@ -185,13 +192,17 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
   } else if (expr instanceof NameExpr) {
     let theNum;
     if (expr.name == 'Int') {
-      exprForParam = {argLoadExpr: tNumericLiteral(257), argStoreExpr: tNumericLiteral(257), paramType: 'number', fieldLoadSuffix: 'Int', fieldStoreSuffix: 'Int'}
+      if (exprForParam == undefined) {
+        exprForParam = {argLoadExpr: tNumericLiteral(257), argStoreExpr: tNumericLiteral(257), paramType: 'number', fieldLoadSuffix: 'Int', fieldStoreSuffix: 'Int'}
+      }
     } else if (expr.name == 'Bits') {
       exprForParam = {argLoadExpr: tNumericLiteral(1023), argStoreExpr: tNumericLiteral(1023), paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'}
     } else if (expr.name == 'Bit') {
       exprForParam = {argLoadExpr: tNumericLiteral(1), argStoreExpr: tNumericLiteral(1), paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'}
     } else if (expr.name == 'Uint') {
-      exprForParam = {argLoadExpr: tNumericLiteral(256), argStoreExpr: tNumericLiteral(256), paramType: 'number', fieldLoadSuffix: 'Uint', fieldStoreSuffix: 'Uint'}
+      if (exprForParam == undefined) {
+        exprForParam = {argLoadExpr: tNumericLiteral(256), argStoreExpr: tNumericLiteral(256), paramType: 'number', fieldLoadSuffix: 'Uint', fieldStoreSuffix: 'Uint'}
+      }
     } else if (expr.name == 'Any' || expr.name == 'Cell') {
       exprForParam = {argLoadExpr: tIdentifier(theSlice), argStoreExpr: tIdentifier(theSlice), paramType: 'Slice', fieldLoadSuffix: 'Slice', fieldStoreSuffix: 'Slice'}
     } else if ((theNum = splitForTypeValue(expr.name, 'int')) != undefined) {
