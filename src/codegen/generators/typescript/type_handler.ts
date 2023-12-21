@@ -91,6 +91,11 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
   if (fieldType.kind == 'TLBAddressType') {
     exprForParam = {argLoadExpr: undefined, argStoreExpr: undefined, paramType: 'Address', fieldLoadSuffix: 'Address', fieldStoreSuffix: 'Address'}
   }
+
+  if (fieldType.kind == 'TLBExprMathType') {
+    result.loadExpr = convertToAST(fieldType.expr, constructor, true);
+    result.storeExpr = tExpressionStatement(result.loadExpr)
+  }
   
   if (expr instanceof BuiltinZeroArgs) {
     if (expr.name == '#') {
@@ -309,10 +314,6 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
       result.typeParamExpr = tIdentifier(exprForParam.paramType)
     }
   } else if (expr instanceof NumberExpr) {
-    if (fieldType.kind == 'TLBExprMathType') {
-      result.loadExpr = convertToAST(fieldType.expr, constructor, true);
-      result.storeExpr = tExpressionStatement(result.loadExpr)
-    }
     if (fieldType.kind == 'TLBUndefinedType') {
       result.loadExpr = convertToAST(new TLBNumberExpr(expr.num), constructor, true);
       result.storeExpr = tExpressionStatement(result.loadExpr);
@@ -370,10 +371,6 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
         throw new Error('')
       }
     } else {
-      if (fieldType.kind == 'TLBExprMathType') {
-        result.loadExpr = convertToAST(fieldType.expr, constructor, true);
-        result.storeExpr = tExpressionStatement(result.loadExpr)
-      }
       if (fieldType.kind == 'TLBUndefinedType') {
         result.loadExpr = convertToAST(convertToMathExpr(expr), constructor, true);
         result.storeExpr = tExpressionStatement(result.loadExpr);
