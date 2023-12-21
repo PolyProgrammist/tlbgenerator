@@ -244,13 +244,17 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
               exprForParam = {argLoadExpr: tNumericLiteral(theNum), argStoreExpr: tNumericLiteral(theNum), paramType: 'number', fieldLoadSuffix: 'Uint', fieldStoreSuffix: 'Uint'}
       }
     } else if ((theNum = splitForTypeValue(expr.name, 'bits')) != undefined) {
-      // if (exprForParam == undefined) {
+      if (exprForParam == undefined) {
         exprForParam = {argLoadExpr: tNumericLiteral(theNum), argStoreExpr: tNumericLiteral(theNum), paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'}
-      // }
+      }
     } else if (expr.name == 'Bool') {
-      exprForParam = {argLoadExpr: undefined, argStoreExpr: undefined, paramType: 'boolean', fieldLoadSuffix: 'Boolean', fieldStoreSuffix: 'Bit'}
+      if (exprForParam == undefined) {
+        exprForParam = {argLoadExpr: undefined, argStoreExpr: undefined, paramType: 'boolean', fieldLoadSuffix: 'Boolean', fieldStoreSuffix: 'Bit'}
+      }
     } else if (expr.name == 'MsgAddressInt') {
-      exprForParam = {argLoadExpr: undefined, argStoreExpr: undefined, paramType: 'Address', fieldLoadSuffix: 'Address', fieldStoreSuffix: 'Address'}
+      if (exprForParam == undefined) {
+        exprForParam = {argLoadExpr: undefined, argStoreExpr: undefined, paramType: 'Address', fieldLoadSuffix: 'Address', fieldStoreSuffix: 'Address'}
+      }
     } else {
       if (constructor.variablesMap.get(expr.name)?.type == '#') {
         result.loadExpr = getVarExprByName(expr.name, constructor)
