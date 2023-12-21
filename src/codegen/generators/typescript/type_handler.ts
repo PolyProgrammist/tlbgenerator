@@ -402,12 +402,20 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
       }
     }
   } else if (expr instanceof CondExpr) {
-    let subExprInfo = handleType(fieldType, expr.condExpr, fieldName, true, false, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
+    let subExprInfo: FieldInfoType
+    let conditionExpr: Expression;
+    if (fieldType.kind == 'TLBCondType') {
+      subExprInfo = handleType(fieldType.value, expr.condExpr, fieldName, true, false, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
+      conditionExpr = convertToAST(fieldType.condition, constructor, true)
+    } else if (fieldType.kind == 'TLBUndefinedType') {
+      subExprInfo = handleType(fieldType, expr.condExpr, fieldName, true, false, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
+    } else {
+      throw new Error('');
+    }
     if (subExprInfo.typeParamExpr) {
       result.typeParamExpr = tUnionTypeExpression([subExprInfo.typeParamExpr, tIdentifier('undefined')])
     }
     if (subExprInfo.loadExpr) {
-      let conditionExpr: Expression;
       if (expr.left instanceof NameExpr) {
         conditionExpr = convertToAST(convertToMathExpr(expr.left), constructor, true)
         if (expr.dotExpr != null) {

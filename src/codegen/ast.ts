@@ -114,7 +114,13 @@ export type TLBMultipleType = {
     times: TLBMathExpr
 }
 
-export type TLBFieldType = TLBNumberType | TLBBitsType | TLBNamedType | TLBBoolType | TLBAddressType | TLBCellType | TLBUndefinedType | TLBMathExprType | TLBNegatedType | TLBCellInsideType | TLBMultipleType;
+export type TLBCondType = {
+    kind: 'TLBCondType'
+    value: TLBFieldType
+    condition: TLBMathExpr
+}
+
+export type TLBFieldType = TLBNumberType | TLBBitsType | TLBNamedType | TLBBoolType | TLBAddressType | TLBCellType | TLBUndefinedType | TLBMathExprType | TLBNegatedType | TLBCellInsideType | TLBMultipleType | TLBCondType;
 
 export type TLBField = {
     name: string

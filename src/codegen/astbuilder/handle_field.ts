@@ -1,5 +1,5 @@
 import { BuiltinOneArgExpr, BuiltinZeroArgs, CellRefExpr, CombinatorExpr, CondExpr, FieldExprDef, FieldNamedDef, MathExpr, NameExpr, NegateExpr, NumberExpr, Expression as ParserExpression } from "../../ast/nodes";
-import { TLBBinaryOp, TLBCode, TLBConstructor, TLBField, TLBFieldType, TLBNumberExpr, TLBNumberType, TLBType, TLBUnaryOp } from "../ast";
+import { TLBBinaryOp, TLBCode, TLBConstructor, TLBField, TLBFieldType, TLBMathExpr, TLBNumberExpr, TLBNumberType, TLBType, TLBUnaryOp } from "../ast";
 import { GenDeclaration, ObjectProperty } from "../generators/typescript/tsgen";
 import { convertToMathExpr, firstLower, getSubStructName, goodVariableName, splitForTypeValue } from "../utils";
 
@@ -205,6 +205,14 @@ export function getType(expr: ParserExpression, fieldName: string, isField: bool
         // result.storeExpr = tExpressionStatement(result.loadExpr);
       }
     } else if (expr instanceof CondExpr) {
+      let subExprInfo = getType(expr.condExpr, fieldName, true, false, variableCombinatorName, variableSubStructName, constructor, fieldTypeName, argIndex, tlbCode);
+      if (expr.left instanceof NameExpr) {
+        let condition: TLBMathExpr =  convertToMathExpr(expr.left);
+        if (expr.dotExpr != null) {
+          condition = new TLBBinaryOp(condition, new TLBBinaryOp(new TLBNumberExpr(1), new TLBNumberExpr(expr.dotExpr), '<<'), '&')
+        }
+        return {kind: 'TLBCondType', value: subExprInfo, condition: condition}
+      } 
     //   let subExprInfo = handleType(expr.condExpr, fieldName, true, false, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
     //   if (subExprInfo.typeParamExpr) {
     //     result.typeParamExpr = tUnionTypeExpression([subExprInfo.typeParamExpr, tIdentifier('undefined')])
