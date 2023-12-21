@@ -252,7 +252,7 @@ export function getType(expr: ParserExpression, fieldName: string, isField: bool
     // }
   
     // result.storeExpr2 = storeExpr2
-    return {name: 'hello', arguments: []}// {new TLBNumberExpr(3)};
+    return {kind: 'TLBNamedType', name: 'hello', arguments: []}// {new TLBNumberExpr(3)};
   }
   
 

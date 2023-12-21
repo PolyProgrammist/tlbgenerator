@@ -488,7 +488,7 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
         fixNaming(tlbType);
         tlbType.constructors.sort(compareConstructors)
     });
-    // fillFields(tlbCode);
+    fillFields(tlbCode);
     checkAndRemovePrimitives(tlbCode, input);
 }
 export function isBadVarName(name: string): boolean {
