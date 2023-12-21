@@ -2144,7 +2144,7 @@ export interface VmStackValue_vm_stk_tinyint {
 
 export interface VmStackValue_vm_stk_int {
     readonly kind: 'VmStackValue_vm_stk_int';
-    readonly value: number;
+    readonly value: bigint;
 }
 
 export interface VmStackValue_vm_stk_nan {
@@ -11715,7 +11715,7 @@ export function loadVmStackValue(slice: Slice): VmStackValue {
     }
     if (((slice.remainingBits >= 16) && (slice.preloadUint(16) == 0x0201))) {
         slice.loadUint(16);
-        let value: number = slice.loadInt(257);
+        let value: bigint = slice.loadIntBig(257);
         return {
             kind: 'VmStackValue_vm_stk_int',
             value: value,

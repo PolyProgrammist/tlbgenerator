@@ -30,11 +30,11 @@ type ExprForParam = {
 
 function isBigInt(fieldType: TLBNumberType) {
   if (fieldType.bits instanceof TLBNumberExpr) {
-    if (fieldType.bits.n <= 63) {
+    if (fieldType.bits.n <= 64) {
       return false;
     }
   }
-  if (fieldType.maxBits && fieldType.maxBits <= 63) {
+  if (fieldType.maxBits && fieldType.maxBits <= 64) {
     return false;
   }
   return true;
@@ -236,7 +236,9 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
         exprForParam = {argLoadExpr: tIdentifier(theSlice), argStoreExpr: tIdentifier(theSlice), paramType: 'Slice', fieldLoadSuffix: 'Slice', fieldStoreSuffix: 'Slice'}
       }
     } else if ((theNum = splitForTypeValue(expr.name, 'int')) != undefined) {
-      exprForParam = {argLoadExpr: tNumericLiteral(theNum), argStoreExpr: tNumericLiteral(theNum), paramType: 'number', fieldLoadSuffix: 'Int', fieldStoreSuffix: 'Int'}
+      if (exprForParam == undefined) {
+        exprForParam = {argLoadExpr: tNumericLiteral(theNum), argStoreExpr: tNumericLiteral(theNum), paramType: 'number', fieldLoadSuffix: 'Int', fieldStoreSuffix: 'Int'}
+      }
     } else if ((theNum = splitForTypeValue(expr.name, 'uint')) != undefined) {
       exprForParam = {argLoadExpr: tNumericLiteral(theNum), argStoreExpr: tNumericLiteral(theNum), paramType: 'number', fieldLoadSuffix: 'Uint', fieldStoreSuffix: 'Uint'}
     } else if ((theNum = splitForTypeValue(expr.name, 'bits')) != undefined) {

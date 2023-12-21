@@ -140,7 +140,7 @@ describe('Generating tlb code', () => {
         checkSameOnStoreLoad(paramNamedArgInSecondConstr, (slice: Slice) => { return loadParamNamedArgInSecondConstr(slice, 3) }, storeParamNamedArgInSecondConstr);
         let anonymousData: AnonymousData = {kind: 'AnonymousData', anon0: 1}
         checkSameOnStoreLoad(anonymousData, loadAnonymousData, storeAnonymousData);
-        let falseAnonField: FalseAnonField = {kind: 'FalseAnonField', value: 3}
+        let falseAnonField: FalseAnonField = {kind: 'FalseAnonField', value: BigInt(3)}
         checkSameOnStoreLoad(falseAnonField, loadFalseAnonField, storeFalseAnonField)
         let checkKeyword: CheckKeyword = {kind: 'CheckKeyword', const0: 3}
         checkSameOnStoreLoad(checkKeyword, loadCheckKeyword, storeCheckKeyword);

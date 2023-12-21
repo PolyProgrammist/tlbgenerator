@@ -439,7 +439,7 @@ export interface AnonymousData {
 
 export interface FalseAnonField {
     readonly kind: 'FalseAnonField';
-    readonly value: number;
+    readonly value: bigint;
 }
 
 export type ConstructorOrder = ConstructorOrder_a | ConstructorOrder__;
@@ -2303,7 +2303,7 @@ export function storeAnonymousData(anonymousData: AnonymousData): (builder: Buil
 export function loadFalseAnonField(slice: Slice): FalseAnonField {
     if (((slice.remainingBits >= 16) && (slice.preloadUint(16) == 0x0201))) {
         slice.loadUint(16);
-        let value: number = slice.loadInt(257);
+        let value: bigint = slice.loadIntBig(257);
         return {
             kind: 'FalseAnonField',
             value: value,
