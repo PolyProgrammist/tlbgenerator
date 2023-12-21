@@ -138,7 +138,8 @@ export function getType(expr: ParserExpression, fieldName: string, isField: bool
     //     result.typeParamExpr = tIdentifier(exprForParam.paramType)
     //   }
     } else if (expr instanceof NumberExpr) {
-    //   result.loadExpr = tNumericLiteral(expr.num)
+      return {kind: 'TLBExprMathType', expr: new TLBNumberExpr(expr.num)}
+      //   result.loadExpr = tNumericLiteral(expr.num)
     } else if (expr instanceof NegateExpr && expr.expr instanceof NameExpr) { // TODO: handle other case
     //   let getParameterFunctionId = tIdentifier(variableSubStructName + '_get_' + expr.expr.name)
     //   jsCodeFunctionsDeclarations.push(tFunctionDeclaration(getParameterFunctionId, tTypeParametersExpression([]), tIdentifier('number'), [tTypedIdentifier(tIdentifier(goodVariableName(fieldName)), tIdentifier(fieldTypeName))], getNegationDerivationFunctionBody(tlbCode, fieldTypeName, argIndex, fieldName)))
@@ -192,6 +193,7 @@ export function getType(expr: ParserExpression, fieldName: string, isField: bool
           throw new Error('')
         }
       } else {
+        return {kind: 'TLBExprMathType', expr: convertToMathExpr(expr)}
         // result.loadExpr = convertToAST(convertToMathExpr(expr), constructor, true);
         // result.storeExpr = tExpressionStatement(result.loadExpr);
       }

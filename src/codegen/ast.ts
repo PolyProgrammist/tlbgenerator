@@ -77,6 +77,11 @@ export type TLBNamedType = {
     arguments: TLBFieldType[]
 }
 
+export type TLBMathExprType = {
+    kind: 'TLBExprMathType'
+    expr: TLBMathExpr
+}
+
 export type TLBBoolType = {
     kind: 'TLBBoolType'
 }
@@ -93,7 +98,7 @@ export type TLBUndefinedType = {
     kind: 'TLBUndefinedType'
 }
 
-export type TLBFieldType = TLBNumberType | TLBBitsType | TLBNamedType | TLBBoolType | TLBAddressType | TLBCellType | TLBUndefinedType;
+export type TLBFieldType = TLBNumberType | TLBBitsType | TLBNamedType | TLBBoolType | TLBAddressType | TLBCellType | TLBUndefinedType | TLBMathExprType;
 
 export type TLBField = {
     name: string
