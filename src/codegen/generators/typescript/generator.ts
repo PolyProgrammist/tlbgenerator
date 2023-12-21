@@ -1,10 +1,11 @@
-import { TLBCode, TLBType } from "../../ast";
+import { TLBCode, TLBField, TLBType } from "../../ast";
 import { handleField } from "./field_handler";
 import { firstLower, getStringDeclaration, getSubStructName, goodVariableName } from "../../utils";
 import { CodeBuilder } from "../CodeBuilder";
 import { CodeGenerator } from "../generator";
 import { BinaryExpression, GenDeclaration, ObjectProperty, Statement, StructDeclaration, TheNode, TypeExpression, TypeParametersExpression, TypedIdentifier, tArrowFunctionExpression, tArrowFunctionType, tBinaryExpression, tComment, tExpressionStatement, tFunctionCall, tFunctionDeclaration, tIdentifier, tIfStatement, tImportDeclaration, tMemberExpression, tNumericLiteral, tObjectExpression, tObjectProperty, tReturnStatement, tStringLiteral, tStructDeclaration, tTypeParametersExpression, tTypeWithParameters, tTypedIdentifier, tUnaryOpExpression, tUnionTypeDeclaration, tUnionTypeExpression, toCode } from "./tsgen";
 import { convertToAST, getCondition, getParamVarExpr, getTypeParametersExpression } from "./utils";
+import { BuiltinOneArgExpr, BuiltinZeroArgs, CombinatorExpr, CondExpr, FieldExprDef, FieldNamedDef, MathExpr, NameExpr } from "../../../ast/nodes";
 
 export class TypescriptGenerator implements CodeGenerator {
     jsCodeDeclarations: GenDeclaration[] = []
@@ -54,16 +55,27 @@ export class TypescriptGenerator implements CodeGenerator {
                 }
             })
 
+            let minifieldindex = 0;
             for (let fieldIndex = 0; fieldIndex < declaration.fields.length; fieldIndex++) {
 
-                let element = declaration.fields.at(fieldIndex);
-                // let field = constructor.fields.at(fieldIndex);
-                // if (field == undefined) {
-                //     field = {kind: 'TLBNamedType', name: 'hello', arguments: []}
-                // }
-                // if (field && element)
-                if (element)
-                handleField({name: 'hey', fieldType: {kind: 'TLBNamedType', name: 'hello', arguments: []}, anonymous: false}, element, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, fieldIndex.toString());
+                let field = declaration.fields.at(fieldIndex);
+                let tlbfield: TLBField | undefined = constructor.fields.at(minifieldindex);
+                if (tlbfield == undefined) {
+                    tlbfield = {name: 'hey', fieldType: {kind: 'TLBNamedType', name: 'hello', arguments: []}, anonymous: false}
+                }                
+
+                if (field) {
+                    handleField(tlbfield, field, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, fieldIndex.toString());
+
+                    if (field instanceof FieldNamedDef || field instanceof FieldExprDef) {
+                        if (field instanceof FieldExprDef && field.expr instanceof NameExpr && field.expr.name == '_') {
+                            continue;
+                        }
+                        if (field.expr instanceof CombinatorExpr || field.expr instanceof NameExpr || field.expr instanceof BuiltinZeroArgs || field.expr instanceof BuiltinOneArgExpr || field.expr instanceof MathExpr || field.expr instanceof CondExpr) {
+                            minifieldindex++;
+                        }
+                    }
+                }
             
             }
 
