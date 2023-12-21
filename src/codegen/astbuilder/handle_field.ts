@@ -260,7 +260,7 @@ export function getType(expr: ParserExpression, fieldName: string, isField: bool
     // }
   
     // result.storeExpr2 = storeExpr2
-    return {kind: 'TLBNamedType', name: 'tmplololokekeke', arguments: []}// {new TLBNumberExpr(3)};
+    return {kind: 'TLBUndefinedType'}// {new TLBNumberExpr(3)};
   }
   
 

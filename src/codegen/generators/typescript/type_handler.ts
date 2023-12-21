@@ -193,7 +193,7 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
       let argIndex = -1;
       expr.args.forEach((arg) => {
         argIndex++;
-        let subExprInfo = handleType({kind: 'TLBNamedType', name: 'tmplololokekeke', arguments: []}, arg, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
+        let subExprInfo = handleType({kind: 'TLBUndefinedType'}, arg, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
         if (subExprInfo.typeParamExpr) {
           typeExpression.typeParameters.push(subExprInfo.typeParamExpr);
         }
@@ -262,7 +262,7 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
       }
     } else {
       let typeName = expr.name
-      if (fieldType.kind == 'TLBNamedType' && fieldType.name != 'tmplololokekeke') {
+      if (fieldType.kind == 'TLBNamedType') {
         typeName = fieldType.name;
       }
 

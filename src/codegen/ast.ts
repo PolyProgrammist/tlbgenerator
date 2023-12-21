@@ -89,7 +89,11 @@ export type TLBCellType = {
     kind: 'TLBCellType'
 }
 
-export type TLBFieldType = TLBNumberType | TLBBitsType | TLBNamedType | TLBBoolType | TLBAddressType | TLBCellType;
+export type TLBUndefinedType = {
+    kind: 'TLBUndefinedType'
+}
+
+export type TLBFieldType = TLBNumberType | TLBBitsType | TLBNamedType | TLBBoolType | TLBAddressType | TLBCellType | TLBUndefinedType;
 
 export type TLBField = {
     name: string
