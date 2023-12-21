@@ -25,11 +25,9 @@ export class TLBUnaryOp {
     constructor(
         readonly value: TLBMathExpr,
         readonly operation: string, 
-        readonly variables: Set<string>,
-        readonly hasNeg: boolean
+        readonly variables: Set<string> = value.variables,
+        readonly hasNeg: boolean = value.hasNeg
     ) {
-        hasNeg = value.hasNeg
-        variables = value.variables
     }
 }
 

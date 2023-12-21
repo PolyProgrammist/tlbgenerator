@@ -41,45 +41,18 @@ export function getType(expr: ParserExpression, fieldName: string, isField: bool
         } // TODO: handle other cases
       } else if (expr.name == '#<') {
         if (expr.arg instanceof NumberExpr || expr.arg instanceof NameExpr) {
-            // let left = convertToMathExpr(expr.arg);
-            // let right = new TLBNumberExpr(1)
-            // let argMinusOne = new TLBBinaryOp(left, right, '-', new Set([...left.variables, ...right.variables]), left.hasNeg || right.hasNeg)
-            // let theBitLen = new TLBUnaryOp(argMinusOne, '.', argMinusOne.variables, argMinusOne.hasNeg);
-            // return {bits: }
-        //   exprForParam = {
-        //     argLoadExpr: tFunctionCall(tIdentifier('bitLen'), [tBinaryExpression(convertToAST(convertToMathExpr(expr.arg), constructor, true), '-', tNumericLiteral(1))]), 
-        //     argStoreExpr: tFunctionCall(tIdentifier('bitLen'), [tBinaryExpression(convertToAST(convertToMathExpr(expr.arg), constructor, true, tIdentifier(variableCombinatorName)), '-', tNumericLiteral(1))]), 
-        //     paramType: 'number', fieldLoadSuffix: 'Uint', fieldStoreSuffix: 'Uint'
-        //   }
+            return {bits: new TLBUnaryOp(new TLBBinaryOp(convertToMathExpr(expr.arg), new TLBNumberExpr(1), '-'), '.'), signed: false}
         } // TODO: handle other cases
       } else if (expr.name == '#<=') {
         if (expr.arg instanceof NumberExpr || expr.arg instanceof NameExpr) {
-        //   exprForParam = {
-        //     argLoadExpr: tFunctionCall(tIdentifier('bitLen'), [convertToAST(convertToMathExpr(expr.arg), constructor, true)]), 
-        //     argStoreExpr: tFunctionCall(tIdentifier('bitLen'), [convertToAST(convertToMathExpr(expr.arg), constructor, true, tIdentifier(variableCombinatorName))]), 
-        //     paramType: 'number', fieldLoadSuffix: 'Uint', fieldStoreSuffix: 'Uint'
-        //   }
+            return {bits: new TLBUnaryOp(convertToMathExpr(expr.arg), '.'), signed: false}
         } // TODO: handle other cases
       } 
     } else if (expr instanceof CombinatorExpr) {
       if (expr.name == 'int' && expr.args.length == 1 && (expr.args[0] instanceof MathExpr || expr.args[0] instanceof NumberExpr || expr.args[0] instanceof NameExpr)) {
-        let myMathExpr = convertToMathExpr(expr.args[0])
-        let isSmallInt = (expr.args[0] instanceof NumberExpr && expr.args[0].num <= 63)
-        // exprForParam = {
-        //   argLoadExpr: convertToAST(myMathExpr, constructor),
-        //   argStoreExpr: convertToAST(myMathExpr, constructor, false, tIdentifier(variableSubStructName)),
-        //   paramType: isSmallInt ? 'number' : 'bigint', 
-        //   fieldLoadSuffix: isSmallInt ? 'Int' : 'IntBig', fieldStoreSuffix: 'Int'
-        // }
+        return {bits: convertToMathExpr(expr.args[0]), signed: true}
       } else if (expr.name == 'uint' && expr.args.length == 1 && (expr.args[0] instanceof MathExpr || expr.args[0] instanceof NumberExpr || expr.args[0] instanceof NameExpr)) {
-        let myMathExpr = convertToMathExpr(expr.args[0])
-        let isSmallInt = (expr.args[0] instanceof NumberExpr && expr.args[0].num <= 63)
-        // exprForParam = {
-        //   argLoadExpr: convertToAST(myMathExpr, constructor),
-        //   argStoreExpr: convertToAST(myMathExpr, constructor, false, tIdentifier(variableSubStructName)),
-        //   paramType: (expr.args[0] instanceof NumberExpr && expr.args[0].num <= 63) ? 'number' : 'bigint', 
-        //   fieldLoadSuffix: isSmallInt ? 'Uint' : 'UintBig', fieldStoreSuffix: 'Uint'
-        // }
+        return {bits: convertToMathExpr(expr.args[0]), signed: false}
       } else if (expr.name == 'bits' && expr.args.length == 1 && (expr.args[0] instanceof MathExpr || expr.args[0] instanceof NumberExpr || expr.args[0] instanceof NameExpr)) {
         let myMathExpr = convertToMathExpr(expr.args[0])
         // exprForParam = {
