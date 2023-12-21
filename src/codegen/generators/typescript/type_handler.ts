@@ -209,7 +209,7 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
             result.negatedVariablesLoads = result.negatedVariablesLoads.concat(subExprInfo.negatedVariablesLoads);
           }
         })
-      } else {
+      } else if (fieldType.kind == 'TLBUndefinedType') {
         expr.args.forEach((arg) => {
           argIndex++;
           let subExprInfo = handleType({kind: 'TLBUndefinedType'}, arg, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
