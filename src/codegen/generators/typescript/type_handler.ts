@@ -71,6 +71,14 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
       exprForParam.paramType = 'bigint';
     }
   }
+
+  if (fieldType.kind == 'TLBBitsType') {
+    exprForParam = {
+      argLoadExpr: convertToAST(fieldType.bits, constructor),
+        argStoreExpr: convertToAST(fieldType.bits, constructor, false, tIdentifier(variableSubStructName)),
+        paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'
+    }
+  }
   
   if (expr instanceof BuiltinZeroArgs) {
     if (expr.name == '#') {
@@ -154,10 +162,12 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
       
     } else if (expr.name == 'bits' && expr.args.length == 1 && (expr.args[0] instanceof MathExpr || expr.args[0] instanceof NumberExpr || expr.args[0] instanceof NameExpr)) {
       let myMathExpr = convertToMathExpr(expr.args[0])
-      exprForParam = {
-        argLoadExpr: convertToAST(myMathExpr, constructor),
-        argStoreExpr: convertToAST(myMathExpr, constructor, false, tIdentifier(variableSubStructName)),
-        paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'
+      if (exprForParam == undefined) {
+        exprForParam = {
+          argLoadExpr: convertToAST(myMathExpr, constructor),
+          argStoreExpr: convertToAST(myMathExpr, constructor, false, tIdentifier(variableSubStructName)),
+          paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'
+        }
       }
     } else {
       let typeExpression: TypeParametersExpression = tTypeParametersExpression([]);
@@ -198,9 +208,13 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
         exprForParam = {argLoadExpr: tNumericLiteral(257), argStoreExpr: tNumericLiteral(257), paramType: 'number', fieldLoadSuffix: 'Int', fieldStoreSuffix: 'Int'}
       }
     } else if (expr.name == 'Bits') {
-      exprForParam = {argLoadExpr: tNumericLiteral(1023), argStoreExpr: tNumericLiteral(1023), paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'}
+      if (exprForParam == undefined) {
+        exprForParam = {argLoadExpr: tNumericLiteral(1023), argStoreExpr: tNumericLiteral(1023), paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'}
+      }
     } else if (expr.name == 'Bit') {
-      exprForParam = {argLoadExpr: tNumericLiteral(1), argStoreExpr: tNumericLiteral(1), paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'}
+      if (exprForParam == undefined) {
+              exprForParam = {argLoadExpr: tNumericLiteral(1), argStoreExpr: tNumericLiteral(1), paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'}
+      }
     } else if (expr.name == 'Uint') {
       if (exprForParam == undefined) {
         exprForParam = {argLoadExpr: tNumericLiteral(256), argStoreExpr: tNumericLiteral(256), paramType: 'number', fieldLoadSuffix: 'Uint', fieldStoreSuffix: 'Uint'}
