@@ -148,8 +148,11 @@ export function getType(expr: ParserExpression, fieldName: string, isField: bool
     } else if (expr instanceof CellRefExpr) {
     //   let currentSlice = getCurrentSlice([1, 0], 'slice');
     //   let currentCell = getCurrentSlice([1, 0], 'cell');
-  
+
       let subExprInfo = getType(expr.expr, fieldName, true, true, variableCombinatorName, variableSubStructName, constructor, fieldTypeName, argIndex, tlbCode);
+
+      return {kind: 'TLBCellInsideType', inside: subExprInfo}
+  
     //   if (subExprInfo.loadExpr) {
     //     result.typeParamExpr = subExprInfo.typeParamExpr;
     //     result.storeExpr = subExprInfo.storeExpr;

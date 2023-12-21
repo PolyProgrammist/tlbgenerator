@@ -81,7 +81,7 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
   }
 
   if (fieldType.kind == 'TLBCellType') {
-    exprForParam = {argLoadExpr: tIdentifier(theSlice), argStoreExpr: tIdentifier(theSlice), paramType: 'Slice', fieldLoadSuffix: 'Slice', fieldStoreSuffix: 'Slice'}
+      exprForParam = {argLoadExpr: tIdentifier(theSlice), argStoreExpr: tIdentifier(theSlice), paramType: 'Slice', fieldLoadSuffix: 'Slice', fieldStoreSuffix: 'Slice'}
   }
 
   if (fieldType.kind == 'TLBBoolType') {
@@ -334,7 +334,15 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
     let currentSlice = getCurrentSlice([1, 0], 'slice');
     let currentCell = getCurrentSlice([1, 0], 'cell');
 
-    let subExprInfo = handleType(fieldType, expr.expr, fieldName, true, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
+    let subExprInfo: FieldInfoType;
+    if (fieldType.kind == 'TLBCellInsideType') {
+      subExprInfo = handleType(fieldType.inside, expr.expr, fieldName, true, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties)
+    } else if (fieldType.kind == 'TLBUndefinedType') {
+      subExprInfo = handleType({kind: 'TLBUndefinedType'}, expr.expr, fieldName, true, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
+    } else {
+      throw new Error('')
+    }
+
     if (subExprInfo.loadExpr) {
       result.typeParamExpr = subExprInfo.typeParamExpr;
       result.storeExpr = subExprInfo.storeExpr;

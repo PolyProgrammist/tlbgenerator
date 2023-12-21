@@ -103,7 +103,12 @@ export type TLBNegatedType = {
     variableName: string
 }
 
-export type TLBFieldType = TLBNumberType | TLBBitsType | TLBNamedType | TLBBoolType | TLBAddressType | TLBCellType | TLBUndefinedType | TLBMathExprType | TLBNegatedType;
+export type TLBCellInsideType = {
+    kind: 'TLBCellInsideType'
+    inside: TLBFieldType
+}
+
+export type TLBFieldType = TLBNumberType | TLBBitsType | TLBNamedType | TLBBoolType | TLBAddressType | TLBCellType | TLBUndefinedType | TLBMathExprType | TLBNegatedType | TLBCellInsideType;
 
 export type TLBField = {
     name: string
