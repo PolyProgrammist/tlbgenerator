@@ -1724,7 +1724,7 @@ export interface ConfigProposalStatus {
     readonly is_critical: boolean;
     readonly voters: HashmapE<True>;
     readonly remaining_weight: number;
-    readonly validator_set_id: number;
+    readonly validator_set_id: bigint;
     readonly rounds_remaining: number;
     readonly wins: number;
     readonly losses: number;
@@ -2117,7 +2117,7 @@ export interface ValidatorComplaint {
     readonly description: ComplaintDescr;
     readonly created_at: number;
     readonly severity: number;
-    readonly reward_addr: number;
+    readonly reward_addr: bigint;
     readonly paid: Grams;
     readonly suggested_fine: Grams;
     readonly suggested_fine_part: number;
@@ -2127,7 +2127,7 @@ export interface ValidatorComplaintStatus {
     readonly kind: 'ValidatorComplaintStatus';
     readonly complaint: ValidatorComplaint;
     readonly voters: HashmapE<True>;
-    readonly vset_id: number;
+    readonly vset_id: bigint;
     readonly weight_remaining: number;
 }
 
@@ -9866,7 +9866,7 @@ export function loadConfigProposalStatus(slice: Slice): ConfigProposalStatus {
         let is_critical: boolean = slice.loadBoolean();
         let voters: HashmapE<True> = loadHashmapE<True>(slice, 16, loadTrue);
         let remaining_weight: number = slice.loadInt(64);
-        let validator_set_id: number = slice.loadUint(256);
+        let validator_set_id: bigint = slice.loadUintBig(256);
         let rounds_remaining: number = slice.loadUint(8);
         let wins: number = slice.loadUint(8);
         let losses: number = slice.loadUint(8);
@@ -11606,7 +11606,7 @@ export function loadValidatorComplaint(slice: Slice): ValidatorComplaint {
         let description: ComplaintDescr = loadComplaintDescr(slice1);
         let created_at: number = slice.loadUint(32);
         let severity: number = slice.loadUint(8);
-        let reward_addr: number = slice.loadUint(256);
+        let reward_addr: bigint = slice.loadUintBig(256);
         let paid: Grams = loadGrams(slice);
         let suggested_fine: Grams = loadGrams(slice);
         let suggested_fine_part: number = slice.loadUint(32);
@@ -11651,7 +11651,7 @@ export function loadValidatorComplaintStatus(slice: Slice): ValidatorComplaintSt
         let slice1 = slice.loadRef().beginParse();
         let complaint: ValidatorComplaint = loadValidatorComplaint(slice1);
         let voters: HashmapE<True> = loadHashmapE<True>(slice, 16, loadTrue);
-        let vset_id: number = slice.loadUint(256);
+        let vset_id: bigint = slice.loadUintBig(256);
         let weight_remaining: number = slice.loadInt(64);
         return {
             kind: 'ValidatorComplaintStatus',

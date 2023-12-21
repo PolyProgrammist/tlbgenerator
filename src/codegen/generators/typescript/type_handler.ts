@@ -240,9 +240,13 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
         exprForParam = {argLoadExpr: tNumericLiteral(theNum), argStoreExpr: tNumericLiteral(theNum), paramType: 'number', fieldLoadSuffix: 'Int', fieldStoreSuffix: 'Int'}
       }
     } else if ((theNum = splitForTypeValue(expr.name, 'uint')) != undefined) {
-      exprForParam = {argLoadExpr: tNumericLiteral(theNum), argStoreExpr: tNumericLiteral(theNum), paramType: 'number', fieldLoadSuffix: 'Uint', fieldStoreSuffix: 'Uint'}
+      if (exprForParam == undefined) {
+              exprForParam = {argLoadExpr: tNumericLiteral(theNum), argStoreExpr: tNumericLiteral(theNum), paramType: 'number', fieldLoadSuffix: 'Uint', fieldStoreSuffix: 'Uint'}
+      }
     } else if ((theNum = splitForTypeValue(expr.name, 'bits')) != undefined) {
-      exprForParam = {argLoadExpr: tNumericLiteral(theNum), argStoreExpr: tNumericLiteral(theNum), paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'}
+      // if (exprForParam == undefined) {
+        exprForParam = {argLoadExpr: tNumericLiteral(theNum), argStoreExpr: tNumericLiteral(theNum), paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'}
+      // }
     } else if (expr.name == 'Bool') {
       exprForParam = {argLoadExpr: undefined, argStoreExpr: undefined, paramType: 'boolean', fieldLoadSuffix: 'Boolean', fieldStoreSuffix: 'Bit'}
     } else if (expr.name == 'MsgAddressInt') {
