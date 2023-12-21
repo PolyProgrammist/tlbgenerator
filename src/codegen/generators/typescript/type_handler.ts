@@ -281,9 +281,12 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
         exprForParam = {argLoadExpr: undefined, argStoreExpr: undefined, paramType: 'Address', fieldLoadSuffix: 'Address', fieldStoreSuffix: 'Address'}
       }
     } else {
-      let typeName = expr.name
+      let typeName = ''
       if (fieldType.kind == 'TLBNamedType') {
         typeName = fieldType.name;
+      }
+      if (fieldType.kind == 'TLBUndefinedType') {
+        typeName = expr.name;
       }
 
       if (constructor.variablesMap.get(typeName)?.type == '#') {
