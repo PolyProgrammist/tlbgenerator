@@ -1,5 +1,5 @@
 
-import { BuiltinOneArgExpr, BuiltinZeroArgs, CombinatorExpr, CondExpr, FieldAnonymousDef, FieldDefinition, FieldExprDef, FieldNamedDef, MathExpr, NameExpr } from "../../ast/nodes";
+import { BuiltinOneArgExpr, BuiltinZeroArgs, CellRefExpr, CombinatorExpr, CondExpr, FieldAnonymousDef, FieldDefinition, FieldExprDef, FieldNamedDef, MathExpr, NameExpr } from "../../ast/nodes";
 import { TLBCode, TLBConstructor, TLBField, TLBNumberType, TLBType } from "../ast";
 import { GenDeclaration, ObjectProperty, Statement, TypedIdentifier } from "../generators/typescript/tsgen";
 import { firstLower, getSubStructName, goodVariableName } from "../utils";
@@ -44,9 +44,9 @@ export function handleField(somefield: TLBField | undefined, field: FieldDefinit
       return;
     }
 
-    //   if (field.expr instanceof CellRefExpr) {
+      if (field.expr instanceof CellRefExpr) {
 
-    //     if (field.expr.expr instanceof CombinatorExpr && (field.expr.expr.name == 'MERKLE_UPDATE' || field.expr.expr.name == 'MERKLE_ROOT')) {
+        if (field.expr.expr instanceof CombinatorExpr && (field.expr.expr.name == 'MERKLE_UPDATE' || field.expr.expr.name == 'MERKLE_ROOT')) {
     //       slicePrefix[slicePrefix.length - 1]++;
     //       slicePrefix.push(0);
     //       constructorLoadStatements.push(
@@ -61,16 +61,16 @@ export function handleField(somefield: TLBField | undefined, field: FieldDefinit
 
     //       // subStructStoreStatements
     //       slicePrefix.pop();
-    //     } else {
+        } else {
     //       slicePrefix[slicePrefix.length - 1]++;
     //       slicePrefix.push(0)
     //       constructorLoadStatements.push(sliceLoad(slicePrefix, currentSlice))
     //       subStructStoreStatements.push(tExpressionStatement(tDeclareVariable(tIdentifier(getCurrentSlice(slicePrefix, 'cell')), tFunctionCall(tIdentifier('beginCell'), []))))
-    //       handleField(new FieldNamedDef(fieldName, field.expr.expr), slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, fieldIndex)
+          handleField(somefield, new FieldNamedDef(fieldName, field.expr.expr), slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, fieldIndex)
     //       subStructStoreStatements.push(tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('storeRef')), [tIdentifier(getCurrentSlice(slicePrefix, 'cell'))])))
     //       slicePrefix.pop();
-    //     }      
-    //   }
+        }      
+      }
 
     if (field.expr instanceof CombinatorExpr || field.expr instanceof NameExpr || field.expr instanceof BuiltinZeroArgs || field.expr instanceof BuiltinOneArgExpr || field.expr instanceof MathExpr || field.expr instanceof CondExpr) {
       let tmpTypeName: string;

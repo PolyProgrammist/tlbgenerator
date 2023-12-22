@@ -66,6 +66,7 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
         // subStructStoreStatements
         slicePrefix.pop();
       } else {
+        // console.log(constructor.declaration.combinator.name, fieldName)
         slicePrefix[slicePrefix.length - 1]++;
         slicePrefix.push(0)
         constructorLoadStatements.push(sliceLoad(slicePrefix, currentSlice))
@@ -90,6 +91,7 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
         fieldscounter++;
       } 
       else {
+        // fieldscounter++;
         thefield = getType(fieldDefinition.expr, fieldName, true, false, variableCombinatorName, variableSubStructName, constructor, tmpTypeName, 0, tlbCode);
       }
       let fieldInfo = handleType(thefield, fieldName, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, tmpTypeName, 0, tlbCode);
