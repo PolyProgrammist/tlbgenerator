@@ -221,32 +221,7 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
       result.typeParamExpr = tIdentifier(exprForParam.paramType);
     }
   }
-
-  if (expr instanceof CombinatorExpr) {
-
-
-  } else if (expr instanceof CellRefExpr) {
-
-    //  else {
-    //   throw new Error('')
-    // }
-
-
-  } else if (expr instanceof MathExpr) {
-    if (fieldTypeName == '') {
-      if (expr.op == '*') {
-        //  else {
-        //   throw new Error('')
-        // }
-
-      } else {
-        throw new Error('')
-      }
-    } else {
-
-    }
-  }
-
+  
   if (exprForParam) {
     if (exprForParam.paramType != 'BitString' && exprForParam.paramType != 'Slice') {
       if (exprForParam.argStoreExpr) {
