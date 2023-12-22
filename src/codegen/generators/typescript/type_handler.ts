@@ -103,9 +103,7 @@ export function handleType(fieldType: TLBFieldType, fieldName: string, isField: 
   } else if (fieldType.kind == 'TLBCondType') {
     let subExprInfo: FieldInfoType
     let conditionExpr: Expression;
-    // if (expr instanceof CondExpr)
-      subExprInfo = handleType(fieldType.value, fieldName, true, false, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
-    // else throw new Error('')
+    subExprInfo = handleType(fieldType.value, fieldName, true, false, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
     conditionExpr = convertToAST(fieldType.condition, constructor, true)
     if (subExprInfo.typeParamExpr) {
       result.typeParamExpr = tUnionTypeExpression([subExprInfo.typeParamExpr, tIdentifier('undefined')])
@@ -123,9 +121,7 @@ export function handleType(fieldType: TLBFieldType, fieldName: string, isField: 
     let arrayLength: Expression
     let subExprInfo: FieldInfoType
     arrayLength = convertToAST(fieldType.times, constructor, true);
-    // if (expr instanceof MathExpr)
-      subExprInfo = handleType(fieldType.value, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
-    // else throw new Error('')
+    subExprInfo = handleType(fieldType.value, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
     let currentParam = insideStoreParameters[0]
     let currentParam2 = insideStoreParameters2[0]
     if (subExprInfo.loadExpr) {
@@ -145,9 +141,7 @@ export function handleType(fieldType: TLBFieldType, fieldName: string, isField: 
     let currentCell = getCurrentSlice([1, 0], 'cell');
 
     let subExprInfo: FieldInfoType;
-    // if (expr instanceof CellRefExpr)
-      subExprInfo = handleType(fieldType.value, fieldName, true, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties)
-    // else throw new Error('')
+    subExprInfo = handleType(fieldType.value, fieldName, true, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties)
     if (subExprInfo.loadExpr) {
       result.typeParamExpr = subExprInfo.typeParamExpr;
       result.storeExpr = subExprInfo.storeExpr;
@@ -169,7 +163,7 @@ export function handleType(fieldType: TLBFieldType, fieldName: string, isField: 
         tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier('builder'), tIdentifier('storeRef')), [tIdentifier(currentCell)]))
       ])
     }
-  } else if (fieldType.kind == 'TLBNamedType' && fieldType.arguments.length ) {
+  } else if (fieldType.kind == 'TLBNamedType' && fieldType.arguments.length) {
     let typeName = fieldType.name;
 
     let typeExpression: TypeParametersExpression = tTypeParametersExpression([]);
@@ -179,23 +173,17 @@ export function handleType(fieldType: TLBFieldType, fieldName: string, isField: 
     if (fieldType.kind == 'TLBNamedType') {
       fieldType.arguments.forEach(arg => {
         argIndex++;
-        // if (expr instanceof CombinatorExpr) {
-          // let exprArg = expr.args[argIndex];
-          // if (exprArg) {
-            let subExprInfo = handleType(arg, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
-            if (subExprInfo.typeParamExpr) {
-              typeExpression.typeParameters.push(subExprInfo.typeParamExpr);
-            }
-            if (subExprInfo.loadFunctionExpr) {
-              loadFunctionsArray.push(subExprInfo.loadFunctionExpr);
-            }
-            if (subExprInfo.storeFunctionExpr) {
-              storeFunctionsArray.push(subExprInfo.storeFunctionExpr);
-            }
-            result.negatedVariablesLoads = result.negatedVariablesLoads.concat(subExprInfo.negatedVariablesLoads);
-          // }
-        // }
-        
+        let subExprInfo = handleType(arg, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
+        if (subExprInfo.typeParamExpr) {
+          typeExpression.typeParameters.push(subExprInfo.typeParamExpr);
+        }
+        if (subExprInfo.loadFunctionExpr) {
+          loadFunctionsArray.push(subExprInfo.loadFunctionExpr);
+        }
+        if (subExprInfo.storeFunctionExpr) {
+          storeFunctionsArray.push(subExprInfo.storeFunctionExpr);
+        }
+        result.negatedVariablesLoads = result.negatedVariablesLoads.concat(subExprInfo.negatedVariablesLoads);
       })
     }
     result.typeParamExpr = tTypeWithParameters(tIdentifier(typeName), typeExpression);
@@ -211,7 +199,7 @@ export function handleType(fieldType: TLBFieldType, fieldName: string, isField: 
       result.typeParamExpr = tIdentifier(exprForParam.paramType);
     }
   }
-  
+
   if (exprForParam) {
     if (exprForParam.paramType != 'BitString' && exprForParam.paramType != 'Slice') {
       if (exprForParam.argStoreExpr) {
