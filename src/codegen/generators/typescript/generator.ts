@@ -56,13 +56,18 @@ export class TypescriptGenerator implements CodeGenerator {
             })
 
             let fieldIndex = 0;
-            declaration?.fields.forEach(fieldDefinition => {
-                if (fieldDefinition instanceof FieldBuiltinDef && fieldDefinition.type != 'Type') {
-                    subStructProperties.push(tTypedIdentifier(tIdentifier(goodVariableName(fieldDefinition.name)), tIdentifier('number')));
-                    let parameter = constructor.parametersMap.get(fieldDefinition.name)
+            constructor.variables.forEach(variable => {
+                if (variable.type == '#' && !variable.isField) {
+                    subStructProperties.push(tTypedIdentifier(tIdentifier(goodVariableName(variable.name)), tIdentifier('number')));
+                    let parameter = constructor.parametersMap.get(variable.name)
                     if (parameter && !parameter.variable.const && !parameter.variable.negated) {
-                      subStructLoadProperties.push(tObjectProperty(tIdentifier(goodVariableName(fieldDefinition.name)), getParamVarExpr(parameter, constructor)))
+                      subStructLoadProperties.push(tObjectProperty(tIdentifier(goodVariableName(variable.name)), getParamVarExpr(parameter, constructor)))
                     }
+                }
+            })
+            declaration?.fields.forEach(fieldDefinition => {
+                if (fieldDefinition instanceof FieldBuiltinDef && fieldDefinition.type == '#') {
+                    
                   }
             });
             

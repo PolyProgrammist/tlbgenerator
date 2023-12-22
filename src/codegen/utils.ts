@@ -422,10 +422,10 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
         tlbType.constructors.forEach(constructor => {
             constructor.declaration?.fields.forEach(field => {
                 if (field instanceof FieldBuiltinDef) {
-                    constructor.variables.push({ name: field.name, const: false, negated: false, type: field.type, calculated: false })
+                    constructor.variables.push({ name: field.name, const: false, negated: false, type: field.type, calculated: false, isField: false })
                 }
                 if (field instanceof FieldNamedDef) {
-                    constructor.variables.push({ name: field.name, const: false, negated: false, type: '#', calculated: false })
+                    constructor.variables.push({ name: field.name, const: false, negated: false, type: '#', calculated: false, isField: true })
                 }
             })
             constructor.variables.forEach(variable => {
@@ -471,12 +471,12 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
                         variable.initialExpr = derivedExpr.derived
                         parameter = { variable: variable, paramExpr: derivedExpr.derived}
                     } else if (derivedExpr.name == '' && toBeConst) {
-                        parameter = { variable: { negated: true, const: toBeConst, type: '#', name: derivedExpr.name, deriveExpr: derivedExpr.derived, initialExpr: derivedExpr.derived, calculated: false }, paramExpr: derivedExpr.derived };
+                        parameter = { variable: { negated: true, const: toBeConst, type: '#', name: derivedExpr.name, deriveExpr: derivedExpr.derived, initialExpr: derivedExpr.derived, calculated: false, isField: false }, paramExpr: derivedExpr.derived };
                     } else {
                         throw new Error('Cannot identify combinator arg')
                     }
                 } else if (element instanceof NumberExpr) {
-                    parameter = { variable: { negated: false, const: true, type: '#', name: '', deriveExpr: new TLBNumberExpr(element.num), initialExpr: new TLBNumberExpr(element.num), calculated: false }, paramExpr: new TLBNumberExpr(element.num) }
+                    parameter = { variable: { negated: false, const: true, type: '#', name: '', deriveExpr: new TLBNumberExpr(element.num), initialExpr: new TLBNumberExpr(element.num), calculated: false, isField: false }, paramExpr: new TLBNumberExpr(element.num) }
                 } else {
                     throw new Error('Cannot identify combinator arg: ' + element)
                 }

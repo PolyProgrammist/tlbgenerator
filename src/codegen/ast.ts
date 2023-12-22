@@ -54,6 +54,7 @@ export type TLBVariable = {
     name: string
     deriveExpr?: TLBMathExpr
     initialExpr?: TLBMathExpr
+    isField: boolean
 
     calculated: boolean
 }
