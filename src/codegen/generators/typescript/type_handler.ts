@@ -132,7 +132,7 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
     let subExprInfo: FieldInfoType
     arrayLength = convertToAST(fieldType.times, constructor, true);
     if (expr instanceof MathExpr)
-    subExprInfo = handleType(fieldType.value, expr.right, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
+      subExprInfo = handleType(fieldType.value, expr.right, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
     else throw new Error('')
     let currentParam = insideStoreParameters[0]
     let currentParam2 = insideStoreParameters2[0]
@@ -147,6 +147,35 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
     }
     if (subExprInfo.typeParamExpr) {
       result.typeParamExpr = tTypeWithParameters(tIdentifier('Array'), tTypeParametersExpression([subExprInfo.typeParamExpr]));
+    }
+  } else if (fieldType.kind == 'TLBCellInsideType') {
+    let currentSlice = getCurrentSlice([1, 0], 'slice');
+    let currentCell = getCurrentSlice([1, 0], 'cell');
+
+    let subExprInfo: FieldInfoType;
+    if (expr instanceof CellRefExpr)
+    subExprInfo = handleType(fieldType.value, expr.expr, fieldName, true, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties)
+    else throw new Error('')
+    if (subExprInfo.loadExpr) {
+      result.typeParamExpr = subExprInfo.typeParamExpr;
+      result.storeExpr = subExprInfo.storeExpr;
+      result.negatedVariablesLoads = subExprInfo.negatedVariablesLoads;
+      result.loadFunctionExpr = tArrowFunctionExpression([tTypedIdentifier(tIdentifier('slice'), tIdentifier('Slice'))], [sliceLoad([1, 0], 'slice'), tReturnStatement(subExprInfo.loadExpr)])
+      result.loadExpr = tFunctionCall(result.loadFunctionExpr, [tIdentifier(theSlice)])
+    }
+    if (subExprInfo.storeExpr) {
+      result.storeExpr = tMultiStatement([
+        tExpressionStatement(tDeclareVariable(tIdentifier(currentCell), tFunctionCall(tIdentifier('beginCell'), []))),
+        subExprInfo.storeExpr,
+        tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier('builder'), tIdentifier('storeRef')), [tIdentifier(currentCell)]))
+      ])
+    }
+    if (subExprInfo.storeExpr2) {
+      storeExpr2 = tMultiStatement([
+        tExpressionStatement(tDeclareVariable(tIdentifier(currentCell), tFunctionCall(tIdentifier('beginCell'), []))),
+        subExprInfo.storeExpr2,
+        tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier('builder'), tIdentifier('storeRef')), [tIdentifier(currentCell)]))
+      ])
     }
   }
 
@@ -193,36 +222,9 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
 
   } else if (expr instanceof CellRefExpr) {
 
-    if (fieldType.kind == 'TLBCellInsideType') {
-      let currentSlice = getCurrentSlice([1, 0], 'slice');
-      let currentCell = getCurrentSlice([1, 0], 'cell');
-
-      let subExprInfo: FieldInfoType;
-      subExprInfo = handleType(fieldType.value, expr.expr, fieldName, true, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties)
-      if (subExprInfo.loadExpr) {
-        result.typeParamExpr = subExprInfo.typeParamExpr;
-        result.storeExpr = subExprInfo.storeExpr;
-        result.negatedVariablesLoads = subExprInfo.negatedVariablesLoads;
-        result.loadFunctionExpr = tArrowFunctionExpression([tTypedIdentifier(tIdentifier('slice'), tIdentifier('Slice'))], [sliceLoad([1, 0], 'slice'), tReturnStatement(subExprInfo.loadExpr)])
-        result.loadExpr = tFunctionCall(result.loadFunctionExpr, [tIdentifier(theSlice)])
-      }
-      if (subExprInfo.storeExpr) {
-        result.storeExpr = tMultiStatement([
-          tExpressionStatement(tDeclareVariable(tIdentifier(currentCell), tFunctionCall(tIdentifier('beginCell'), []))),
-          subExprInfo.storeExpr,
-          tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier('builder'), tIdentifier('storeRef')), [tIdentifier(currentCell)]))
-        ])
-      }
-      if (subExprInfo.storeExpr2) {
-        storeExpr2 = tMultiStatement([
-          tExpressionStatement(tDeclareVariable(tIdentifier(currentCell), tFunctionCall(tIdentifier('beginCell'), []))),
-          subExprInfo.storeExpr2,
-          tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier('builder'), tIdentifier('storeRef')), [tIdentifier(currentCell)]))
-        ])
-      }
-    } else {
-      throw new Error('')
-    }
+    //  else {
+    //   throw new Error('')
+    // }
 
 
   } else if (expr instanceof MathExpr) {
