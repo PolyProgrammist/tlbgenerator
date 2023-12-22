@@ -40,7 +40,7 @@ function isBigInt(fieldType: TLBNumberType) {
   return true;
 }
 
-export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fieldName: string, isField: boolean, needArg: boolean, variableCombinatorName: string, variableSubStructName: string, currentSlice: string, currentCell: string, constructor: TLBConstructor, jsCodeFunctionsDeclarations: GenDeclaration[], fieldTypeName: string, argIndex: number, tlbCode: TLBCode, subStructLoadProperties: ObjectProperty[]): FieldInfoType {
+export function handleType(fieldType: TLBFieldType, fieldName: string, isField: boolean, needArg: boolean, variableCombinatorName: string, variableSubStructName: string, currentSlice: string, currentCell: string, constructor: TLBConstructor, jsCodeFunctionsDeclarations: GenDeclaration[], fieldTypeName: string, argIndex: number, tlbCode: TLBCode, subStructLoadProperties: ObjectProperty[]): FieldInfoType {
   let theSlice = 'slice'; // TODO: use slice from field
   let theCell = 'builder';
   if (isField) {
@@ -103,9 +103,9 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
   } else if (fieldType.kind == 'TLBCondType') {
     let subExprInfo: FieldInfoType
     let conditionExpr: Expression;
-    if (expr instanceof CondExpr)
-      subExprInfo = handleType(fieldType.value, expr.condExpr, fieldName, true, false, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
-    else throw new Error('')
+    // if (expr instanceof CondExpr)
+      subExprInfo = handleType(fieldType.value, fieldName, true, false, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
+    // else throw new Error('')
     conditionExpr = convertToAST(fieldType.condition, constructor, true)
     if (subExprInfo.typeParamExpr) {
       result.typeParamExpr = tUnionTypeExpression([subExprInfo.typeParamExpr, tIdentifier('undefined')])
@@ -123,9 +123,9 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
     let arrayLength: Expression
     let subExprInfo: FieldInfoType
     arrayLength = convertToAST(fieldType.times, constructor, true);
-    if (expr instanceof MathExpr)
-      subExprInfo = handleType(fieldType.value, expr.right, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
-    else throw new Error('')
+    // if (expr instanceof MathExpr)
+      subExprInfo = handleType(fieldType.value, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
+    // else throw new Error('')
     let currentParam = insideStoreParameters[0]
     let currentParam2 = insideStoreParameters2[0]
     if (subExprInfo.loadExpr) {
@@ -145,9 +145,9 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
     let currentCell = getCurrentSlice([1, 0], 'cell');
 
     let subExprInfo: FieldInfoType;
-    if (expr instanceof CellRefExpr)
-      subExprInfo = handleType(fieldType.value, expr.expr, fieldName, true, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties)
-    else throw new Error('')
+    // if (expr instanceof CellRefExpr)
+      subExprInfo = handleType(fieldType.value, fieldName, true, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties)
+    // else throw new Error('')
     if (subExprInfo.loadExpr) {
       result.typeParamExpr = subExprInfo.typeParamExpr;
       result.storeExpr = subExprInfo.storeExpr;
@@ -179,10 +179,10 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
     if (fieldType.kind == 'TLBNamedType') {
       fieldType.arguments.forEach(arg => {
         argIndex++;
-        if (expr instanceof CombinatorExpr) {
-          let exprArg = expr.args[argIndex];
-          if (exprArg) {
-            let subExprInfo = handleType(arg, exprArg, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
+        // if (expr instanceof CombinatorExpr) {
+          // let exprArg = expr.args[argIndex];
+          // if (exprArg) {
+            let subExprInfo = handleType(arg, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
             if (subExprInfo.typeParamExpr) {
               typeExpression.typeParameters.push(subExprInfo.typeParamExpr);
             }
@@ -193,10 +193,8 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
               storeFunctionsArray.push(subExprInfo.storeFunctionExpr);
             }
             result.negatedVariablesLoads = result.negatedVariablesLoads.concat(subExprInfo.negatedVariablesLoads);
-          }
-        } else {
-          throw new Error('')
-        }
+          // }
+        // }
         
       })
     }
