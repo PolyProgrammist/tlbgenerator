@@ -79,13 +79,6 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
     }
 
     if (fieldDefinition.expr instanceof CombinatorExpr || fieldDefinition.expr instanceof NameExpr || fieldDefinition.expr instanceof BuiltinZeroArgs || fieldDefinition.expr instanceof BuiltinOneArgExpr || fieldDefinition.expr instanceof MathExpr || fieldDefinition.expr instanceof CondExpr) {
-      let tmpTypeName: string;
-      if (fieldDefinition.expr instanceof MathExpr || fieldDefinition.expr instanceof CondExpr) {
-        tmpTypeName = ''
-      } else {
-        tmpTypeName = fieldDefinition.expr.name;
-      }
-
       let thefield: TLBFieldType
       if (field != undefined) {
         thefield = field.fieldType
