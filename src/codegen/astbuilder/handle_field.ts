@@ -1,5 +1,5 @@
 import { BuiltinOneArgExpr, BuiltinZeroArgs, CellRefExpr, CombinatorExpr, CondExpr, FieldExprDef, FieldNamedDef, MathExpr, NameExpr, NegateExpr, NumberExpr, Expression as ParserExpression } from "../../ast/nodes";
-import { TLBBinaryOp, TLBCode, TLBConstructor, TLBField, TLBFieldType, TLBMathExpr, TLBNumberExpr, TLBNumberType, TLBType, TLBUnaryOp } from "../ast";
+import { TLBBinaryOp, TLBCode, TLBConstructor, TLBField, TLBFieldType, TLBMathExpr, TLBNumberExpr, TLBNumberType, TLBType, TLBUnaryOp, TLBVarExpr } from "../ast";
 import { GenDeclaration, ObjectProperty } from "../generators/typescript/tsgen";
 import { convertToMathExpr, firstLower, getSubStructName, goodVariableName, splitForTypeValue } from "../utils";
 
@@ -119,6 +119,7 @@ export function getType(expr: ParserExpression, fieldName: string, isField: bool
         return { kind: 'TLBAddressType' }
       } else {
         if (constructor.variablesMap.get(expr.name)?.type == '#') {
+          return {kind: 'TLBExprMathType', expr: new TLBVarExpr(expr.name)}
         //   result.loadExpr = getVarExprByName(expr.name, constructor)
         //   result.storeExpr = tExpressionStatement(result.loadExpr);
         } else {
@@ -278,6 +279,7 @@ export function getType(expr: ParserExpression, fieldName: string, isField: bool
     // }
   
     // result.storeExpr2 = storeExpr2
+    throw new Error('hueetaaa')
     return {kind: 'TLBUndefinedType'}// {new TLBNumberExpr(3)};
   }
   

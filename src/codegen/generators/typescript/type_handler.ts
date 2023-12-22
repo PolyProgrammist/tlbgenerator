@@ -296,14 +296,20 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
       if (fieldType.kind == 'TLBNamedType') {
         typeName = fieldType.name;
       }
+
       if (fieldType.kind == 'TLBUndefinedType') {
         typeName = expr.name;
+      }
+
+      if (fieldType.kind == 'TLBExprMathType') {
+        result.loadExpr = convertToAST(fieldType.expr, constructor, true);
+        result.storeExpr = tExpressionStatement(result.loadExpr);
       }
 
       if (constructor.variablesMap.get(typeName)?.type == '#') {
         result.loadExpr = getVarExprByName(typeName, constructor)
         result.storeExpr = tExpressionStatement(result.loadExpr);
-      } else {
+      } else if (fieldType.kind != 'TLBExprMathType') {
         
         result.typeParamExpr = tIdentifier(typeName);
         if (isField) {
