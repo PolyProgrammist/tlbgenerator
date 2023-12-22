@@ -5,7 +5,7 @@ import { GenDeclaration, ObjectProperty, Statement, TypedIdentifier } from "../g
 import { firstLower, getSubStructName, goodVariableName } from "../utils";
 import { getType } from "./handle_type";
 
-export function handleField(field: FieldDefinition, slicePrefix: Array<number>, tlbCode: TLBCode, constructor: TLBConstructor, constructorLoadStatements: Statement[], subStructStoreStatements: Statement[], subStructProperties: TypedIdentifier[], subStructLoadProperties: ObjectProperty[], variableCombinatorName: string, variableSubStructName: string, jsCodeFunctionsDeclarations: GenDeclaration[], fieldIndex: number) {
+export function handleField(field: FieldDefinition, slicePrefix: Array<number>, tlbCode: TLBCode, constructor: TLBConstructor, constructorLoadStatements: Statement[], subStructStoreStatements: Statement[], subStructProperties: TypedIdentifier[], subStructLoadProperties: ObjectProperty[], variableCombinatorName: string, variableSubStructName: string, jsCodeFunctionsDeclarations: GenDeclaration[], fieldIndex: string) {
   // let currentSlice = getCurrentSlice(slicePrefix, 'slice');
   // let currentCell = getCurrentSlice(slicePrefix, 'cell');
 
@@ -112,7 +112,7 @@ export function fillFields(tlbCode: TLBCode) {
 
       constructor.declaration.fields.forEach(field => {
         fieldIndex++;
-        handleField(field, slicePrefix, tlbCode, constructor, [], [], [], [], variableCombinatorName, variableSubStructName, [], fieldIndex)
+        handleField(field, slicePrefix, tlbCode, constructor, [], [], [], [], variableCombinatorName, variableSubStructName, [], fieldIndex.toString())
       })
     })
   })
