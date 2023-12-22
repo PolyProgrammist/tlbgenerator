@@ -279,9 +279,8 @@ export function getType(expr: ParserExpression, fieldName: string, isField: bool
     // }
   
     // result.storeExpr2 = storeExpr2
-    throw new Error('hueetaaa')
-    return {kind: 'TLBUndefinedType'}// {new TLBNumberExpr(3)};
-  }
+    throw new Error('Type unknown')
+}
   
 
 export function fillFields(tlbCode: TLBCode) {

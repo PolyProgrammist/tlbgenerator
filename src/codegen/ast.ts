@@ -94,10 +94,6 @@ export type TLBCellType = {
     kind: 'TLBCellType'
 }
 
-export type TLBUndefinedType = {
-    kind: 'TLBUndefinedType'
-}
-
 export type TLBNegatedType = {
     kind: 'TLBNegatedType'
     variableName: string
@@ -120,7 +116,7 @@ export type TLBCondType = {
     condition: TLBMathExpr
 }
 
-export type TLBFieldType = TLBNumberType | TLBBitsType | TLBNamedType | TLBBoolType | TLBAddressType | TLBCellType | TLBUndefinedType | TLBMathExprType | TLBNegatedType | TLBCellInsideType | TLBMultipleType | TLBCondType;
+export type TLBFieldType = TLBNumberType | TLBBitsType | TLBNamedType | TLBBoolType | TLBAddressType | TLBCellType | TLBMathExprType | TLBNegatedType | TLBCellInsideType | TLBMultipleType | TLBCondType;
 
 export type TLBField = {
     name: string
