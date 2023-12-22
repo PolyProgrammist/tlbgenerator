@@ -70,34 +70,22 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
       exprForParam.fieldLoadSuffix += 'Big';
       exprForParam.paramType = 'bigint';
     }
-  }
-
-  if (fieldType.kind == 'TLBBitsType') {
+  } else if (fieldType.kind == 'TLBBitsType') {
     exprForParam = {
       argLoadExpr: convertToAST(fieldType.bits, constructor),
       argStoreExpr: convertToAST(fieldType.bits, constructor, false, tIdentifier(variableSubStructName)),
       paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'
     }
-  }
-
-  if (fieldType.kind == 'TLBCellType') {
+  } else if (fieldType.kind == 'TLBCellType') {
     exprForParam = { argLoadExpr: tIdentifier(theSlice), argStoreExpr: tIdentifier(theSlice), paramType: 'Slice', fieldLoadSuffix: 'Slice', fieldStoreSuffix: 'Slice' }
-  }
-
-  if (fieldType.kind == 'TLBBoolType') {
+  } else if (fieldType.kind == 'TLBBoolType') {
     exprForParam = { argLoadExpr: undefined, argStoreExpr: undefined, paramType: 'boolean', fieldLoadSuffix: 'Boolean', fieldStoreSuffix: 'Bit' }
-  }
-
-  if (fieldType.kind == 'TLBAddressType') {
+  } else if (fieldType.kind == 'TLBAddressType') {
     exprForParam = { argLoadExpr: undefined, argStoreExpr: undefined, paramType: 'Address', fieldLoadSuffix: 'Address', fieldStoreSuffix: 'Address' }
-  }
-
-  if (fieldType.kind == 'TLBExprMathType') {
+  } else if (fieldType.kind == 'TLBExprMathType') {
     result.loadExpr = convertToAST(fieldType.expr, constructor, true);
     result.storeExpr = tExpressionStatement(result.loadExpr)
-  }
-
-  if (fieldType.kind == 'TLBNegatedType') {
+  } else if (fieldType.kind == 'TLBNegatedType') {
     let getParameterFunctionId = tIdentifier(variableSubStructName + '_get_' + fieldType.variableName)
     jsCodeFunctionsDeclarations.push(tFunctionDeclaration(getParameterFunctionId, tTypeParametersExpression([]), tIdentifier('number'), [tTypedIdentifier(tIdentifier(goodVariableName(fieldName)), tIdentifier(fieldTypeName))], getNegationDerivationFunctionBody(tlbCode, fieldTypeName, argIndex, fieldName)))
     result.negatedVariablesLoads.push({ name: fieldType.variableName, expression: tFunctionCall(getParameterFunctionId, [tIdentifier(goodVariableName(fieldName))]) })
