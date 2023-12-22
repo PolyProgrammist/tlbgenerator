@@ -87,7 +87,8 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
         thefield = field.fieldType
       } 
       else {
-        thefield = getType(fieldDefinition.expr, fieldName, true, false, variableCombinatorName, variableSubStructName, constructor, tmpTypeName, 0, tlbCode);
+        throw new Error('')
+        // thefield = getType(fieldDefinition.expr, fieldName, true, false, variableCombinatorName, variableSubStructName, constructor, tmpTypeName, 0, tlbCode);
       }
       let fieldInfo = handleType(thefield, fieldName, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, tmpTypeName, 0, tlbCode);
       if (fieldInfo.loadExpr) {
