@@ -21,7 +21,7 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
 
     let currentFieldIndex = 0;
     fieldDefinition.fields.forEach(fieldDef => {
-      let theFieldIndex = fieldIndex + '|' + currentFieldIndex.toString();
+      let theFieldIndex = fieldIndex + '_' + currentFieldIndex.toString();
       handleField(constructor.fieldIndices.get(theFieldIndex), fieldDef, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, theFieldIndex)
       currentFieldIndex++;
     });

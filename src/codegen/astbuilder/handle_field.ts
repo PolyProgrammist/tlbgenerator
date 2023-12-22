@@ -18,7 +18,7 @@ export function handleField(field: FieldDefinition, slicePrefix: Array<number>, 
 
     let currentFieldIndex = 0;
     field.fields.forEach(field => {
-      let theFieldIndex = fieldIndex + '|' + currentFieldIndex.toString();
+      let theFieldIndex = fieldIndex + '_' + currentFieldIndex.toString();
       handleField(field, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, theFieldIndex)
       currentFieldIndex++;
     });
