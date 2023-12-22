@@ -92,46 +92,49 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
   }
 
   if (expr instanceof CombinatorExpr) {
-    let typeName = expr.name
     if (fieldType.kind == 'TLBNamedType') {
-      typeName = fieldType.name;
-    }
-
-    let typeExpression: TypeParametersExpression = tTypeParametersExpression([]);
-    let loadFunctionsArray: Array<Expression> = []
-    let storeFunctionsArray: Array<Expression> = []
-    let argIndex = -1;
-    if (fieldType.kind == 'TLBNamedType') {
-      fieldType.arguments.forEach(arg => {
-        argIndex++;
-        let exprArg = expr.args[argIndex];
-        if (exprArg) {
-          let subExprInfo = handleType(arg, exprArg, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
-          if (subExprInfo.typeParamExpr) {
-            typeExpression.typeParameters.push(subExprInfo.typeParamExpr);
+      let typeName = expr.name
+      if (fieldType.kind == 'TLBNamedType') {
+        typeName = fieldType.name;
+      }
+  
+      let typeExpression: TypeParametersExpression = tTypeParametersExpression([]);
+      let loadFunctionsArray: Array<Expression> = []
+      let storeFunctionsArray: Array<Expression> = []
+      let argIndex = -1;
+      if (fieldType.kind == 'TLBNamedType') {
+        fieldType.arguments.forEach(arg => {
+          argIndex++;
+          let exprArg = expr.args[argIndex];
+          if (exprArg) {
+            let subExprInfo = handleType(arg, exprArg, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
+            if (subExprInfo.typeParamExpr) {
+              typeExpression.typeParameters.push(subExprInfo.typeParamExpr);
+            }
+            if (subExprInfo.loadFunctionExpr) {
+              loadFunctionsArray.push(subExprInfo.loadFunctionExpr);
+            }
+            if (subExprInfo.storeFunctionExpr) {
+              storeFunctionsArray.push(subExprInfo.storeFunctionExpr);
+            }
+            result.negatedVariablesLoads = result.negatedVariablesLoads.concat(subExprInfo.negatedVariablesLoads);
           }
-          if (subExprInfo.loadFunctionExpr) {
-            loadFunctionsArray.push(subExprInfo.loadFunctionExpr);
-          }
-          if (subExprInfo.storeFunctionExpr) {
-            storeFunctionsArray.push(subExprInfo.storeFunctionExpr);
-          }
-          result.negatedVariablesLoads = result.negatedVariablesLoads.concat(subExprInfo.negatedVariablesLoads);
-        }
-      })
+        })
+      }
+      result.typeParamExpr = tTypeWithParameters(tIdentifier(typeName), typeExpression);
+  
+      let currentTypeParameters = typeExpression;
+  
+      let insideLoadParameters: Array<Expression> = [tIdentifier(theSlice)];
+  
+      result.loadExpr = tFunctionCall(tIdentifier('load' + typeName), insideLoadParameters.concat(loadFunctionsArray), currentTypeParameters);
+      result.storeExpr = tExpressionStatement(tFunctionCall(tFunctionCall(tIdentifier('store' + typeName), insideStoreParameters.concat(storeFunctionsArray), currentTypeParameters), [tIdentifier(theCell)]))
+      storeExpr2 = tExpressionStatement(tFunctionCall(tFunctionCall(tIdentifier('store' + typeName), insideStoreParameters2.concat(storeFunctionsArray), currentTypeParameters), [tIdentifier(theCell)]))
+      if (exprForParam) {
+        result.typeParamExpr = tIdentifier(exprForParam.paramType);
+      }
     }
-    result.typeParamExpr = tTypeWithParameters(tIdentifier(typeName), typeExpression);
-
-    let currentTypeParameters = typeExpression;
-
-    let insideLoadParameters: Array<Expression> = [tIdentifier(theSlice)];
-
-    result.loadExpr = tFunctionCall(tIdentifier('load' + typeName), insideLoadParameters.concat(loadFunctionsArray), currentTypeParameters);
-    result.storeExpr = tExpressionStatement(tFunctionCall(tFunctionCall(tIdentifier('store' + typeName), insideStoreParameters.concat(storeFunctionsArray), currentTypeParameters), [tIdentifier(theCell)]))
-    storeExpr2 = tExpressionStatement(tFunctionCall(tFunctionCall(tIdentifier('store' + typeName), insideStoreParameters2.concat(storeFunctionsArray), currentTypeParameters), [tIdentifier(theCell)]))
-    if (exprForParam) {
-      result.typeParamExpr = tIdentifier(exprForParam.paramType);
-    }
+    
   } else if (expr instanceof NameExpr) {
     let typeName = ''
     if (fieldType.kind == 'TLBNamedType') {
