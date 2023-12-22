@@ -111,14 +111,6 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
       result.typeParamExpr = tUnionTypeExpression([subExprInfo.typeParamExpr, tIdentifier('undefined')])
     }
     if (subExprInfo.loadExpr) {
-      if (expr.left instanceof NameExpr) {
-        conditionExpr = convertToAST(convertToMathExpr(expr.left), constructor, true)
-        if (expr.dotExpr != null) {
-          conditionExpr = tBinaryExpression(conditionExpr, '&', tBinaryExpression(tNumericLiteral(1), '<<', tNumericLiteral(expr.dotExpr)))
-        }
-      } else { // TODO: handle other cases
-        throw new Error('')
-      }
       result.loadExpr = tTernaryExpression(conditionExpr, subExprInfo.loadExpr, tIdentifier('undefined'))
     }
     let currentParam = insideStoreParameters[0]
