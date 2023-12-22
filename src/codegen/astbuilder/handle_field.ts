@@ -7,12 +7,13 @@ import { getType } from "./handle_type";
 export function fillFields(tlbCode: TLBCode) {
     tlbCode.types.forEach(tlbType => {
         tlbType.constructors.forEach(constructor => {
-            let fieldIndex = 0;
+            let fieldIndex = -1;
             let variableCombinatorName = goodVariableName(firstLower(tlbType.name), '0')
             let subStructName: string = getSubStructName(tlbType, constructor);
             let variableSubStructName = goodVariableName(firstLower(subStructName), '_' + constructor.name)
 
             constructor.declaration.fields.forEach(field => {
+              fieldIndex++;
                 // let currentSlice = getCurrentSlice(slicePrefix, 'slice');
                 // let currentCell = getCurrentSlice(slicePrefix, 'cell');
               
@@ -100,7 +101,9 @@ export function fillFields(tlbCode: TLBCode) {
                     // fieldInfo.negatedVariablesLoads.forEach(element => {
                     //   addLoadProperty(goodVariableName(element.name), element.expression, undefined, constructorLoadStatements, subStructLoadProperties)
                     // });
-                    constructor.fields.push({name: fieldName, anonymous: !(field instanceof FieldNamedDef), fieldType: fieldInfo})
+                    let thefield = {name: fieldName, anonymous: !(field instanceof FieldNamedDef), fieldType: fieldInfo};
+                    constructor.fields.push(thefield)
+                    constructor.fieldIndices.set(fieldIndex, thefield)
                   }
                 }
             })
