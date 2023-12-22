@@ -127,6 +127,27 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
       result.storeExpr = tIfStatement(tBinaryExpression(currentParam, '!=', tIdentifier('undefined')), [subExprInfo.storeExpr])
       storeExpr2 = tIfStatement(tBinaryExpression(currentParam2, '!=', tIdentifier('undefined')), [subExprInfo.storeExpr])
     }
+  } else if (fieldType.kind == 'TLBMultipleType') {
+    let arrayLength: Expression
+    let subExprInfo: FieldInfoType
+    arrayLength = convertToAST(fieldType.times, constructor, true);
+    if (expr instanceof MathExpr)
+    subExprInfo = handleType(fieldType.value, expr.right, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
+    else throw new Error('')
+    let currentParam = insideStoreParameters[0]
+    let currentParam2 = insideStoreParameters2[0]
+    if (subExprInfo.loadExpr) {
+      result.loadExpr = tFunctionCall(tMemberExpression(tFunctionCall(tMemberExpression(tIdentifier('Array'), tIdentifier('from')), [tFunctionCall(tMemberExpression(tFunctionCall(tIdentifier('Array'), [arrayLength]), tIdentifier('keys')), [])]), tIdentifier('map')), [tArrowFunctionExpression([tTypedIdentifier(tIdentifier('arg'), tIdentifier('number'))], [tReturnStatement(subExprInfo.loadExpr)])])
+    }
+    if (currentParam && currentParam2 && subExprInfo.typeParamExpr && subExprInfo.storeExpr) {
+      if (subExprInfo.storeFunctionExpr && subExprInfo.storeExpr2) {
+        result.storeExpr = tExpressionStatement(tFunctionCall(tMemberExpression(currentParam, tIdentifier('forEach')), [tArrowFunctionExpression([tTypedIdentifier(tIdentifier('arg'), subExprInfo.typeParamExpr)], [subExprInfo.storeExpr2])])) //subExprInfo.storeExpr;)
+        storeExpr2 = tExpressionStatement(tFunctionCall(tMemberExpression(currentParam2, tIdentifier('forEach')), [tArrowFunctionExpression([tTypedIdentifier(tIdentifier('arg'), subExprInfo.typeParamExpr)], [subExprInfo.storeExpr2])])) //subExprInfo.storeExpr;
+      }
+    }
+    if (subExprInfo.typeParamExpr) {
+      result.typeParamExpr = tTypeWithParameters(tIdentifier('Array'), tTypeParametersExpression([subExprInfo.typeParamExpr]));
+    }
   }
 
   if (expr instanceof CombinatorExpr) {
@@ -207,28 +228,9 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
   } else if (expr instanceof MathExpr) {
     if (fieldTypeName == '') {
       if (expr.op == '*') {
-        if (fieldType.kind == 'TLBMultipleType') {
-          let arrayLength: Expression
-          let subExprInfo: FieldInfoType
-          arrayLength = convertToAST(fieldType.times, constructor, true);
-          subExprInfo = handleType(fieldType.value, expr.right, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
-          let currentParam = insideStoreParameters[0]
-          let currentParam2 = insideStoreParameters2[0]
-          if (subExprInfo.loadExpr) {
-            result.loadExpr = tFunctionCall(tMemberExpression(tFunctionCall(tMemberExpression(tIdentifier('Array'), tIdentifier('from')), [tFunctionCall(tMemberExpression(tFunctionCall(tIdentifier('Array'), [arrayLength]), tIdentifier('keys')), [])]), tIdentifier('map')), [tArrowFunctionExpression([tTypedIdentifier(tIdentifier('arg'), tIdentifier('number'))], [tReturnStatement(subExprInfo.loadExpr)])])
-          }
-          if (currentParam && currentParam2 && subExprInfo.typeParamExpr && subExprInfo.storeExpr) {
-            if (subExprInfo.storeFunctionExpr && subExprInfo.storeExpr2) {
-              result.storeExpr = tExpressionStatement(tFunctionCall(tMemberExpression(currentParam, tIdentifier('forEach')), [tArrowFunctionExpression([tTypedIdentifier(tIdentifier('arg'), subExprInfo.typeParamExpr)], [subExprInfo.storeExpr2])])) //subExprInfo.storeExpr;)
-              storeExpr2 = tExpressionStatement(tFunctionCall(tMemberExpression(currentParam2, tIdentifier('forEach')), [tArrowFunctionExpression([tTypedIdentifier(tIdentifier('arg'), subExprInfo.typeParamExpr)], [subExprInfo.storeExpr2])])) //subExprInfo.storeExpr;
-            }
-          }
-          if (subExprInfo.typeParamExpr) {
-            result.typeParamExpr = tTypeWithParameters(tIdentifier('Array'), tTypeParametersExpression([subExprInfo.typeParamExpr]));
-          }
-        } else {
-          throw new Error('')
-        }
+        //  else {
+        //   throw new Error('')
+        // }
 
       } else {
         throw new Error('')
