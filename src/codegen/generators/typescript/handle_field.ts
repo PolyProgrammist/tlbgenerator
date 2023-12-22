@@ -66,6 +66,7 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
         // subStructStoreStatements
         slicePrefix.pop();
       } else {
+        console.log('here')
         slicePrefix[slicePrefix.length - 1]++;
         slicePrefix.push(0)
         constructorLoadStatements.push(sliceLoad(slicePrefix, currentSlice))
