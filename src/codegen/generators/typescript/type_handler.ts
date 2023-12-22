@@ -100,6 +100,33 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
       result.loadExpr = tIdentifier('load' + typeName)
       result.storeExpr = tExpressionStatement(tIdentifier('store' + typeName))
     }
+  } else if (fieldType.kind == 'TLBCondType') {
+    let subExprInfo: FieldInfoType
+    let conditionExpr: Expression;
+    if (expr instanceof CondExpr)
+      subExprInfo = handleType(fieldType.value, expr.condExpr, fieldName, true, false, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
+    else throw new Error('')
+    conditionExpr = convertToAST(fieldType.condition, constructor, true)
+    if (subExprInfo.typeParamExpr) {
+      result.typeParamExpr = tUnionTypeExpression([subExprInfo.typeParamExpr, tIdentifier('undefined')])
+    }
+    if (subExprInfo.loadExpr) {
+      if (expr.left instanceof NameExpr) {
+        conditionExpr = convertToAST(convertToMathExpr(expr.left), constructor, true)
+        if (expr.dotExpr != null) {
+          conditionExpr = tBinaryExpression(conditionExpr, '&', tBinaryExpression(tNumericLiteral(1), '<<', tNumericLiteral(expr.dotExpr)))
+        }
+      } else { // TODO: handle other cases
+        throw new Error('')
+      }
+      result.loadExpr = tTernaryExpression(conditionExpr, subExprInfo.loadExpr, tIdentifier('undefined'))
+    }
+    let currentParam = insideStoreParameters[0]
+    let currentParam2 = insideStoreParameters2[0]
+    if (currentParam && currentParam2 && subExprInfo.storeExpr) {
+      result.storeExpr = tIfStatement(tBinaryExpression(currentParam, '!=', tIdentifier('undefined')), [subExprInfo.storeExpr])
+      storeExpr2 = tIfStatement(tBinaryExpression(currentParam2, '!=', tIdentifier('undefined')), [subExprInfo.storeExpr])
+    }
   }
 
   if (expr instanceof CombinatorExpr) {
@@ -209,38 +236,8 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
     } else {
 
     }
-  } else if (expr instanceof CondExpr) {
-
-    if (fieldType.kind == 'TLBCondType') {
-      let subExprInfo: FieldInfoType
-      let conditionExpr: Expression;
-      subExprInfo = handleType(fieldType.value, expr.condExpr, fieldName, true, false, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
-      conditionExpr = convertToAST(fieldType.condition, constructor, true)
-      if (subExprInfo.typeParamExpr) {
-        result.typeParamExpr = tUnionTypeExpression([subExprInfo.typeParamExpr, tIdentifier('undefined')])
-      }
-      if (subExprInfo.loadExpr) {
-        if (expr.left instanceof NameExpr) {
-          conditionExpr = convertToAST(convertToMathExpr(expr.left), constructor, true)
-          if (expr.dotExpr != null) {
-            conditionExpr = tBinaryExpression(conditionExpr, '&', tBinaryExpression(tNumericLiteral(1), '<<', tNumericLiteral(expr.dotExpr)))
-          }
-        } else { // TODO: handle other cases
-          throw new Error('')
-        }
-        result.loadExpr = tTernaryExpression(conditionExpr, subExprInfo.loadExpr, tIdentifier('undefined'))
-      }
-      let currentParam = insideStoreParameters[0]
-      let currentParam2 = insideStoreParameters2[0]
-      if (currentParam && currentParam2 && subExprInfo.storeExpr) {
-        result.storeExpr = tIfStatement(tBinaryExpression(currentParam, '!=', tIdentifier('undefined')), [subExprInfo.storeExpr])
-        storeExpr2 = tIfStatement(tBinaryExpression(currentParam2, '!=', tIdentifier('undefined')), [subExprInfo.storeExpr])
-      }
-    } else {
-      throw new Error('');
-    }
-
   }
+
   if (exprForParam) {
     if (exprForParam.paramType != 'BitString' && exprForParam.paramType != 'Slice') {
       if (exprForParam.argStoreExpr) {
