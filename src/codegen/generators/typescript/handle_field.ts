@@ -8,6 +8,8 @@ import { addLoadProperty, getNegationDerivationFunctionBody, getParamVarExpr, sl
 import { goodVariableName } from '../../utils'
 import { getType } from "../../astbuilder/handle_type"
 
+export let fieldscounter = 0;
+
 export function handleField(field: TLBField | undefined, fieldDefinition: FieldDefinition, slicePrefix: Array<number>, tlbCode: TLBCode, constructor: TLBConstructor, constructorLoadStatements: Statement[], subStructStoreStatements: Statement[], subStructProperties: TypedIdentifier[], subStructLoadProperties: ObjectProperty[], variableCombinatorName: string, variableSubStructName: string, jsCodeFunctionsDeclarations: GenDeclaration[], fieldIndex: string) {
   let currentSlice = getCurrentSlice(slicePrefix, 'slice');
   let currentCell = getCurrentSlice(slicePrefix, 'cell');
@@ -85,6 +87,7 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
       let thefield: TLBFieldType
       if (field != undefined) {
         thefield = field.fieldType
+        fieldscounter++;
       } 
       else {
         thefield = getType(fieldDefinition.expr, fieldName, true, false, variableCombinatorName, variableSubStructName, constructor, tmpTypeName, 0, tlbCode);
