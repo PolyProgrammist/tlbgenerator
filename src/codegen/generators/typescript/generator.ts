@@ -65,11 +65,6 @@ export class TypescriptGenerator implements CodeGenerator {
                     }
                 }
             })
-            declaration?.fields.forEach(fieldDefinition => {
-                if (fieldDefinition instanceof FieldBuiltinDef && fieldDefinition.type == '#') {
-                    
-                  }
-            });
             
             declaration?.fields.forEach(element => { handleField(constructor.fieldIndices.get(fieldIndex.toString()), element, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, fieldIndex.toString()); fieldIndex++; })
 
