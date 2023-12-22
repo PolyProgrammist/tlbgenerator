@@ -79,13 +79,10 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
     }
 
     if (fieldDefinition.expr instanceof CombinatorExpr || fieldDefinition.expr instanceof NameExpr || fieldDefinition.expr instanceof BuiltinZeroArgs || fieldDefinition.expr instanceof BuiltinOneArgExpr || fieldDefinition.expr instanceof MathExpr || fieldDefinition.expr instanceof CondExpr) {
-      let thefield: TLBFieldType
-      if (field != undefined) {
-        thefield = field.fieldType
-      } 
-      else {
+      if (field == undefined) {
         throw new Error('')
       }
+      let thefield: TLBFieldType = field.fieldType
       let fieldInfo = handleType(field, thefield, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, 0, tlbCode);
       if (fieldInfo.loadExpr) {
         addLoadProperty(goodVariableName(fieldName), fieldInfo.loadExpr, fieldInfo.typeParamExpr, constructorLoadStatements, subStructLoadProperties);
