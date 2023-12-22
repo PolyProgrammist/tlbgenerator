@@ -16,9 +16,12 @@ export function handleField(field: FieldDefinition, slicePrefix: Array<number>, 
     //   constructorLoadStatements.push(sliceLoad(slicePrefix, currentSlice))
     //   subStructStoreStatements.push(tExpressionStatement(tDeclareVariable(tIdentifier(getCurrentSlice(slicePrefix, 'cell')), tFunctionCall(tIdentifier('beginCell'), []))))
 
-    // field.fields.forEach(field => {
-    //   handleField(field, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, fieldIndex)
-    // });
+    let currentFieldIndex = 0;
+    field.fields.forEach(field => {
+      let theFieldIndex = fieldIndex + '|' + currentFieldIndex.toString();
+      handleField(field, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, theFieldIndex)
+      currentFieldIndex++;
+    });
 
     //   subStructStoreStatements.push(tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('storeRef')), [tIdentifier(getCurrentSlice(slicePrefix, 'cell'))])))
 

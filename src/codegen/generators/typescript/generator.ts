@@ -1,5 +1,5 @@
 import { TLBCode, TLBField, TLBType } from "../../ast";
-import { fieldscounter, handleField } from "./handle_field";
+import { handleField } from "./handle_field";
 import { firstLower, getStringDeclaration, getSubStructName, goodVariableName } from "../../utils";
 import { CodeBuilder } from "../CodeBuilder";
 import { CodeGenerator } from "../generator";

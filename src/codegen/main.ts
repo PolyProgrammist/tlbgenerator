@@ -4,7 +4,6 @@ import { fillConstructors } from './utils'
 import { CodeBuilder } from './generators/CodeBuilder'
 import { CodeGenerator, CommonGenDeclaration } from './generators/generator'
 import { TypescriptGenerator } from './generators/typescript/generator'
-import { fieldscounter } from './generators/typescript/handle_field'
 
 export function generate(tree: Program, input: string) {
   let codeGenerator: CodeGenerator = new TypescriptGenerator();
@@ -48,7 +47,6 @@ export function generate(tree: Program, input: string) {
   jsCodeDeclarations.forEach(element => {
     generatedCode += codeGenerator.toCode(element, new CodeBuilder()).render() + '\n';
   });
-  console.log(fieldscounter);
 
   return generatedCode;
 }
