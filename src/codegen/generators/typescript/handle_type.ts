@@ -35,7 +35,7 @@ function isBigInt(fieldType: TLBNumberType) {
   return true;
 }
 
-export function handleType(field: TLBField, fieldType: TLBFieldType, isField: boolean, variableCombinatorName: string, variableSubStructName: string, currentSlice: string, currentCell: string, constructor: TLBConstructor, jsCodeFunctionsDeclarations: GenDeclaration[], fieldTypeName: string, argIndex: number, tlbCode: TLBCode): FieldInfoType {
+export function handleType(field: TLBField, fieldType: TLBFieldType, isField: boolean, variableCombinatorName: string, variableSubStructName: string, currentSlice: string, currentCell: string, constructor: TLBConstructor, jsCodeFunctionsDeclarations: GenDeclaration[], argIndex: number, tlbCode: TLBCode): FieldInfoType {
   let fieldName = field.name
   let theSlice = 'slice'; // TODO: use slice from field
   let theCell = 'builder';
@@ -83,7 +83,10 @@ export function handleType(field: TLBField, fieldType: TLBFieldType, isField: bo
     result.storeExpr = tExpressionStatement(result.loadExpr)
   } else if (fieldType.kind == 'TLBNegatedType') {
     let getParameterFunctionId = tIdentifier(variableSubStructName + '_get_' + fieldType.variableName)
-    jsCodeFunctionsDeclarations.push(tFunctionDeclaration(getParameterFunctionId, tTypeParametersExpression([]), tIdentifier('number'), [tTypedIdentifier(tIdentifier(goodVariableName(fieldName)), tIdentifier(fieldTypeName))], getNegationDerivationFunctionBody(tlbCode, fieldTypeName, argIndex, fieldName)))
+    if (field.fieldType.kind == 'TLBNamedType') {
+      let fieldTypeName = field.fieldType.name
+      jsCodeFunctionsDeclarations.push(tFunctionDeclaration(getParameterFunctionId, tTypeParametersExpression([]), tIdentifier('number'), [tTypedIdentifier(tIdentifier(goodVariableName(fieldName)), tIdentifier(fieldTypeName))], getNegationDerivationFunctionBody(tlbCode, fieldTypeName, argIndex, fieldName)))
+    }
     result.negatedVariablesLoads.push({ name: fieldType.variableName, expression: tFunctionCall(getParameterFunctionId, [tIdentifier(goodVariableName(fieldName))]) })
   } else if (fieldType.kind == 'TLBNamedType' && fieldType.arguments.length == 0) {
     let typeName = fieldType.name;
@@ -99,7 +102,7 @@ export function handleType(field: TLBField, fieldType: TLBFieldType, isField: bo
   } else if (fieldType.kind == 'TLBCondType') {
     let subExprInfo: FieldInfoType
     let conditionExpr: Expression;
-    subExprInfo = handleType(field, fieldType.value, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode);
+    subExprInfo = handleType(field, fieldType.value, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, argIndex, tlbCode);
     conditionExpr = convertToAST(fieldType.condition, constructor, true)
     if (subExprInfo.typeParamExpr) {
       result.typeParamExpr = tUnionTypeExpression([subExprInfo.typeParamExpr, tIdentifier('undefined')])
@@ -117,7 +120,7 @@ export function handleType(field: TLBField, fieldType: TLBFieldType, isField: bo
     let arrayLength: Expression
     let subExprInfo: FieldInfoType
     arrayLength = convertToAST(fieldType.times, constructor, true);
-    subExprInfo = handleType(field, fieldType.value, false, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode);
+    subExprInfo = handleType(field, fieldType.value, false, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, argIndex, tlbCode);
     let currentParam = insideStoreParameters[0]
     let currentParam2 = insideStoreParameters2[0]
     if (subExprInfo.loadExpr) {
@@ -137,7 +140,7 @@ export function handleType(field: TLBField, fieldType: TLBFieldType, isField: bo
     let currentCell = getCurrentSlice([1, 0], 'cell');
 
     let subExprInfo: FieldInfoType;
-    subExprInfo = handleType(field, fieldType.value, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode)
+    subExprInfo = handleType(field, fieldType.value, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, argIndex, tlbCode)
     if (subExprInfo.loadExpr) {
       result.typeParamExpr = subExprInfo.typeParamExpr;
       result.storeExpr = subExprInfo.storeExpr;
@@ -169,7 +172,7 @@ export function handleType(field: TLBField, fieldType: TLBFieldType, isField: bo
     if (fieldType.kind == 'TLBNamedType') {
       fieldType.arguments.forEach(arg => {
         argIndex++;
-        let subExprInfo = handleType(field, arg, false, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode);
+        let subExprInfo = handleType(field, arg, false, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, argIndex, tlbCode);
         if (subExprInfo.typeParamExpr) {
           typeExpression.typeParameters.push(subExprInfo.typeParamExpr);
         }
