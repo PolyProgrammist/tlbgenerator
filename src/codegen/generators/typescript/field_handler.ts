@@ -6,7 +6,7 @@ import { fillConstructors, firstLower, getCurrentSlice, bitLen, convertToMathExp
 import { handleType } from './type_handler'
 import { addLoadProperty, getNegationDerivationFunctionBody, getParamVarExpr, sliceLoad } from './utils'
 import { goodVariableName } from '../../utils'
-import { getType } from '../../astbuilder/handle_field'
+import { getType } from "../../astbuilder/handle_type"
 
 export function handleField(field: TLBField, fieldDefinition: FieldDefinition, slicePrefix: Array<number>, tlbCode: TLBCode, constructor: TLBConstructor, constructorLoadStatements: Statement[], subStructStoreStatements: Statement[], subStructProperties: TypedIdentifier[], subStructLoadProperties: ObjectProperty[], variableCombinatorName: string, variableSubStructName: string, jsCodeFunctionsDeclarations: GenDeclaration[], fieldIndex: string) {
   let currentSlice = getCurrentSlice(slicePrefix, 'slice');
