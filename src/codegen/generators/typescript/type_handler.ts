@@ -105,23 +105,14 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
   
   if (expr instanceof BuiltinZeroArgs) {
     if (expr.name == '#') {
-      if (fieldType.kind == 'TLBUndefinedType') {
-        exprForParam = {argLoadExpr: tNumericLiteral(32), argStoreExpr: tNumericLiteral(32), paramType: 'number', fieldLoadSuffix: 'Uint', fieldStoreSuffix: 'Uint'}
-      }
+    
     } else {
       throw new Error('Expression not supported' + expr)
     }
   } else if (expr instanceof BuiltinOneArgExpr) {
     if (expr.name.toString() == '##' || expr.name.toString() == '(##)') {
       if (expr.arg instanceof NumberExpr) {
-        if (fieldType.kind == 'TLBUndefinedType') {
-          exprForParam = {
-            argLoadExpr: tNumericLiteral(expr.arg.num), 
-            argStoreExpr: tNumericLiteral(expr.arg.num), 
-            paramType: expr.arg.num <= 63 ? 'number' : 'bigint', 
-            fieldLoadSuffix:  expr.arg.num <= 63 ? 'Uint' : 'UintBig', fieldStoreSuffix: 'Uint'
-          }
-        } 
+        
         
       }
       if (expr.arg instanceof NameExpr) {
@@ -129,69 +120,30 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
         if (!parameter) {
           throw new Error('')
         }
-        if (fieldType.kind == 'TLBUndefinedType') {
-          exprForParam = {
-            argLoadExpr: getParamVarExpr(parameter, constructor), 
-            argStoreExpr: tMemberExpression(tIdentifier(variableCombinatorName), tIdentifier(goodVariableName(expr.arg.name))), 
-            paramType: 'bigint', fieldLoadSuffix: 'UintBig', fieldStoreSuffix: 'Uint'
-          }
-        }
         
       } // TODO: handle other cases
     } else if (expr.name == '#<') {
       if (expr.arg instanceof NumberExpr || expr.arg instanceof NameExpr) {
-        if (fieldType.kind == 'TLBUndefinedType') {
-          exprForParam = {
-            argLoadExpr: tFunctionCall(tIdentifier('bitLen'), [tBinaryExpression(convertToAST(convertToMathExpr(expr.arg), constructor, true), '-', tNumericLiteral(1))]), 
-            argStoreExpr: tFunctionCall(tIdentifier('bitLen'), [tBinaryExpression(convertToAST(convertToMathExpr(expr.arg), constructor, true, tIdentifier(variableCombinatorName)), '-', tNumericLiteral(1))]), 
-            paramType: 'number', fieldLoadSuffix: 'Uint', fieldStoreSuffix: 'Uint'
-          }
-        }
+        
       } // TODO: handle other cases
     } else if (expr.name == '#<=') {
       if (expr.arg instanceof NumberExpr || expr.arg instanceof NameExpr) {
-        if (fieldType.kind == 'TLBUndefinedType') {
-          exprForParam = {
-            argLoadExpr: tFunctionCall(tIdentifier('bitLen'), [convertToAST(convertToMathExpr(expr.arg), constructor, true)]), 
-            argStoreExpr: tFunctionCall(tIdentifier('bitLen'), [convertToAST(convertToMathExpr(expr.arg), constructor, true, tIdentifier(variableCombinatorName))]), 
-            paramType: 'number', fieldLoadSuffix: 'Uint', fieldStoreSuffix: 'Uint'
-          }
-        }
+        
       } // TODO: handle other cases
     } 
   } else if (expr instanceof CombinatorExpr) {
     if (expr.name == 'int' && expr.args.length == 1 && (expr.args[0] instanceof MathExpr || expr.args[0] instanceof NumberExpr || expr.args[0] instanceof NameExpr)) {
       let myMathExpr = convertToMathExpr(expr.args[0])
       let isSmallInt = (expr.args[0] instanceof NumberExpr && expr.args[0].num <= 63)
-      if (fieldType.kind == 'TLBUndefinedType') {
-        exprForParam = {
-          argLoadExpr: convertToAST(myMathExpr, constructor),
-          argStoreExpr: convertToAST(myMathExpr, constructor, false, tIdentifier(variableSubStructName)),
-          paramType: isSmallInt ? 'number' : 'bigint', 
-          fieldLoadSuffix: isSmallInt ? 'Int' : 'IntBig', fieldStoreSuffix: 'Int'
-        }
-      }
+      
     } else if (expr.name == 'uint' && expr.args.length == 1 && (expr.args[0] instanceof MathExpr || expr.args[0] instanceof NumberExpr || expr.args[0] instanceof NameExpr)) {
       let myMathExpr = convertToMathExpr(expr.args[0])
       let isSmallInt = (expr.args[0] instanceof NumberExpr && expr.args[0].num <= 63)
-      if (fieldType.kind == 'TLBUndefinedType') {
-        exprForParam = {
-          argLoadExpr: convertToAST(myMathExpr, constructor),
-          argStoreExpr: convertToAST(myMathExpr, constructor, false, tIdentifier(variableSubStructName)),
-          paramType: (expr.args[0] instanceof NumberExpr && expr.args[0].num <= 63) ? 'number' : 'bigint', 
-          fieldLoadSuffix: isSmallInt ? 'Uint' : 'UintBig', fieldStoreSuffix: 'Uint'
-        }
-      }
+      
       
     } else if (expr.name == 'bits' && expr.args.length == 1 && (expr.args[0] instanceof MathExpr || expr.args[0] instanceof NumberExpr || expr.args[0] instanceof NameExpr)) {
       let myMathExpr = convertToMathExpr(expr.args[0])
-      if (fieldType.kind == 'TLBUndefinedType') {
-        exprForParam = {
-          argLoadExpr: convertToAST(myMathExpr, constructor),
-          argStoreExpr: convertToAST(myMathExpr, constructor, false, tIdentifier(variableSubStructName)),
-          paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'
-        }
-      }
+      
     } else {
       let typeName = expr.name
       if (fieldType.kind == 'TLBNamedType') {
@@ -220,21 +172,6 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
             result.negatedVariablesLoads = result.negatedVariablesLoads.concat(subExprInfo.negatedVariablesLoads);
           }
         })
-      } else if (fieldType.kind == 'TLBUndefinedType') {
-        expr.args.forEach((arg) => {
-          argIndex++;
-          let subExprInfo = handleType({kind: 'TLBUndefinedType'}, arg, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
-          if (subExprInfo.typeParamExpr) {
-            typeExpression.typeParameters.push(subExprInfo.typeParamExpr);
-          }
-          if (subExprInfo.loadFunctionExpr) {
-            loadFunctionsArray.push(subExprInfo.loadFunctionExpr);
-          }
-          if (subExprInfo.storeFunctionExpr) {
-            storeFunctionsArray.push(subExprInfo.storeFunctionExpr); 
-          }
-          result.negatedVariablesLoads = result.negatedVariablesLoads.concat(subExprInfo.negatedVariablesLoads);
-        });
       }
       result.typeParamExpr = tTypeWithParameters(tIdentifier(typeName), typeExpression);
 
@@ -252,53 +189,29 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
   } else if (expr instanceof NameExpr) {
     let theNum;
     if (expr.name == 'Int') {
-      if (fieldType.kind == 'TLBUndefinedType') {
-        exprForParam = {argLoadExpr: tNumericLiteral(257), argStoreExpr: tNumericLiteral(257), paramType: 'number', fieldLoadSuffix: 'Int', fieldStoreSuffix: 'Int'}
-      }
+      
     } else if (expr.name == 'Bits') {
-      if (fieldType.kind == 'TLBUndefinedType') {
-        exprForParam = {argLoadExpr: tNumericLiteral(1023), argStoreExpr: tNumericLiteral(1023), paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'}
-      }
+      
     } else if (expr.name == 'Bit') {
-      if (fieldType.kind == 'TLBUndefinedType') {
-              exprForParam = {argLoadExpr: tNumericLiteral(1), argStoreExpr: tNumericLiteral(1), paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'}
-      }
+      
     } else if (expr.name == 'Uint') {
-      if (fieldType.kind == 'TLBUndefinedType') {
-        exprForParam = {argLoadExpr: tNumericLiteral(256), argStoreExpr: tNumericLiteral(256), paramType: 'number', fieldLoadSuffix: 'Uint', fieldStoreSuffix: 'Uint'}
-      }
+      
     } else if (expr.name == 'Any' || expr.name == 'Cell') {
-      if (fieldType.kind == 'TLBUndefinedType') {
-        exprForParam = {argLoadExpr: tIdentifier(theSlice), argStoreExpr: tIdentifier(theSlice), paramType: 'Slice', fieldLoadSuffix: 'Slice', fieldStoreSuffix: 'Slice'}
-      }
+      
     } else if ((theNum = splitForTypeValue(expr.name, 'int')) != undefined) {
-      if (fieldType.kind == 'TLBUndefinedType') {
-        exprForParam = {argLoadExpr: tNumericLiteral(theNum), argStoreExpr: tNumericLiteral(theNum), paramType: 'number', fieldLoadSuffix: 'Int', fieldStoreSuffix: 'Int'}
-      }
+      
     } else if ((theNum = splitForTypeValue(expr.name, 'uint')) != undefined) {
-      if (fieldType.kind == 'TLBUndefinedType') {
-              exprForParam = {argLoadExpr: tNumericLiteral(theNum), argStoreExpr: tNumericLiteral(theNum), paramType: 'number', fieldLoadSuffix: 'Uint', fieldStoreSuffix: 'Uint'}
-      }
+      
     } else if ((theNum = splitForTypeValue(expr.name, 'bits')) != undefined) {
-      if (fieldType.kind == 'TLBUndefinedType') {
-        exprForParam = {argLoadExpr: tNumericLiteral(theNum), argStoreExpr: tNumericLiteral(theNum), paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'}
-      }
+      
     } else if (expr.name == 'Bool') {
-      if (fieldType.kind == 'TLBUndefinedType') {
-        exprForParam = {argLoadExpr: undefined, argStoreExpr: undefined, paramType: 'boolean', fieldLoadSuffix: 'Boolean', fieldStoreSuffix: 'Bit'}
-      }
+      
     } else if (expr.name == 'MsgAddressInt') {
-      if (fieldType.kind == 'TLBUndefinedType') {
-        exprForParam = {argLoadExpr: undefined, argStoreExpr: undefined, paramType: 'Address', fieldLoadSuffix: 'Address', fieldStoreSuffix: 'Address'}
-      }
+      
     } else {
       let typeName = ''
       if (fieldType.kind == 'TLBNamedType') {
         typeName = fieldType.name;
-      }
-
-      if (fieldType.kind == 'TLBUndefinedType') {
-        typeName = expr.name;
       }
 
       if (fieldType.kind == 'TLBExprMathType') {
@@ -307,8 +220,6 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
       }
 
       if (constructor.variablesMap.get(typeName)?.type == '#') {
-        result.loadExpr = getVarExprByName(typeName, constructor)
-        result.storeExpr = tExpressionStatement(result.loadExpr);
       } else if (fieldType.kind != 'TLBExprMathType') {
         
         result.typeParamExpr = tIdentifier(typeName);
@@ -326,16 +237,8 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
       result.typeParamExpr = tIdentifier(exprForParam.paramType)
     }
   } else if (expr instanceof NumberExpr) {
-    if (fieldType.kind == 'TLBUndefinedType') {
-      result.loadExpr = convertToAST(new TLBNumberExpr(expr.num), constructor, true);
-      result.storeExpr = tExpressionStatement(result.loadExpr);
-    }
   } else if (expr instanceof NegateExpr && expr.expr instanceof NameExpr) { // TODO: handle other case
-    if (fieldType.kind == 'TLBUndefinedType') {
-      let getParameterFunctionId = tIdentifier(variableSubStructName + '_get_' + expr.expr.name)
-      jsCodeFunctionsDeclarations.push(tFunctionDeclaration(getParameterFunctionId, tTypeParametersExpression([]), tIdentifier('number'), [tTypedIdentifier(tIdentifier(goodVariableName(fieldName)), tIdentifier(fieldTypeName))], getNegationDerivationFunctionBody(tlbCode, fieldTypeName, argIndex, fieldName)))
-      result.negatedVariablesLoads.push({name: expr.expr.name, expression: tFunctionCall(getParameterFunctionId, [tIdentifier(goodVariableName(fieldName))])})
-    }
+
   } else if (expr instanceof CellRefExpr) {
     let currentSlice = getCurrentSlice([1, 0], 'slice');
     let currentCell = getCurrentSlice([1, 0], 'cell');
@@ -343,8 +246,6 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
     let subExprInfo: FieldInfoType;
     if (fieldType.kind == 'TLBCellInsideType') {
       subExprInfo = handleType(fieldType.value, expr.expr, fieldName, true, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties)
-    } else if (fieldType.kind == 'TLBUndefinedType') {
-      subExprInfo = handleType({kind: 'TLBUndefinedType'}, expr.expr, fieldName, true, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
     } else {
       throw new Error('')
     }
@@ -378,9 +279,6 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
         if (fieldType.kind == 'TLBMultipleType') {
           arrayLength = convertToAST(fieldType.times, constructor, true);
           subExprInfo = handleType(fieldType.value, expr.right, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
-        } else if (fieldType.kind == 'TLBUndefinedType') {
-          arrayLength = convertToAST(convertToMathExpr(expr.left), constructor, true);
-          subExprInfo = handleType(fieldType, expr.right, fieldName, false, needArg, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
         } else {
           throw new Error('')
         }
@@ -402,10 +300,7 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
         throw new Error('')
       }
     } else {
-      if (fieldType.kind == 'TLBUndefinedType') {
-        result.loadExpr = convertToAST(convertToMathExpr(expr), constructor, true);
-        result.storeExpr = tExpressionStatement(result.loadExpr);
-      }
+      
     }
   } else if (expr instanceof CondExpr) {
     let subExprInfo: FieldInfoType
@@ -413,8 +308,6 @@ export function handleType(fieldType: TLBFieldType, expr: ParserExpression, fiel
     if (fieldType.kind == 'TLBCondType') {
       subExprInfo = handleType(fieldType.value, expr.condExpr, fieldName, true, false, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
       conditionExpr = convertToAST(fieldType.condition, constructor, true)
-    } else if (fieldType.kind == 'TLBUndefinedType') {
-      subExprInfo = handleType(fieldType, expr.condExpr, fieldName, true, false, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, fieldTypeName, argIndex, tlbCode, subStructLoadProperties);
     } else {
       throw new Error('');
     }
