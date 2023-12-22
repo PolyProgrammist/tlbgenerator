@@ -428,8 +428,8 @@ export interface ConditionalRef {
 
 export interface LoadFromNegationOutsideExpr {
     readonly kind: 'LoadFromNegationOutsideExpr';
-    readonly seq_no: number;
     readonly prev_seq_no: number;
+    readonly seq_no: number;
 }
 
 export interface AnonymousData {

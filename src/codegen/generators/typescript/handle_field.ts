@@ -31,14 +31,6 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
     slicePrefix.pop();
   }
 
-  if (fieldDefinition instanceof FieldBuiltinDef && fieldDefinition.type != 'Type') {
-    subStructProperties.push(tTypedIdentifier(tIdentifier(goodVariableName(fieldDefinition.name)), tIdentifier('number')));
-    let parameter = constructor.parametersMap.get(fieldDefinition.name)
-    if (parameter && !parameter.variable.const && !parameter.variable.negated) {
-      subStructLoadProperties.push(tObjectProperty(tIdentifier(goodVariableName(fieldDefinition.name)), getParamVarExpr(parameter, constructor)))
-    }
-  }
-
   if (fieldDefinition instanceof FieldNamedDef || fieldDefinition instanceof FieldExprDef) {
     let fieldName: string;
     if (fieldDefinition instanceof FieldNamedDef) {
@@ -51,7 +43,6 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
     }
 
     if (fieldDefinition.expr instanceof CellRefExpr) {
-
       if (fieldDefinition.expr.expr instanceof CombinatorExpr && (fieldDefinition.expr.expr.name == 'MERKLE_UPDATE' || fieldDefinition.expr.expr.name == 'MERKLE_ROOT')) {
         slicePrefix[slicePrefix.length - 1]++;
         slicePrefix.push(0);
@@ -63,11 +54,8 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
         addLoadProperty(goodVariableName(fieldName), tIdentifier(getCurrentSlice(slicePrefix, 'cell')), undefined, constructorLoadStatements, subStructLoadProperties)
         subStructProperties.push(tTypedIdentifier(tIdentifier(goodVariableName(fieldName)), tIdentifier('Cell')));
         subStructStoreStatements.push(tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('storeRef')), [tMemberExpression(tIdentifier(variableCombinatorName), tIdentifier(goodVariableName(fieldName)))])))
-
-        // subStructStoreStatements
         slicePrefix.pop();
       } else {
-        // console.log(constructor.declaration.combinator.name, fieldName)
         slicePrefix[slicePrefix.length - 1]++;
         slicePrefix.push(0)
         constructorLoadStatements.push(sliceLoad(slicePrefix, currentSlice))

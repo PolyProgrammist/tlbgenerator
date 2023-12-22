@@ -1075,6 +1075,7 @@ export interface LibDescr {
 
 export interface BlockInfo {
     readonly kind: 'BlockInfo';
+    readonly prev_seq_no: number;
     readonly version: number;
     readonly not_master: number;
     readonly after_merge: number;
@@ -1087,7 +1088,6 @@ export interface BlockInfo {
     readonly flags: number;
     readonly seq_no: number;
     readonly vert_seq_no: number;
-    readonly prev_seq_no: number;
     readonly shard: ShardIdent;
     readonly gen_utime: number;
     readonly start_lt: number;

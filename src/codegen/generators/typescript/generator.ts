@@ -5,7 +5,7 @@ import { CodeBuilder } from "../CodeBuilder";
 import { CodeGenerator } from "../generator";
 import { BinaryExpression, GenDeclaration, ObjectProperty, Statement, StructDeclaration, TheNode, TypeExpression, TypeParametersExpression, TypedIdentifier, tArrowFunctionExpression, tArrowFunctionType, tBinaryExpression, tComment, tExpressionStatement, tFunctionCall, tFunctionDeclaration, tIdentifier, tIfStatement, tImportDeclaration, tMemberExpression, tNumericLiteral, tObjectExpression, tObjectProperty, tReturnStatement, tStringLiteral, tStructDeclaration, tTypeParametersExpression, tTypeWithParameters, tTypedIdentifier, tUnaryOpExpression, tUnionTypeDeclaration, tUnionTypeExpression, toCode } from "./tsgen";
 import { convertToAST, getCondition, getParamVarExpr, getTypeParametersExpression } from "./utils";
-import { BuiltinOneArgExpr, BuiltinZeroArgs, CombinatorExpr, CondExpr, FieldExprDef, FieldNamedDef, MathExpr, NameExpr } from "../../../ast/nodes";
+import { BuiltinOneArgExpr, BuiltinZeroArgs, CombinatorExpr, CondExpr, FieldBuiltinDef, FieldExprDef, FieldNamedDef, MathExpr, NameExpr } from "../../../ast/nodes";
 
 export class TypescriptGenerator implements CodeGenerator {
     jsCodeDeclarations: GenDeclaration[] = []
@@ -56,6 +56,16 @@ export class TypescriptGenerator implements CodeGenerator {
             })
 
             let fieldIndex = 0;
+            declaration?.fields.forEach(fieldDefinition => {
+                if (fieldDefinition instanceof FieldBuiltinDef && fieldDefinition.type != 'Type') {
+                    subStructProperties.push(tTypedIdentifier(tIdentifier(goodVariableName(fieldDefinition.name)), tIdentifier('number')));
+                    let parameter = constructor.parametersMap.get(fieldDefinition.name)
+                    if (parameter && !parameter.variable.const && !parameter.variable.negated) {
+                      subStructLoadProperties.push(tObjectProperty(tIdentifier(goodVariableName(fieldDefinition.name)), getParamVarExpr(parameter, constructor)))
+                    }
+                  }
+            });
+            
             declaration?.fields.forEach(element => { handleField(constructor.fieldIndices.get(fieldIndex.toString()), element, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, fieldIndex.toString()); fieldIndex++; })
 
             subStructsUnion.push(tTypeWithParameters(tIdentifier(subStructName), structTypeParametersExpr));
