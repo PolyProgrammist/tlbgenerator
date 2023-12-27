@@ -1,5 +1,5 @@
 
-import { BuiltinOneArgExpr, BuiltinZeroArgs, CellRefExpr, CombinatorExpr, CondExpr, FieldAnonymousDef, FieldDefinition, FieldExprDef, FieldNamedDef, MathExpr, NameExpr } from "../../ast/nodes";
+import { BuiltinOneArgExpr, BuiltinZeroArgs, CellRefExpr, CombinatorExpr, CondExpr, Declaration, FieldAnonymousDef, FieldDefinition, FieldExprDef, FieldNamedDef, MathExpr, NameExpr } from "../../ast/nodes";
 import { TLBCode, TLBConstructor, TLBField, TLBNumberType, TLBType } from "../ast";
 import { GenDeclaration, ObjectProperty, Statement, TypedIdentifier } from "../generators/typescript/tsgen";
 import { firstLower, getSubStructName, goodVariableName } from "../utils";
@@ -59,17 +59,19 @@ export function getField(field: FieldDefinition, slicePrefix: Array<number>, tlb
   return undefined
 }
 
-export function fillFields(tlbCode: TLBCode) {
+export function fillFields(tlbCode: TLBCode, typeDeclarations: Map<String, {declaration: Declaration, constructor: TLBConstructor}[]>) {
   tlbCode.types.forEach(tlbType => {
-    tlbType.constructors.forEach(constructor => {
+    typeDeclarations.get(tlbType.name)?.forEach(typeItem => {
+      let constructor = typeItem.constructor;
+      let declaration = typeItem.declaration;
+
       let fieldIndex = -1;
       let variableCombinatorName = goodVariableName(firstLower(tlbType.name), '0')
       let subStructName: string = getSubStructName(tlbType, constructor);
       let variableSubStructName = goodVariableName(firstLower(subStructName), '_' + constructor.name)
       let slicePrefix: number[] = [0];
 
-
-      constructor.declaration.fields.forEach(fieldDecl => {
+      declaration.fields.forEach(fieldDecl => {
         fieldIndex++;
         let field = getField(fieldDecl, slicePrefix, tlbCode, constructor, [], [], [], [], variableCombinatorName, variableSubStructName, [], fieldIndex.toString())
         if (field != undefined) {
