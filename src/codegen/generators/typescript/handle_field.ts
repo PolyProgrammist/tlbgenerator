@@ -7,7 +7,7 @@ import { addLoadProperty, getNegationDerivationFunctionBody, getParamVarExpr, sl
 import { goodVariableName } from '../../utils'
 import { getType } from "../../astbuilder/handle_type"
 
-export function handleField(field: TLBField | undefined, slicePrefix: Array<number>, tlbCode: TLBCode, constructor: TLBConstructor, constructorLoadStatements: Statement[], subStructStoreStatements: Statement[], subStructProperties: TypedIdentifier[], subStructLoadProperties: ObjectProperty[], variableCombinatorName: string, variableSubStructName: string, jsCodeFunctionsDeclarations: GenDeclaration[]) {
+export function handleField(field: TLBField, slicePrefix: Array<number>, tlbCode: TLBCode, constructor: TLBConstructor, constructorLoadStatements: Statement[], subStructStoreStatements: Statement[], subStructProperties: TypedIdentifier[], subStructLoadProperties: ObjectProperty[], variableCombinatorName: string, variableSubStructName: string, jsCodeFunctionsDeclarations: GenDeclaration[]) {
   let currentSlice = getCurrentSlice(slicePrefix, 'slice');
   let currentCell = getCurrentSlice(slicePrefix, 'cell');
 
@@ -27,11 +27,6 @@ export function handleField(field: TLBField | undefined, slicePrefix: Array<numb
     slicePrefix.pop();
   }
 
-  if (!field) {
-    return;
-  }
-  let fieldName: string = field.name;
-
   if (field?.fieldType.kind == 'TLBExoticType') {
     slicePrefix[slicePrefix.length - 1]++;
     slicePrefix.push(0);
@@ -40,9 +35,9 @@ export function handleField(field: TLBField | undefined, slicePrefix: Array<numb
         tFunctionCall(tMemberExpression(
           tIdentifier(currentSlice), tIdentifier('loadRef')
         ), []),)))
-    addLoadProperty(goodVariableName(fieldName), tIdentifier(getCurrentSlice(slicePrefix, 'cell')), undefined, constructorLoadStatements, subStructLoadProperties)
-    subStructProperties.push(tTypedIdentifier(tIdentifier(goodVariableName(fieldName)), tIdentifier('Cell')));
-    subStructStoreStatements.push(tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('storeRef')), [tMemberExpression(tIdentifier(variableCombinatorName), tIdentifier(goodVariableName(fieldName)))])))
+    addLoadProperty(goodVariableName(field.name), tIdentifier(getCurrentSlice(slicePrefix, 'cell')), undefined, constructorLoadStatements, subStructLoadProperties)
+    subStructProperties.push(tTypedIdentifier(tIdentifier(goodVariableName(field.name)), tIdentifier('Cell')));
+    subStructStoreStatements.push(tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('storeRef')), [tMemberExpression(tIdentifier(variableCombinatorName), tIdentifier(goodVariableName(field.name)))])))
     slicePrefix.pop();
   } else if (field?.subFields.length == 0) {
     if (field == undefined) {
@@ -51,10 +46,10 @@ export function handleField(field: TLBField | undefined, slicePrefix: Array<numb
     let thefield: TLBFieldType = field.fieldType
     let fieldInfo = handleType(field, thefield, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, 0, tlbCode);
     if (fieldInfo.loadExpr) {
-      addLoadProperty(goodVariableName(fieldName), fieldInfo.loadExpr, fieldInfo.typeParamExpr, constructorLoadStatements, subStructLoadProperties);
+      addLoadProperty(goodVariableName(field.name), fieldInfo.loadExpr, fieldInfo.typeParamExpr, constructorLoadStatements, subStructLoadProperties);
     }
     if (fieldInfo.typeParamExpr) {
-      subStructProperties.push(tTypedIdentifier(tIdentifier(goodVariableName(fieldName)), fieldInfo.typeParamExpr));
+      subStructProperties.push(tTypedIdentifier(tIdentifier(goodVariableName(field.name)), fieldInfo.typeParamExpr));
     }
     if (fieldInfo.storeExpr) {
       subStructStoreStatements.push(fieldInfo.storeExpr)
