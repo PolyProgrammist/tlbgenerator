@@ -414,7 +414,7 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
         if (tlbType == undefined) {
             tlbType = { name: declaration.combinator.name, constructors: [] }
         }
-        tlbType.constructors.push({ declaration: declaration, parameters: [], parametersMap: new Map<string, TLBParameter>(), name: declaration.constructorDef.name, variables: new Array<TLBVariable>(), variablesMap: new Map<string, TLBVariable>(), fields: [], tag: getConstructorTag(declaration, input), constraints: [], fieldIndices: new Map<string, TLBField>() });
+        tlbType.constructors.push({ declaration: declaration, parameters: [], parametersMap: new Map<string, TLBParameter>(), name: declaration.constructorDef.name, variables: new Array<TLBVariable>(), variablesMap: new Map<string, TLBVariable>(), fields: [], tag: getConstructorTag(declaration, input), constraints: [], fieldIndices: new Map<string, TLBField>(), newFieldIndices: new Map<string, TLBField>() });
         tlbCode.types.set(tlbType.name, tlbType);
     })
 

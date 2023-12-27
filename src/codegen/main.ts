@@ -3,7 +3,7 @@ import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, 
 import { fillConstructors } from './utils'
 import { CodeBuilder } from './generators/CodeBuilder'
 import { CodeGenerator, CommonGenDeclaration } from './generators/generator'
-import { TypescriptGenerator } from './generators/typescript/generator'
+import { TypescriptGenerator, othercounter, thecounter } from './generators/typescript/generator'
 
 export function generate(tree: Program, input: string) {
   let codeGenerator: CodeGenerator = new TypescriptGenerator();
@@ -33,6 +33,8 @@ export function generate(tree: Program, input: string) {
   fillConstructors(tree.declarations, tlbCode, splittedInput);
 
   tlbCode.types.forEach((tlbType: TLBType) => { codeGenerator.addTlbType(tlbType, tlbCode, splittedInput, jsCodeConstructorDeclarations, jsCodeFunctionsDeclarations) });
+  console.log(thecounter);
+  console.log(othercounter)
 
   let generatedCode = ''
 

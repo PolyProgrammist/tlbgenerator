@@ -123,6 +123,7 @@ export type TLBField = {
     name: string
     anonymous: boolean
     fieldType: TLBFieldType
+    subFields: TLBField[]
 }
 
 export type TLBParameter = {
@@ -145,6 +146,7 @@ export type TLBConstructor = {
     name: string
     fields: Array<TLBField>
     fieldIndices: Map<string, TLBField>
+    newFieldIndices: Map<string, TLBField>
     declaration: Declaration
     tag: TLBConstructorTag
     constraints: Array<TLBMathExpr>

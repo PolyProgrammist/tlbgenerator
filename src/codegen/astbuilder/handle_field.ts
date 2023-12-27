@@ -5,7 +5,7 @@ import { GenDeclaration, ObjectProperty, Statement, TypedIdentifier } from "../g
 import { firstLower, getSubStructName, goodVariableName } from "../utils";
 import { getType } from "./handle_type";
 
-export function handleField(field: FieldDefinition, slicePrefix: Array<number>, tlbCode: TLBCode, constructor: TLBConstructor, constructorLoadStatements: Statement[], subStructStoreStatements: Statement[], subStructProperties: TypedIdentifier[], subStructLoadProperties: ObjectProperty[], variableCombinatorName: string, variableSubStructName: string, jsCodeFunctionsDeclarations: GenDeclaration[], fieldIndex: string) {
+export function getField(field: FieldDefinition, slicePrefix: Array<number>, tlbCode: TLBCode, constructor: TLBConstructor, constructorLoadStatements: Statement[], subStructStoreStatements: Statement[], subStructProperties: TypedIdentifier[], subStructLoadProperties: ObjectProperty[], variableCombinatorName: string, variableSubStructName: string, jsCodeFunctionsDeclarations: GenDeclaration[], fieldIndex: string): TLBField | undefined {
   // let currentSlice = getCurrentSlice(slicePrefix, 'slice');
   // let currentCell = getCurrentSlice(slicePrefix, 'cell');
 
@@ -16,16 +16,27 @@ export function handleField(field: FieldDefinition, slicePrefix: Array<number>, 
     //   constructorLoadStatements.push(sliceLoad(slicePrefix, currentSlice))
     //   subStructStoreStatements.push(tExpressionStatement(tDeclareVariable(tIdentifier(getCurrentSlice(slicePrefix, 'cell')), tFunctionCall(tIdentifier('beginCell'), []))))
 
+    let result: TLBField = { name: '', anonymous: true, fieldType: {kind: 'TLBBoolType'} , subFields: [] };
     let currentFieldIndex = 0;
+    let valid = true;
     field.fields.forEach(field => {
       let theFieldIndex = fieldIndex + '_' + currentFieldIndex.toString();
-      handleField(field, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, theFieldIndex)
+      let subfield = getField(field, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, theFieldIndex);
+      if (subfield) {
+        result.subFields.push(subfield)
+      } else {
+        valid = false;
+      }
       currentFieldIndex++;
     });
+    if (valid) {
+      return result;
+    }
 
     //   subStructStoreStatements.push(tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('storeRef')), [tIdentifier(getCurrentSlice(slicePrefix, 'cell'))])))
 
     //   slicePrefix.pop();
+    return undefined
   }
 
   // if (field instanceof FieldBuiltinDef && field.type != 'Type') {
@@ -44,7 +55,7 @@ export function handleField(field: FieldDefinition, slicePrefix: Array<number>, 
       fieldName = 'anon' + fieldIndex;
     }
     if (field instanceof FieldExprDef && field.expr instanceof NameExpr && field.expr.name == '_') {
-      return;
+      return undefined;
     }
 
       if (field.expr instanceof CellRefExpr) {
@@ -69,10 +80,11 @@ export function handleField(field: FieldDefinition, slicePrefix: Array<number>, 
     //       slicePrefix.push(0)
     //       constructorLoadStatements.push(sliceLoad(slicePrefix, currentSlice))
     //       subStructStoreStatements.push(tExpressionStatement(tDeclareVariable(tIdentifier(getCurrentSlice(slicePrefix, 'cell')), tFunctionCall(tIdentifier('beginCell'), []))))
-          handleField(new FieldNamedDef(fieldName, field.expr.expr), slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, fieldIndex)
+          getField(new FieldNamedDef(fieldName, field.expr.expr), slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, fieldIndex)
     //       subStructStoreStatements.push(tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('storeRef')), [tIdentifier(getCurrentSlice(slicePrefix, 'cell'))])))
     //       slicePrefix.pop();
         }      
+        return undefined;
       }
 
     if (field.expr instanceof CombinatorExpr || field.expr instanceof NameExpr || field.expr instanceof BuiltinZeroArgs || field.expr instanceof BuiltinOneArgExpr || field.expr instanceof MathExpr || field.expr instanceof CondExpr) {
@@ -96,11 +108,13 @@ export function handleField(field: FieldDefinition, slicePrefix: Array<number>, 
       // fieldInfo.negatedVariablesLoads.forEach(element => {
       //   addLoadProperty(goodVariableName(element.name), element.expression, undefined, constructorLoadStatements, subStructLoadProperties)
       // });
-      let thefield = { name: fieldName, anonymous: !(field instanceof FieldNamedDef), fieldType: fieldInfo };
+      let thefield = { name: fieldName, anonymous: !(field instanceof FieldNamedDef), fieldType: fieldInfo, subFields: [] };
       constructor.fields.push(thefield)
       constructor.fieldIndices.set(fieldIndex, thefield)
+      return thefield;
     }
   }
+  return undefined
 }
 
 export function fillFields(tlbCode: TLBCode) {
@@ -113,9 +127,12 @@ export function fillFields(tlbCode: TLBCode) {
       let slicePrefix: number[] = [0];
 
 
-      constructor.declaration.fields.forEach(field => {
+      constructor.declaration.fields.forEach(fieldDecl => {
         fieldIndex++;
-        handleField(field, slicePrefix, tlbCode, constructor, [], [], [], [], variableCombinatorName, variableSubStructName, [], fieldIndex.toString())
+        let field = getField(fieldDecl, slicePrefix, tlbCode, constructor, [], [], [], [], variableCombinatorName, variableSubStructName, [], fieldIndex.toString())
+        if (field != undefined) {
+          constructor.newFieldIndices.set(fieldIndex.toString(), field)
+        }
       })
     })
   })

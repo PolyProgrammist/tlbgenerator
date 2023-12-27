@@ -7,6 +7,9 @@ import { BinaryExpression, GenDeclaration, ObjectProperty, Statement, StructDecl
 import { convertToAST, getCondition, getParamVarExpr, getTypeParametersExpression } from "./utils";
 import { BuiltinOneArgExpr, BuiltinZeroArgs, CombinatorExpr, CondExpr, FieldBuiltinDef, FieldExprDef, FieldNamedDef, MathExpr, NameExpr } from "../../../ast/nodes";
 
+export let thecounter = 0;
+export let othercounter = 0;
+
 export class TypescriptGenerator implements CodeGenerator {
     jsCodeDeclarations: GenDeclaration[] = []
 
@@ -55,7 +58,6 @@ export class TypescriptGenerator implements CodeGenerator {
                 }
             })
 
-            let fieldIndex = 0;
             constructor.variables.forEach(variable => {
                 if (variable.type == '#' && !variable.isField) {
                     subStructProperties.push(tTypedIdentifier(tIdentifier(goodVariableName(variable.name)), tIdentifier('number')));
@@ -65,8 +67,21 @@ export class TypescriptGenerator implements CodeGenerator {
                     }
                 }
             })
-            
-            declaration?.fields.forEach(element => { handleField(constructor.fieldIndices.get(fieldIndex.toString()), element, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, fieldIndex.toString()); fieldIndex++; })
+
+            let fieldIndex = 0;
+
+            declaration?.fields.forEach(element => { 
+                let field;
+                if (constructor.newFieldIndices.has(fieldIndex.toString())) {
+                    thecounter++;
+                    field = constructor.newFieldIndices.get(fieldIndex.toString());
+                } else {
+                    othercounter++;
+                    field = constructor.fieldIndices.get(fieldIndex.toString());
+                }
+                handleField(field, element, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, fieldIndex.toString()); 
+                fieldIndex++; 
+            })
 
             subStructsUnion.push(tTypeWithParameters(tIdentifier(subStructName), structTypeParametersExpr));
 
