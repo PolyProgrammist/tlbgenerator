@@ -234,8 +234,8 @@ export function fillParameterNames(tlbType: TLBType) {
     })
 }
 
-export function fillConstraintsAndNegationVars(constructor: TLBConstructor) {
-    constructor.declaration.fields.forEach(field => {
+export function fillConstraintsAndNegationVars(constructor: TLBConstructor, declaration: Declaration) {
+    declaration.fields.forEach(field => {
         if (field instanceof FieldCurlyExprDef && field.expr instanceof CompareExpr) {
             if (field.expr.op == '=') {
                 let myMathExpr = convertToMathExpr(field.expr);
@@ -382,7 +382,7 @@ function opCodeSetsEqual(a: string[], b: string[]) {
     return true;
   }
 
-export function checkAndRemovePrimitives(tlbCode: TLBCode, input: string[]) {
+export function checkAndRemovePrimitives(tlbCode: TLBCode, input: string[], typeDeclarations: Map<String, {declaration: Declaration, constructor: TLBConstructor}[]>) {
     let toDelete: string[] = []
 
     let typesToDelete = new Map<string, string[]>();
@@ -390,11 +390,11 @@ export function checkAndRemovePrimitives(tlbCode: TLBCode, input: string[]) {
     typesToDelete.set('MsgAddressInt', [ 'd7b672a', '6d593e8a' ])
 
     typesToDelete.forEach((opCodesExpected: string[], typeName: string) => {
-        let tlbType = tlbCode.types.get(typeName);
-        if (tlbType) {
+        let typeItems = typeDeclarations.get(typeName);
+        if (typeItems) {
             let opCodesActual: string[] = []
-            tlbType.constructors.forEach(constructor => {
-                opCodesActual.push(calculateOpcode(constructor.declaration, input))
+            typeItems.forEach(typeItem => {
+                opCodesActual.push(calculateOpcode(typeItem.declaration, input))
             })
             if (!opCodeSetsEqual(opCodesExpected, opCodesActual)) {
                 throw new Error('Bool primitive type is not correct in scheme')
@@ -494,7 +494,7 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
                 constructor.parameters.push(parameter);
                 constructor.parametersMap.set(parameter.variable.name, parameter);
             });
-            fillConstraintsAndNegationVars(constructor);
+            fillConstraintsAndNegationVars(constructor, declaration);
             calculateVariables(constructor);
         });
         checkConstructors(tlbType);
@@ -503,7 +503,7 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
         tlbType.constructors.sort(compareConstructors)
     });
     fillFields(tlbCode);
-    checkAndRemovePrimitives(tlbCode, input);
+    checkAndRemovePrimitives(tlbCode, input, typeDeclarations);
 }
 export function isBadVarName(name: string): boolean {
   let tsReserved = [
