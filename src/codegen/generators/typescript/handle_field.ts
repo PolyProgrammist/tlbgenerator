@@ -21,18 +21,9 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
 
     let currentFieldIndex = 0;
 
-    let fields: FieldDefinition[] = [];
-    if (fieldDefinition instanceof FieldAnonymousDef) {
-      fields = fieldDefinition.fields;
-    } else if ((fieldDefinition instanceof FieldNamedDef || fieldDefinition instanceof FieldExprDef) && fieldDefinition.expr instanceof CellRefExpr) {
-      fields = [new FieldNamedDef(field.name, fieldDefinition.expr.expr)];
-    } else {
-      throw new Error('')
-    }
-
-    fields.forEach(fieldDef => {
+    field.subFields.forEach(fieldDef => {
       let theFieldIndex = fieldIndex + '_' + currentFieldIndex.toString();
-      handleField(constructor.fields.get(theFieldIndex), fieldDef, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, theFieldIndex)
+      handleField(fieldDef, fieldDefinition, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, theFieldIndex)
       currentFieldIndex++;
     });
 
