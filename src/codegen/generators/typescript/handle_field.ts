@@ -29,25 +29,7 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
     subStructStoreStatements.push(tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('storeRef')), [tIdentifier(getCurrentSlice(slicePrefix, 'cell'))])))
 
     slicePrefix.pop();
-  } else 
-  if (fieldDefinition instanceof FieldAnonymousDef) {
-    slicePrefix[slicePrefix.length - 1]++;
-    slicePrefix.push(0)
-
-    constructorLoadStatements.push(sliceLoad(slicePrefix, currentSlice))
-    subStructStoreStatements.push(tExpressionStatement(tDeclareVariable(tIdentifier(getCurrentSlice(slicePrefix, 'cell')), tFunctionCall(tIdentifier('beginCell'), []))))
-
-    let currentFieldIndex = 0;
-    fieldDefinition.fields.forEach(fieldDef => {
-      let theFieldIndex = fieldIndex + '_' + currentFieldIndex.toString();
-      handleField(constructor.fieldIndices.get(theFieldIndex), fieldDef, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, theFieldIndex)
-      currentFieldIndex++;
-    });
-
-    subStructStoreStatements.push(tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('storeRef')), [tIdentifier(getCurrentSlice(slicePrefix, 'cell'))])))
-
-    slicePrefix.pop();
-  }
+  } 
 
   if (fieldDefinition instanceof FieldNamedDef || fieldDefinition instanceof FieldExprDef) {
     let fieldName: string;

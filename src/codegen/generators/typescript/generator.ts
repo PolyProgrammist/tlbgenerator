@@ -7,9 +7,6 @@ import { BinaryExpression, GenDeclaration, ObjectProperty, Statement, StructDecl
 import { convertToAST, getCondition, getParamVarExpr, getTypeParametersExpression } from "./utils";
 import { BuiltinOneArgExpr, BuiltinZeroArgs, CombinatorExpr, CondExpr, FieldBuiltinDef, FieldExprDef, FieldNamedDef, MathExpr, NameExpr } from "../../../ast/nodes";
 
-export let thecounter = 0;
-export let othercounter = 0;
-
 export class TypescriptGenerator implements CodeGenerator {
     jsCodeDeclarations: GenDeclaration[] = []
 

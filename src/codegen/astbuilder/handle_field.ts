@@ -30,9 +30,7 @@ export function getField(field: FieldDefinition, slicePrefix: Array<number>, tlb
       }
       currentFieldIndex++;
     });
-    if (valid) {
-      return result;
-    }
+    return result;
 
     //   subStructStoreStatements.push(tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('storeRef')), [tIdentifier(getCurrentSlice(slicePrefix, 'cell'))])))
 
