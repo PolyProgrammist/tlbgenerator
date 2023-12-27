@@ -83,7 +83,8 @@ export function getField(field: FieldDefinition, slicePrefix: Array<number>, tlb
     //       subStructStoreStatements.push(tExpressionStatement(tDeclareVariable(tIdentifier(getCurrentSlice(slicePrefix, 'cell')), tFunctionCall(tIdentifier('beginCell'), []))))
 
 
-          let subfield = getField(new FieldNamedDef(fieldName, field.expr.expr), slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, fieldIndex)
+          let theFieldIndex = fieldIndex + '_' + '0';
+          let subfield = getField(new FieldNamedDef(fieldName, field.expr.expr), slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, theFieldIndex)
           // if (subfield) {
           //   let result: TLBField = { name: '', anonymous: true, fieldType: {kind: 'TLBBoolType'} , subFields: [subfield] };
           //   constructor.newFieldIndices.set(fieldIndex, subfield)

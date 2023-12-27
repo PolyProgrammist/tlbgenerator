@@ -78,7 +78,8 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
         slicePrefix.push(0)
         constructorLoadStatements.push(sliceLoad(slicePrefix, currentSlice))
         subStructStoreStatements.push(tExpressionStatement(tDeclareVariable(tIdentifier(getCurrentSlice(slicePrefix, 'cell')), tFunctionCall(tIdentifier('beginCell'), []))))
-        handleField(field, new FieldNamedDef(fieldName, fieldDefinition.expr.expr), slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, fieldIndex)
+        let theFieldIndex = fieldIndex + '_' + '0';
+        handleField(field, new FieldNamedDef(fieldName, fieldDefinition.expr.expr), slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, theFieldIndex)
         subStructStoreStatements.push(tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('storeRef')), [tIdentifier(getCurrentSlice(slicePrefix, 'cell'))])))
         slicePrefix.pop();
       }      
