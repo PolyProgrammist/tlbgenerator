@@ -23,6 +23,7 @@ export function getField(field: FieldDefinition, slicePrefix: Array<number>, tlb
       let theFieldIndex = fieldIndex + '_' + currentFieldIndex.toString();
       let subfield = getField(field, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, theFieldIndex);
       if (subfield) {
+        constructor.newFieldIndices.set(theFieldIndex, subfield)
         result.subFields.push(subfield)
       } else {
         valid = false;
