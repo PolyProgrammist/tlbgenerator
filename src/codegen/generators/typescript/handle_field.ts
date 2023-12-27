@@ -23,7 +23,7 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
 
     let fields: FieldDefinition[] = [];
     if (fieldDefinition instanceof FieldAnonymousDef) {
-      fields = fieldDefinition.fields; 
+      fields = fieldDefinition.fields;
     } else if ((fieldDefinition instanceof FieldNamedDef || fieldDefinition instanceof FieldExprDef) && fieldDefinition.expr instanceof CellRefExpr) {
       fields = [new FieldNamedDef(field.name, fieldDefinition.expr.expr)];
     } else {
@@ -39,7 +39,7 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
     subStructStoreStatements.push(tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('storeRef')), [tIdentifier(getCurrentSlice(slicePrefix, 'cell'))])))
 
     slicePrefix.pop();
-  } 
+  }
 
   if (fieldDefinition instanceof FieldNamedDef || fieldDefinition instanceof FieldExprDef) {
     if (!field) {
@@ -47,20 +47,18 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
     }
     let fieldName: string = field.name;
 
-    if (fieldDefinition.expr instanceof CellRefExpr) {
-      if (field?.fieldType.kind == 'TLBExoticType') {
-        slicePrefix[slicePrefix.length - 1]++;
-        slicePrefix.push(0);
-        constructorLoadStatements.push(
-          tExpressionStatement(tDeclareVariable(tIdentifier(getCurrentSlice(slicePrefix, 'cell')),
-              tFunctionCall(tMemberExpression(
-                tIdentifier(currentSlice), tIdentifier('loadRef')
-              ), []),)))
-        addLoadProperty(goodVariableName(fieldName), tIdentifier(getCurrentSlice(slicePrefix, 'cell')), undefined, constructorLoadStatements, subStructLoadProperties)
-        subStructProperties.push(tTypedIdentifier(tIdentifier(goodVariableName(fieldName)), tIdentifier('Cell')));
-        subStructStoreStatements.push(tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('storeRef')), [tMemberExpression(tIdentifier(variableCombinatorName), tIdentifier(goodVariableName(fieldName)))])))
-        slicePrefix.pop();
-      }     
+    if (field?.fieldType.kind == 'TLBExoticType') {
+      slicePrefix[slicePrefix.length - 1]++;
+      slicePrefix.push(0);
+      constructorLoadStatements.push(
+        tExpressionStatement(tDeclareVariable(tIdentifier(getCurrentSlice(slicePrefix, 'cell')),
+          tFunctionCall(tMemberExpression(
+            tIdentifier(currentSlice), tIdentifier('loadRef')
+          ), []),)))
+      addLoadProperty(goodVariableName(fieldName), tIdentifier(getCurrentSlice(slicePrefix, 'cell')), undefined, constructorLoadStatements, subStructLoadProperties)
+      subStructProperties.push(tTypedIdentifier(tIdentifier(goodVariableName(fieldName)), tIdentifier('Cell')));
+      subStructStoreStatements.push(tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('storeRef')), [tMemberExpression(tIdentifier(variableCombinatorName), tIdentifier(goodVariableName(fieldName)))])))
+      slicePrefix.pop();
     } else if (field?.subFields.length == 0) {
       if (field == undefined) {
         throw new Error('')
