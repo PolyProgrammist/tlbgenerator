@@ -32,13 +32,10 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
   } 
 
   if (fieldDefinition instanceof FieldNamedDef || fieldDefinition instanceof FieldExprDef) {
-    let fieldName: string = '';
-    if (field) {
-      fieldName = field.name;
-    }
-    if (fieldDefinition instanceof FieldExprDef && fieldDefinition.expr instanceof NameExpr && fieldDefinition.expr.name == '_') {
+    if (!field) {
       return;
     }
+    let fieldName: string = field.name;
 
     if (fieldDefinition.expr instanceof CellRefExpr) {
       if (field?.fieldType.kind == 'TLBExoticType') {
