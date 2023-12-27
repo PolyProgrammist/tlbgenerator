@@ -67,7 +67,7 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
       }      
     }
 
-    if (fieldDefinition.expr instanceof CombinatorExpr || fieldDefinition.expr instanceof NameExpr || fieldDefinition.expr instanceof BuiltinZeroArgs || fieldDefinition.expr instanceof BuiltinOneArgExpr || fieldDefinition.expr instanceof MathExpr || fieldDefinition.expr instanceof CondExpr) {
+    if (field?.subFields.length == 0) {
       if (field == undefined) {
         throw new Error('')
       }
