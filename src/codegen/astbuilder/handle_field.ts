@@ -69,6 +69,9 @@ export function getField(field: FieldDefinition, slicePrefix: Array<number>, tlb
     //       subStructProperties.push(tTypedIdentifier(tIdentifier(goodVariableName(fieldName)), tIdentifier('Cell')));
     //       subStructStoreStatements.push(tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('storeRef')), [tMemberExpression(tIdentifier(variableCombinatorName), tIdentifier(goodVariableName(fieldName)))])))
 
+    let result: TLBField = { name: fieldName, anonymous: true, fieldType: {kind: 'TLBBoolType'} , subFields: [] };
+            return result;
+
     //       // subStructStoreStatements
     //       slicePrefix.pop();
         } else {
@@ -81,7 +84,7 @@ export function getField(field: FieldDefinition, slicePrefix: Array<number>, tlb
           let theFieldIndex = fieldIndex + '_' + '0';
           let subfield = getField(new FieldNamedDef(fieldName, field.expr.expr), slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, theFieldIndex)
           if (subfield) {
-            let result: TLBField = { name: '', anonymous: true, fieldType: {kind: 'TLBBoolType'} , subFields: [subfield] };
+            let result: TLBField = { name: fieldName, anonymous: true, fieldType: {kind: 'TLBBoolType'} , subFields: [subfield] };
             constructor.fields.set(theFieldIndex, subfield)
             return result;
           }

@@ -32,11 +32,9 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
   } 
 
   if (fieldDefinition instanceof FieldNamedDef || fieldDefinition instanceof FieldExprDef) {
-    let fieldName: string;
-    if (fieldDefinition instanceof FieldNamedDef) {
-      fieldName = fieldDefinition.name;
-    } else {
-      fieldName = 'anon' + fieldIndex;
+    let fieldName: string = '';
+    if (field) {
+      fieldName = field.name;
     }
     if (fieldDefinition instanceof FieldExprDef && fieldDefinition.expr instanceof NameExpr && fieldDefinition.expr.name == '_') {
       return;
@@ -65,9 +63,7 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
         subStructStoreStatements.push(tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('storeRef')), [tIdentifier(getCurrentSlice(slicePrefix, 'cell'))])))
         slicePrefix.pop();
       }      
-    }
-
-    if (field?.subFields.length == 0) {
+    } else if (field?.subFields.length == 0) {
       if (field == undefined) {
         throw new Error('')
       }
