@@ -41,42 +41,40 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
     slicePrefix.pop();
   }
 
-  if (fieldDefinition instanceof FieldNamedDef || fieldDefinition instanceof FieldExprDef) {
-    if (!field) {
-      return;
-    }
-    let fieldName: string = field.name;
+  if (!field) {
+    return;
+  }
+  let fieldName: string = field.name;
 
-    if (field?.fieldType.kind == 'TLBExoticType') {
-      slicePrefix[slicePrefix.length - 1]++;
-      slicePrefix.push(0);
-      constructorLoadStatements.push(
-        tExpressionStatement(tDeclareVariable(tIdentifier(getCurrentSlice(slicePrefix, 'cell')),
-          tFunctionCall(tMemberExpression(
-            tIdentifier(currentSlice), tIdentifier('loadRef')
-          ), []),)))
-      addLoadProperty(goodVariableName(fieldName), tIdentifier(getCurrentSlice(slicePrefix, 'cell')), undefined, constructorLoadStatements, subStructLoadProperties)
-      subStructProperties.push(tTypedIdentifier(tIdentifier(goodVariableName(fieldName)), tIdentifier('Cell')));
-      subStructStoreStatements.push(tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('storeRef')), [tMemberExpression(tIdentifier(variableCombinatorName), tIdentifier(goodVariableName(fieldName)))])))
-      slicePrefix.pop();
-    } else if (field?.subFields.length == 0) {
-      if (field == undefined) {
-        throw new Error('')
-      }
-      let thefield: TLBFieldType = field.fieldType
-      let fieldInfo = handleType(field, thefield, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, 0, tlbCode);
-      if (fieldInfo.loadExpr) {
-        addLoadProperty(goodVariableName(fieldName), fieldInfo.loadExpr, fieldInfo.typeParamExpr, constructorLoadStatements, subStructLoadProperties);
-      }
-      if (fieldInfo.typeParamExpr) {
-        subStructProperties.push(tTypedIdentifier(tIdentifier(goodVariableName(fieldName)), fieldInfo.typeParamExpr));
-      }
-      if (fieldInfo.storeExpr) {
-        subStructStoreStatements.push(fieldInfo.storeExpr)
-      }
-      fieldInfo.negatedVariablesLoads.forEach(element => {
-        addLoadProperty(goodVariableName(element.name), element.expression, undefined, constructorLoadStatements, subStructLoadProperties)
-      });
+  if (field?.fieldType.kind == 'TLBExoticType') {
+    slicePrefix[slicePrefix.length - 1]++;
+    slicePrefix.push(0);
+    constructorLoadStatements.push(
+      tExpressionStatement(tDeclareVariable(tIdentifier(getCurrentSlice(slicePrefix, 'cell')),
+        tFunctionCall(tMemberExpression(
+          tIdentifier(currentSlice), tIdentifier('loadRef')
+        ), []),)))
+    addLoadProperty(goodVariableName(fieldName), tIdentifier(getCurrentSlice(slicePrefix, 'cell')), undefined, constructorLoadStatements, subStructLoadProperties)
+    subStructProperties.push(tTypedIdentifier(tIdentifier(goodVariableName(fieldName)), tIdentifier('Cell')));
+    subStructStoreStatements.push(tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('storeRef')), [tMemberExpression(tIdentifier(variableCombinatorName), tIdentifier(goodVariableName(fieldName)))])))
+    slicePrefix.pop();
+  } else if (field?.subFields.length == 0) {
+    if (field == undefined) {
+      throw new Error('')
     }
+    let thefield: TLBFieldType = field.fieldType
+    let fieldInfo = handleType(field, thefield, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, 0, tlbCode);
+    if (fieldInfo.loadExpr) {
+      addLoadProperty(goodVariableName(fieldName), fieldInfo.loadExpr, fieldInfo.typeParamExpr, constructorLoadStatements, subStructLoadProperties);
+    }
+    if (fieldInfo.typeParamExpr) {
+      subStructProperties.push(tTypedIdentifier(tIdentifier(goodVariableName(fieldName)), fieldInfo.typeParamExpr));
+    }
+    if (fieldInfo.storeExpr) {
+      subStructStoreStatements.push(fieldInfo.storeExpr)
+    }
+    fieldInfo.negatedVariablesLoads.forEach(element => {
+      addLoadProperty(goodVariableName(element.name), element.expression, undefined, constructorLoadStatements, subStructLoadProperties)
+    });
   }
 }
