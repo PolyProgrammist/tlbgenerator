@@ -1,5 +1,3 @@
-import { Declaration, MathExpr } from "../../src/ast/nodes";
-
 export class TLBBinaryOp {
     constructor(
         readonly left: TLBMathExpr,
@@ -149,10 +147,9 @@ export type TLBConstructor = {
     parametersMap: Map<string, TLBParameter>
     name: string
     fields: Array<TLBField>
-    declaration: Declaration
     tag: TLBConstructorTag
     constraints: Array<TLBMathExpr>
-    sDeclaration: string
+    declaration: string
 }
 
 export type TLBType = {

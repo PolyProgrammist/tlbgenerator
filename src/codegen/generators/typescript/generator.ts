@@ -115,7 +115,7 @@ export class TypescriptGenerator implements CodeGenerator {
 
             subStructDeclarations.push(structX)
 
-            jsCodeFunctionsDeclarations.push(tComment(constructor.sDeclaration))
+            jsCodeFunctionsDeclarations.push(tComment(constructor.declaration))
 
         });
 

@@ -415,7 +415,7 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
         if (tlbType == undefined) {
             tlbType = { name: declaration.combinator.name, constructors: [] }
         }
-        let constructor = { declaration: declaration, parameters: [], parametersMap: new Map<string, TLBParameter>(), name: declaration.constructorDef.name, variables: new Array<TLBVariable>(), variablesMap: new Map<string, TLBVariable>(), tag: getConstructorTag(declaration, input), constraints: [], fields: [], sDeclaration: '' }
+        let constructor = { parameters: [], parametersMap: new Map<string, TLBParameter>(), name: declaration.constructorDef.name, variables: new Array<TLBVariable>(), variablesMap: new Map<string, TLBVariable>(), tag: getConstructorTag(declaration, input), constraints: [], fields: [], declaration: '' }
         tlbType.constructors.push(constructor);
         tlbCode.types.set(tlbType.name, tlbType);
 
@@ -494,7 +494,7 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
                 constructor.parameters.push(parameter);
                 constructor.parametersMap.set(parameter.variable.name, parameter);
             });
-            constructor.sDeclaration = getStringDeclaration(declaration, input)
+            constructor.declaration = getStringDeclaration(declaration, input)
             fillConstraintsAndNegationVars(constructor, declaration);
             calculateVariables(constructor);
         });
