@@ -29,7 +29,8 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
     subStructStoreStatements.push(tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('storeRef')), [tIdentifier(getCurrentSlice(slicePrefix, 'cell'))])))
 
     slicePrefix.pop();
-  } else if (fieldDefinition instanceof FieldAnonymousDef) {
+  } else 
+  if (fieldDefinition instanceof FieldAnonymousDef) {
     slicePrefix[slicePrefix.length - 1]++;
     slicePrefix.push(0)
 
