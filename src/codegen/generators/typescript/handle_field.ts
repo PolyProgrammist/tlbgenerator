@@ -8,7 +8,7 @@ import { addLoadProperty, getNegationDerivationFunctionBody, getParamVarExpr, sl
 import { goodVariableName } from '../../utils'
 import { getType } from "../../astbuilder/handle_type"
 
-export function handleField(field: TLBField | undefined, fieldDefinition: FieldDefinition, slicePrefix: Array<number>, tlbCode: TLBCode, constructor: TLBConstructor, constructorLoadStatements: Statement[], subStructStoreStatements: Statement[], subStructProperties: TypedIdentifier[], subStructLoadProperties: ObjectProperty[], variableCombinatorName: string, variableSubStructName: string, jsCodeFunctionsDeclarations: GenDeclaration[], fieldIndex: string) {
+export function handleField(field: TLBField | undefined, slicePrefix: Array<number>, tlbCode: TLBCode, constructor: TLBConstructor, constructorLoadStatements: Statement[], subStructStoreStatements: Statement[], subStructProperties: TypedIdentifier[], subStructLoadProperties: ObjectProperty[], variableCombinatorName: string, variableSubStructName: string, jsCodeFunctionsDeclarations: GenDeclaration[], fieldIndex: string) {
   let currentSlice = getCurrentSlice(slicePrefix, 'slice');
   let currentCell = getCurrentSlice(slicePrefix, 'cell');
 
@@ -23,7 +23,7 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
 
     field.subFields.forEach(fieldDef => {
       let theFieldIndex = fieldIndex + '_' + currentFieldIndex.toString();
-      handleField(fieldDef, fieldDefinition, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, theFieldIndex)
+      handleField(fieldDef, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, theFieldIndex)
       currentFieldIndex++;
     });
 
