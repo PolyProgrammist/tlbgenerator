@@ -18,15 +18,12 @@ export function getField(field: FieldDefinition, slicePrefix: Array<number>, tlb
 
     let result: TLBField = { name: '', anonymous: true, fieldType: {kind: 'TLBBoolType'} , subFields: [] };
     let currentFieldIndex = 0;
-    let valid = true;
     field.fields.forEach(field => {
       let theFieldIndex = fieldIndex + '_' + currentFieldIndex.toString();
       let subfield = getField(field, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, theFieldIndex);
       if (subfield) {
-        constructor.newFieldIndices.set(theFieldIndex, subfield)
+        constructor.fields.set(theFieldIndex, subfield)
         result.subFields.push(subfield)
-      } else {
-        valid = false;
       }
       currentFieldIndex++;
     });
@@ -85,7 +82,7 @@ export function getField(field: FieldDefinition, slicePrefix: Array<number>, tlb
           let subfield = getField(new FieldNamedDef(fieldName, field.expr.expr), slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, theFieldIndex)
           if (subfield) {
             let result: TLBField = { name: '', anonymous: true, fieldType: {kind: 'TLBBoolType'} , subFields: [subfield] };
-            constructor.newFieldIndices.set(theFieldIndex, subfield)
+            constructor.fields.set(theFieldIndex, subfield)
             return result;
           }
           return subfield
@@ -117,8 +114,6 @@ export function getField(field: FieldDefinition, slicePrefix: Array<number>, tlb
       //   addLoadProperty(goodVariableName(element.name), element.expression, undefined, constructorLoadStatements, subStructLoadProperties)
       // });
       let thefield = { name: fieldName, anonymous: !(field instanceof FieldNamedDef), fieldType: fieldInfo, subFields: [] };
-      constructor.fields.push(thefield)
-      constructor.fieldIndices.set(fieldIndex, thefield)
       return thefield;
     }
   }
@@ -139,7 +134,7 @@ export function fillFields(tlbCode: TLBCode) {
         fieldIndex++;
         let field = getField(fieldDecl, slicePrefix, tlbCode, constructor, [], [], [], [], variableCombinatorName, variableSubStructName, [], fieldIndex.toString())
         if (field != undefined) {
-          constructor.newFieldIndices.set(fieldIndex.toString(), field)
+          constructor.fields.set(fieldIndex.toString(), field)
         }
       })
     })

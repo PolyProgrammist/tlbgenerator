@@ -144,9 +144,7 @@ export type TLBConstructor = {
     variablesMap: Map<string, TLBVariable>
     parametersMap: Map<string, TLBParameter>
     name: string
-    fields: Array<TLBField>
-    fieldIndices: Map<string, TLBField>
-    newFieldIndices: Map<string, TLBField>
+    fields: Map<string, TLBField>
     declaration: Declaration
     tag: TLBConstructorTag
     constraints: Array<TLBMathExpr>
