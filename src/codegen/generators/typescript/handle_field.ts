@@ -41,7 +41,7 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
     }
 
     if (fieldDefinition.expr instanceof CellRefExpr) {
-      if (fieldDefinition.expr.expr instanceof CombinatorExpr && (fieldDefinition.expr.expr.name == 'MERKLE_UPDATE' || fieldDefinition.expr.expr.name == 'MERKLE_ROOT')) {
+      if (field?.fieldType.kind == 'TLBExoticType') {
         slicePrefix[slicePrefix.length - 1]++;
         slicePrefix.push(0);
         constructorLoadStatements.push(

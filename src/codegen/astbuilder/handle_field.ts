@@ -69,7 +69,7 @@ export function getField(field: FieldDefinition, slicePrefix: Array<number>, tlb
     //       subStructProperties.push(tTypedIdentifier(tIdentifier(goodVariableName(fieldName)), tIdentifier('Cell')));
     //       subStructStoreStatements.push(tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('storeRef')), [tMemberExpression(tIdentifier(variableCombinatorName), tIdentifier(goodVariableName(fieldName)))])))
 
-    let result: TLBField = { name: fieldName, anonymous: true, fieldType: {kind: 'TLBBoolType'} , subFields: [] };
+    let result: TLBField = { name: fieldName, anonymous: true, fieldType: {kind: 'TLBExoticType'} , subFields: [] };
             return result;
 
     //       // subStructStoreStatements

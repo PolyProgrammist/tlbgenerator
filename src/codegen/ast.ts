@@ -117,7 +117,11 @@ export type TLBCondType = {
     condition: TLBMathExpr
 }
 
-export type TLBFieldType = TLBNumberType | TLBBitsType | TLBNamedType | TLBBoolType | TLBAddressType | TLBCellType | TLBMathExprType | TLBNegatedType | TLBCellInsideType | TLBMultipleType | TLBCondType;
+export type TLBExoticType = {
+    kind: 'TLBExoticType'
+}
+
+export type TLBFieldType = TLBNumberType | TLBBitsType | TLBNamedType | TLBBoolType | TLBAddressType | TLBCellType | TLBMathExprType | TLBNegatedType | TLBCellInsideType | TLBMultipleType | TLBCondType | TLBExoticType;
 
 export type TLBField = {
     name: string
