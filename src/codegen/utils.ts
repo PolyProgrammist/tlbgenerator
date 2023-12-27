@@ -409,18 +409,29 @@ export function checkAndRemovePrimitives(tlbCode: TLBCode, input: string[]) {
 }
 
 export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, input: string[]) {
+    let typeDeclarations = new Map<String, {declaration: Declaration, constructor: TLBConstructor}[]>()
     declarations.forEach(declaration => {
         let tlbType: TLBType | undefined = tlbCode.types.get(declaration.combinator.name);
         if (tlbType == undefined) {
             tlbType = { name: declaration.combinator.name, constructors: [] }
         }
-        tlbType.constructors.push({ declaration: declaration, parameters: [], parametersMap: new Map<string, TLBParameter>(), name: declaration.constructorDef.name, variables: new Array<TLBVariable>(), variablesMap: new Map<string, TLBVariable>(), tag: getConstructorTag(declaration, input), constraints: [], fields: [] });
+        let constructor = { declaration: declaration, parameters: [], parametersMap: new Map<string, TLBParameter>(), name: declaration.constructorDef.name, variables: new Array<TLBVariable>(), variablesMap: new Map<string, TLBVariable>(), tag: getConstructorTag(declaration, input), constraints: [], fields: [] }
+        tlbType.constructors.push(constructor);
         tlbCode.types.set(tlbType.name, tlbType);
+
+        let currentDecls = typeDeclarations.get(tlbType.name)
+        if (!currentDecls) {
+            currentDecls = [];
+        }
+        currentDecls.push({declaration: declaration, constructor: constructor})
+        typeDeclarations.set(tlbType.name, currentDecls)
     })
 
     tlbCode.types.forEach((tlbType: TLBType, combinatorName: string) => {
-        tlbType.constructors.forEach(constructor => {
-            constructor.declaration?.fields.forEach(field => {
+        typeDeclarations.get(tlbType.name)?.forEach((typeItem) => {
+            let declaration = typeItem.declaration;
+            let constructor = typeItem.constructor;
+            declaration.fields.forEach(field => {
                 if (field instanceof FieldBuiltinDef) {
                     constructor.variables.push({ name: field.name, const: false, negated: false, type: field.type, calculated: false, isField: false })
                 }
@@ -432,7 +443,7 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
                 constructor.variablesMap.set(variable.name, variable);
             })
             let argumentIndex = -1;
-            constructor.declaration.combinator.args.forEach(element => {
+            declaration.combinator.args.forEach(element => {
                 argumentIndex++;
                 let parameter: TLBParameter | undefined = undefined;
                 if (element instanceof NameExpr) {

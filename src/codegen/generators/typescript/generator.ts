@@ -30,7 +30,6 @@ export class TypescriptGenerator implements CodeGenerator {
 
         tlbType.constructors.forEach(constructor => {
             let constructorLoadStatements: Statement[] = []
-            let declaration = constructor.declaration;
             let subStructName: string = getSubStructName(tlbType, constructor);
 
             let variableSubStructName = goodVariableName(firstLower(subStructName), '_' + constructor.name)
