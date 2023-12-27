@@ -12,7 +12,7 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
   let currentSlice = getCurrentSlice(slicePrefix, 'slice');
   let currentCell = getCurrentSlice(slicePrefix, 'cell');
 
-  if (field && field.subFields.length > 0 && fieldDefinition instanceof FieldAnonymousDef) {
+  if (field && field.subFields.length > 0) {
     slicePrefix[slicePrefix.length - 1]++;
     slicePrefix.push(0)
 
@@ -20,7 +20,17 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
     subStructStoreStatements.push(tExpressionStatement(tDeclareVariable(tIdentifier(getCurrentSlice(slicePrefix, 'cell')), tFunctionCall(tIdentifier('beginCell'), []))))
 
     let currentFieldIndex = 0;
-    fieldDefinition.fields.forEach(fieldDef => {
+
+    let fields: FieldDefinition[] = [];
+    if (fieldDefinition instanceof FieldAnonymousDef) {
+      fields = fieldDefinition.fields; 
+    } else if ((fieldDefinition instanceof FieldNamedDef || fieldDefinition instanceof FieldExprDef) && fieldDefinition.expr instanceof CellRefExpr) {
+      fields = [new FieldNamedDef(field.name, fieldDefinition.expr.expr)];
+    } else {
+      throw new Error('')
+    }
+
+    fields.forEach(fieldDef => {
       let theFieldIndex = fieldIndex + '_' + currentFieldIndex.toString();
       handleField(constructor.fields.get(theFieldIndex), fieldDef, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, theFieldIndex)
       currentFieldIndex++;
@@ -50,16 +60,7 @@ export function handleField(field: TLBField | undefined, fieldDefinition: FieldD
         subStructProperties.push(tTypedIdentifier(tIdentifier(goodVariableName(fieldName)), tIdentifier('Cell')));
         subStructStoreStatements.push(tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('storeRef')), [tMemberExpression(tIdentifier(variableCombinatorName), tIdentifier(goodVariableName(fieldName)))])))
         slicePrefix.pop();
-      } else {
-        slicePrefix[slicePrefix.length - 1]++;
-        slicePrefix.push(0)
-        constructorLoadStatements.push(sliceLoad(slicePrefix, currentSlice))
-        subStructStoreStatements.push(tExpressionStatement(tDeclareVariable(tIdentifier(getCurrentSlice(slicePrefix, 'cell')), tFunctionCall(tIdentifier('beginCell'), []))))
-        let theFieldIndex = fieldIndex + '_' + '0';
-        handleField(field?.subFields[0], new FieldNamedDef(fieldName, fieldDefinition.expr.expr), slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, theFieldIndex)
-        subStructStoreStatements.push(tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('storeRef')), [tIdentifier(getCurrentSlice(slicePrefix, 'cell'))])))
-        slicePrefix.pop();
-      }      
+      }     
     } else if (field?.subFields.length == 0) {
       if (field == undefined) {
         throw new Error('')
