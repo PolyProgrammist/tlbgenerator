@@ -1,4 +1,3 @@
-import { TLBVariableBuild } from "./astbuilder/utils";
 
 export class TLBBinaryOp {
     constructor(
@@ -48,7 +47,7 @@ export type TLBMathExpr = TLBBinaryOp | TLBNumberExpr | TLBVarExpr | TLBUnaryOp;
 export type TLBVariableType = 'Type' | '#';
 
 
-export class TLBVariableNew {
+export class TLBVariable {
     constructor(
         readonly isConst: boolean,
         readonly negated: boolean,
@@ -134,9 +133,9 @@ export type TLBField = {
 }
 
 
-export class TLBParameterNew {
+export class TLBParameter {
     constructor(
-        readonly variable: TLBVariableNew,
+        readonly variable: TLBVariable,
         readonly paramExpr: TLBMathExpr,
         readonly argName?: string,
     ) {
@@ -144,24 +143,17 @@ export class TLBParameterNew {
     }
 }
 
-export type TLBParameter = {
-    variable: TLBVariableBuild,
-    paramExpr: TLBMathExpr,
-    argName?: string,
-}
-
-
 export type TLBConstructorTag = {
     bitLen: number,
     binary: string
 }
 
-export class TLBConstructorNew {
+export class TLBConstructor {
     constructor(
-        readonly parameters: Array<TLBParameterNew>,
-        readonly variables: Array<TLBVariableNew>,
-        readonly variablesMap: Map<string, TLBVariableNew>,
-        readonly parametersMap: Map<string, TLBParameterNew>,
+        readonly parameters: Array<TLBParameter>,
+        readonly variables: Array<TLBVariable>,
+        readonly variablesMap: Map<string, TLBVariable>,
+        readonly parametersMap: Map<string, TLBParameter>,
         readonly name: string,
         readonly fields: Array<TLBField>,
         readonly tag: TLBConstructorTag,
@@ -173,39 +165,17 @@ export class TLBConstructorNew {
     }
 }
 
-export type TLBConstructor = {
-    parameters: Array<TLBParameter>
-    variables: Array<TLBVariableBuild>
-    variablesMap: Map<string, TLBVariableBuild>
-    parametersMap: Map<string, TLBParameter>
-    name: string
-    fields: Array<TLBField>
-    tag: TLBConstructorTag
-    constraints: Array<TLBMathExpr>
-    declaration: string
-    tlbType: string
-}
-
-export class TLBTypeNew {
+export class TLBType {
     constructor(
         readonly name: string,
-        readonly constructors: Array<TLBConstructorNew>,
+        readonly constructors: Array<TLBConstructor>,
     ) {
 
     }
 }
 
-export type TLBType = {
-    name: string
-    constructors: Array<TLBConstructor>
-}
-
-export class TLBCodeNew {
+export class TLBCode {
     constructor(
-        readonly types: Map<string, TLBTypeNew>
+        readonly types: Map<string, TLBType>
     ) { }
-}
-
-export type TLBCode = {
-    types: Map<string, TLBType>
 }

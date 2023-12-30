@@ -1,6 +1,10 @@
 import { BuiltinZeroArgs, FieldCurlyExprDef, FieldNamedDef, Program, BuiltinOneArgExpr, NumberExpr, NameExpr, CombinatorExpr, FieldBuiltinDef, MathExpr, SimpleExpr, NegateExpr, CellRefExpr, FieldDefinition, FieldAnonymousDef, CondExpr, CompareExpr, Expression as ParserExpression } from '../../../ast/nodes'
 import { tIdentifier, tArrowFunctionExpression, tArrowFunctionType, tBinaryExpression, tBinaryNumericLiteral, tDeclareVariable, tExpressionStatement, tFunctionCall, tFunctionDeclaration, tIfStatement, tImportDeclaration, tMemberExpression, tNumericLiteral, tObjectExpression, tObjectProperty, tReturnStatement, tStringLiteral, tStructDeclaration, tTypeWithParameters, tTypedIdentifier, tUnionTypeDeclaration, toCode, TypeWithParameters, ArrowFunctionExpression, tForCycle, tTypeParametersExpression, tUnaryOpExpression, Expression, Statement, TypeExpression } from './tsgen'
-import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructor, TLBParameter, TLBUnaryOp, TLBCodeNew, TLBTypeNew, TLBConstructorNew, TLBParameterNew } from '../../ast'
+import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBUnaryOp, TLBCode, TLBType, TLBConstructor, TLBParameter } from '../../ast'
+import { TLBTypeBuild } from "../../astbuilder/utils"
+import { TLBCodeBuild } from "../../astbuilder/utils"
+import { TLBConstructorBuild } from "../../astbuilder/utils"
+import { TLBParameterBuild } from "../../astbuilder/utils"
 import { TLBVariableBuild } from "../../astbuilder/utils"
 import { TLBNumberType } from "../../ast"
 import { Identifier, BinaryExpression, ASTNode, TypeParametersExpression, ObjectProperty, TypedIdentifier } from './tsgen'
@@ -37,7 +41,7 @@ export function simpleCycle(varName: string, finish: Expression): Statement {
   return tForCycle(tDeclareVariable(tIdentifier(varName), tNumericLiteral(0)), tBinaryExpression(tIdentifier(varName), '<', finish), tNumericLiteral(5), [])
 }
 
-export function getParamVarExpr(param: TLBParameter | TLBParameterNew, constructor: TLBConstructorNew): Expression {
+export function getParamVarExpr(param: TLBParameterBuild | TLBParameter, constructor: TLBConstructor): Expression {
   if (param.variable.deriveExpr) {
     return convertToAST(param.variable.deriveExpr, constructor);
   } else {
@@ -45,7 +49,7 @@ export function getParamVarExpr(param: TLBParameter | TLBParameterNew, construct
   }
 }
 
-export function getVarExprByName(name: string, constructor: TLBConstructorNew): Expression {
+export function getVarExprByName(name: string, constructor: TLBConstructor): Expression {
   let variable = constructor.variablesMap.get(name)
   if (variable?.deriveExpr) {
     return convertToAST(variable.deriveExpr, constructor);
@@ -53,9 +57,9 @@ export function getVarExprByName(name: string, constructor: TLBConstructorNew): 
   return tIdentifier(name)
 }
 
-export function getNegationDerivationFunctionBody(tlbCode: TLBCodeNew, typeName: string, parameterIndex: number, parameterName: string): Statement[] {
+export function getNegationDerivationFunctionBody(tlbCode: TLBCode, typeName: string, parameterIndex: number, parameterName: string): Statement[] {
   let result: Statement[] = [];
-  let tlbType: TLBTypeNew | undefined = tlbCode.types.get(typeName);
+  let tlbType: TLBType | undefined = tlbCode.types.get(typeName);
   if (!tlbType) {
     throw new Error(`Can not find type ${typeName}`)
   }
@@ -88,7 +92,7 @@ export function addLoadProperty(name: string, loadExpr: Expression, typeExpr: Ty
   subStructLoadProperties.push(tObjectProperty(nameId, nameId))
 }
 
-export function convertToAST(mathExpr: TLBMathExpr, constructor: TLBConstructorNew, objectId?: Identifier): Expression {
+export function convertToAST(mathExpr: TLBMathExpr, constructor: TLBConstructor, objectId?: Identifier): Expression {
   if (mathExpr instanceof TLBVarExpr) {
     let varName = mathExpr.x;
     if (objectId != undefined) {
@@ -115,7 +119,7 @@ export function convertToAST(mathExpr: TLBMathExpr, constructor: TLBConstructorN
   throw new Error(`Type ${constructor.tlbType}, constructor ${constructor.name}: couldn't convert to math expression: ${mathExpr}`)
 }
 
-export function getTypeParametersExpression(parameters: Array<TLBParameterNew>) {
+export function getTypeParametersExpression(parameters: Array<TLBParameter>) {
   let structTypeParameters: Array<Identifier> = [];
   parameters.forEach(element => {
     if (element.variable.type == 'Type') {

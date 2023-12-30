@@ -1,5 +1,9 @@
 import { SimpleExpr, NameExpr, NumberExpr, MathExpr, FieldBuiltinDef, NegateExpr, Declaration, CompareExpr, FieldCurlyExprDef, FieldNamedDef, FieldAnonymousDef, FieldExprDef } from "../ast/nodes";
-import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructorTag, TLBConstructor, TLBParameter, TLBField, TLBCodeNew, TLBTypeNew, TLBConstructorNew, TLBParameterNew, TLBVariableNew } from "./ast"
+import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBConstructorTag, TLBField, TLBCode, TLBType, TLBConstructor, TLBParameter, TLBVariable } from "./ast"
+import { TLBTypeBuild } from "./astbuilder/utils";
+import { TLBCodeBuild } from "./astbuilder/utils";
+import { TLBConstructorBuild } from "./astbuilder/utils";
+import { TLBParameterBuild } from "./astbuilder/utils";
 import { TLBVariableBuild } from "./astbuilder/utils";
 import * as crc32 from "crc-32";
 import { fillFields } from "./astbuilder/handle_field";
@@ -160,7 +164,7 @@ export function bitLen(n: number) {
     return n.toString(2).length;
 }
 
-function constructorPriority(c: TLBConstructor): number {
+function constructorPriority(c: TLBConstructorBuild): number {
     let result = 0;
     if (c.tag.bitLen > 0) {
         result++;
@@ -173,7 +177,7 @@ function constructorPriority(c: TLBConstructor): number {
     return result;
 }
 
-export function compareConstructors(a: TLBConstructor, b: TLBConstructor): number {
+export function compareConstructors(a: TLBConstructorBuild, b: TLBConstructorBuild): number {
     let aPriority = constructorPriority(a);
     let bPriority = constructorPriority(b);
     if (aPriority < bPriority) {
@@ -185,7 +189,7 @@ export function compareConstructors(a: TLBConstructor, b: TLBConstructor): numbe
     return 0;
 }
 
-export function fillArgNames(tlbType: TLBType) {
+export function fillArgNames(tlbType: TLBTypeBuild) {
     let argNames: (string | undefined)[] = []
     tlbType.constructors[0]?.parameters.forEach(element => {
         argNames.push(undefined);
@@ -214,7 +218,7 @@ export function fillArgNames(tlbType: TLBType) {
     })
 }
 
-export function fillParameterNames(tlbType: TLBType) {
+export function fillParameterNames(tlbType: TLBTypeBuild) {
     let parameterNames: (string | undefined)[] = []
     tlbType.constructors[0]?.parameters.forEach(element => {
         parameterNames.push(element.variable.name);
@@ -245,7 +249,7 @@ export function fillParameterNames(tlbType: TLBType) {
     })
 }
 
-export function fillConstraintsAndNegationVars(constructor: TLBConstructor, declaration: Declaration) {
+export function fillConstraintsAndNegationVars(constructor: TLBConstructorBuild, declaration: Declaration) {
     declaration.fields.forEach(field => {
         if (field instanceof FieldCurlyExprDef && field.expr instanceof CompareExpr) {
             if (field.expr.op == '=') {
@@ -283,7 +287,7 @@ export function reorganizeWithArg(myMathExpr: TLBMathExpr, argName: string, varN
     throw new Error('')
 }
 
-export function getCalculatedExpression(expr: TLBMathExpr, constructor: TLBConstructor): TLBMathExpr {
+export function getCalculatedExpression(expr: TLBMathExpr, constructor: TLBConstructorBuild): TLBMathExpr {
     if (expr instanceof TLBVarExpr) {
         let variable = constructor.variablesMap.get(expr.x);
         if (variable) {
@@ -301,7 +305,7 @@ export function getCalculatedExpression(expr: TLBMathExpr, constructor: TLBConst
     return expr;
 }
 
-export function calculateVariable(variable: TLBVariableBuild, constructor: TLBConstructor) {
+export function calculateVariable(variable: TLBVariableBuild, constructor: TLBConstructorBuild) {
     if (variable.calculated) {
         return;
     }
@@ -312,7 +316,7 @@ export function calculateVariable(variable: TLBVariableBuild, constructor: TLBCo
     variable.deriveExpr = getCalculatedExpression(variable.deriveExpr, constructor);
 }
 
-export function calculateVariables(constructor: TLBConstructor) {
+export function calculateVariables(constructor: TLBConstructorBuild) {
     constructor.variables.forEach(variable => {
         calculateVariable(variable, constructor)
     });
@@ -352,7 +356,7 @@ export function getConstructorTag(declaration: Declaration, input: string[]): TL
     throw new Error('Unknown tag' + tag);
 }
 
-function fixConstructorsNaming(tlbType: TLBType) {
+function fixConstructorsNaming(tlbType: TLBTypeBuild) {
     let constructorNames: Set<string> = new Set<string>();
     for (let i = 0; i < tlbType.constructors.length; i++) {
         let current = tlbType.constructors[i];
@@ -415,7 +419,7 @@ function fixVarNamsField(fields: TLBField[], variablesSet: Set<string>) {
     })
 }
 
-export function fixVariablesNaming(tlbCode: TLBCode) {
+export function fixVariablesNaming(tlbCode: TLBCodeBuild) {
     tlbCode.types.forEach(tlbType => {
         tlbType.constructors.forEach(constructor => {
             let variablesSet = new Set<string>();
@@ -424,7 +428,7 @@ export function fixVariablesNaming(tlbCode: TLBCode) {
     })
 }
 
-export function checkAndRemovePrimitives(tlbCode: TLBCode, input: string[], typeDeclarations: Map<String, { declaration: Declaration, constructor: TLBConstructor }[]>) {
+export function checkAndRemovePrimitives(tlbCode: TLBCodeBuild, input: string[], typeDeclarations: Map<String, { declaration: Declaration, constructor: TLBConstructorBuild }[]>) {
     let toDelete: string[] = []
 
     let typesToDelete = new Map<string, string[]>();
@@ -450,14 +454,14 @@ export function checkAndRemovePrimitives(tlbCode: TLBCode, input: string[], type
     })
 }
 
-export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, input: string[]) {
-    let typeDeclarations = new Map<String, { declaration: Declaration, constructor: TLBConstructor }[]>()
+export function fillConstructors(declarations: Declaration[], tlbCode: TLBCodeBuild, input: string[]) {
+    let typeDeclarations = new Map<String, { declaration: Declaration, constructor: TLBConstructorBuild }[]>()
     declarations.forEach(declaration => {
-        let tlbType: TLBType | undefined = tlbCode.types.get(declaration.combinator.name);
+        let tlbType: TLBTypeBuild | undefined = tlbCode.types.get(declaration.combinator.name);
         if (tlbType == undefined) {
             tlbType = { name: declaration.combinator.name, constructors: [] }
         }
-        let constructor = { parameters: [], parametersMap: new Map<string, TLBParameter>(), name: declaration.constructorDef.name, variables: new Array<TLBVariableBuild>(), variablesMap: new Map<string, TLBVariableBuild>(), tag: getConstructorTag(declaration, input), constraints: [], fields: [], declaration: '', tlbType: tlbType.name }
+        let constructor = { parameters: [], parametersMap: new Map<string, TLBParameterBuild>(), name: declaration.constructorDef.name, variables: new Array<TLBVariableBuild>(), variablesMap: new Map<string, TLBVariableBuild>(), tag: getConstructorTag(declaration, input), constraints: [], fields: [], declaration: '', tlbType: tlbType.name }
         tlbType.constructors.push(constructor);
         tlbCode.types.set(tlbType.name, tlbType);
 
@@ -469,7 +473,7 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
         typeDeclarations.set(tlbType.name, currentDecls)
     })
 
-    tlbCode.types.forEach((tlbType: TLBType) => {
+    tlbCode.types.forEach((tlbType: TLBTypeBuild) => {
         typeDeclarations.get(tlbType.name)?.forEach((typeItem) => {
             let declaration = typeItem.declaration;
             let constructor = typeItem.constructor;
@@ -493,7 +497,7 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
             let argumentIndex = -1;
             declaration.combinator.args.forEach(element => {
                 argumentIndex++;
-                let parameter: TLBParameter | undefined = undefined;
+                let parameter: TLBParameterBuild | undefined = undefined;
                 if (element instanceof NameExpr) {
                     let variable = constructor.variablesMap.get(element.name)
                     if (variable) {
@@ -571,11 +575,11 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
     fixVariablesNaming(tlbCode);
 }
 
-export function converVariable(tlbVariable: TLBVariableBuild): TLBVariableNew {
+export function converVariable(tlbVariable: TLBVariableBuild): TLBVariable {
     if (tlbVariable.name == undefined) {
         throw new Error('Variable is undefined')
     }
-    return new TLBVariableNew(
+    return new TLBVariable(
         tlbVariable.isConst,
         tlbVariable.negated,
         tlbVariable.type,
@@ -586,28 +590,28 @@ export function converVariable(tlbVariable: TLBVariableBuild): TLBVariableNew {
     )
 }
 
-export function convertParameter(tlbParameter: TLBParameter): TLBParameterNew {
-    return new TLBParameterNew(
+export function convertParameter(tlbParameter: TLBParameterBuild): TLBParameter {
+    return new TLBParameter(
         converVariable(tlbParameter.variable),
         tlbParameter.paramExpr,
         tlbParameter.argName
     )
 }
 
-export function convertToReadonly(tlbCode: TLBCode): TLBCodeNew {
-    let newTypes = new Map<string, TLBTypeNew>()
+export function convertToReadonly(tlbCode: TLBCodeBuild): TLBCode {
+    let newTypes = new Map<string, TLBType>()
     tlbCode.types.forEach((value, key) => {
-        let newConstructors = new Array<TLBConstructorNew>()
+        let newConstructors = new Array<TLBConstructor>()
         value.constructors.forEach((value) => {
-            let newVariablesMap = new Map<string, TLBVariableNew>()
+            let newVariablesMap = new Map<string, TLBVariable>()
             value.variablesMap.forEach((value, key) => {
                 newVariablesMap.set(key, converVariable(value));
             })
-            let newParametersMap = new Map<string, TLBParameterNew>()
+            let newParametersMap = new Map<string, TLBParameter>()
             value.parametersMap.forEach((value, key) => {
                 newParametersMap.set(key, convertParameter(value));
             })
-            let newConstructor = new TLBConstructorNew(
+            let newConstructor = new TLBConstructor(
                 value.parameters.map(convertParameter),
                 value.variables.map(converVariable),
                 newVariablesMap,
@@ -621,14 +625,14 @@ export function convertToReadonly(tlbCode: TLBCode): TLBCodeNew {
             )
             newConstructors.push(newConstructor)
         })
-        let newType = new TLBTypeNew(
+        let newType = new TLBType(
             value.name,
             newConstructors,
         )
         newTypes.set(key, newType)
         
     })
-    return new TLBCodeNew(
+    return new TLBCode(
         newTypes
     )
 }
@@ -675,7 +679,7 @@ export function goodVariableName(name: string, possibleSuffix: string = '0'): st
     }
     return name
 }
-export function getSubStructName(tlbType: TLBTypeNew | TLBType, constructor: TLBConstructor | TLBConstructorNew): string {
+export function getSubStructName(tlbType: TLBType | TLBTypeBuild, constructor: TLBConstructorBuild | TLBConstructor): string {
     if (tlbType.constructors.length > 1) {
         return tlbType.name + '_' + constructor.name
     } else {

@@ -1,12 +1,15 @@
 
 import { BuiltinOneArgExpr, BuiltinZeroArgs, CellRefExpr, CombinatorExpr, CondExpr, Declaration, FieldAnonymousDef, FieldDefinition, FieldExprDef, FieldNamedDef, MathExpr, NameExpr } from "../../ast/nodes";
-import { TLBCode, TLBConstructor, TLBField, TLBType, TLBTypeNew } from "../ast";
+import { TLBField, TLBType } from "../ast";
+import { TLBTypeBuild } from "./utils";
+import { TLBCodeBuild } from "./utils";
+import { TLBConstructorBuild } from "./utils";
 import { TLBNumberType } from "../ast";
 import { GenDeclaration, ObjectProperty, Statement, TypedIdentifier } from "../generators/typescript/tsgen";
 import { firstLower, getSubStructName, goodVariableName } from "../utils";
 import { getType } from "./handle_type";
 
-export function getField(field: FieldDefinition, slicePrefix: Array<number>, constructor: TLBConstructor, constructorLoadStatements: Statement[], subStructStoreStatements: Statement[], subStructProperties: TypedIdentifier[], subStructLoadProperties: ObjectProperty[], variableCombinatorName: string, variableSubStructName: string, jsCodeFunctionsDeclarations: GenDeclaration[], fieldIndex: string): TLBField | undefined {
+export function getField(field: FieldDefinition, slicePrefix: Array<number>, constructor: TLBConstructorBuild, constructorLoadStatements: Statement[], subStructStoreStatements: Statement[], subStructProperties: TypedIdentifier[], subStructLoadProperties: ObjectProperty[], variableCombinatorName: string, variableSubStructName: string, jsCodeFunctionsDeclarations: GenDeclaration[], fieldIndex: string): TLBField | undefined {
   if (field instanceof FieldAnonymousDef) {
     let result: TLBField = { name: '', anonymous: true, fieldType: { kind: 'TLBBoolType' }, subFields: [] };
     let currentFieldIndex = 0;
@@ -60,7 +63,7 @@ export function getField(field: FieldDefinition, slicePrefix: Array<number>, con
   return undefined
 }
 
-export function fillFields(typeItem: {declaration: Declaration, constructor: TLBConstructor}, tlbType: TLBType) {
+export function fillFields(typeItem: {declaration: Declaration, constructor: TLBConstructorBuild}, tlbType: TLBTypeBuild) {
       let constructor = typeItem.constructor;
       let declaration = typeItem.declaration;
 

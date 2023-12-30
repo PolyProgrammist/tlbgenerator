@@ -1,4 +1,7 @@
-import { TLBCode, TLBCodeNew, TLBConstructor, TLBConstructorNew, TLBField, TLBFieldType, TLBType, TLBTypeNew } from "../../ast";
+import { TLBCode, TLBConstructor, TLBField, TLBFieldType, TLBType } from "../../ast";
+import { TLBTypeBuild } from "../../astbuilder/utils";
+import { TLBCodeBuild } from "../../astbuilder/utils";
+import { TLBConstructorBuild } from "../../astbuilder/utils";
 import { firstLower, getCurrentSlice, getStringDeclaration, getSubStructName, goodVariableName } from "../../utils";
 import { CodeBuilder } from "../CodeBuilder";
 import { CodeGenerator } from "../generator";
@@ -10,7 +13,7 @@ import { FieldInfoType } from './utils';
 
 
 type ConstructorContext = {
-    constructor: TLBConstructorNew
+    constructor: TLBConstructor
     constructorLoadStatements: Statement[]
     subStructStoreStatements: Statement[]
     subStructProperties: TypedIdentifier[]
@@ -23,9 +26,9 @@ export class TypescriptGenerator implements CodeGenerator {
     jsCodeDeclarations: GenDeclaration[] = []
     jsCodeConstructorDeclarations: GenDeclaration[] = []
     jsCodeFunctionsDeclarations: GenDeclaration[] = []
-    tlbCode: TLBCodeNew
+    tlbCode: TLBCode
 
-    constructor(tlbCode: TLBCodeNew) {
+    constructor(tlbCode: TLBCode) {
         this.tlbCode = tlbCode
     }
 
@@ -37,7 +40,7 @@ export class TypescriptGenerator implements CodeGenerator {
             tExpressionStatement(tIdentifier('return n.toString(2).length;'))
         ]))
     }
-    addTlbType(tlbType: TLBTypeNew): void {
+    addTlbType(tlbType: TLBType): void {
         let variableCombinatorName = goodVariableName(firstLower(tlbType.name), '0')
         let subStructsUnion: TypeExpression[] = []
         let subStructDeclarations: StructDeclaration[] = []

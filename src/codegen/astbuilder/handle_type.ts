@@ -1,9 +1,11 @@
 import { BuiltinOneArgExpr, BuiltinZeroArgs, CellRefExpr, CombinatorExpr, CondExpr, MathExpr, NameExpr, NegateExpr, NumberExpr, Expression as ParserExpression } from "../../ast/nodes";
-import { TLBBinaryOp, TLBCode, TLBConstructor, TLBFieldType, TLBMathExpr, TLBNumberExpr, TLBUnaryOp, TLBVarExpr } from "../ast";
+import { TLBBinaryOp, TLBFieldType, TLBMathExpr, TLBNumberExpr, TLBUnaryOp, TLBVarExpr } from "../ast";
+import { TLBCodeBuild } from "./utils";
+import { TLBConstructorBuild } from "./utils";
 import { convertToMathExpr, getCalculatedExpression, splitForTypeValue } from "../utils";
 
 
-export function getType(expr: ParserExpression, fieldName: string, isField: boolean, needArg: boolean, variableCombinatorName: string, variableSubStructName: string, constructor: TLBConstructor, fieldTypeName: string, argIndex: number): TLBFieldType {
+export function getType(expr: ParserExpression, fieldName: string, isField: boolean, needArg: boolean, variableCombinatorName: string, variableSubStructName: string, constructor: TLBConstructorBuild, fieldTypeName: string, argIndex: number): TLBFieldType {
   if (expr instanceof BuiltinZeroArgs) {
     if (expr.name == '#') {
       return { kind: 'TLBNumberType', bits: new TLBNumberExpr(32), storeBits: new TLBNumberExpr(32), signed: false, maxBits: 32 };
