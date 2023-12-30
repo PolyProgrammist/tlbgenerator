@@ -49,7 +49,7 @@ export type TLBVariable = {
     const: boolean
     negated: boolean
     type: TLBVariableType
-    name: string
+    name: string | undefined
     deriveExpr?: TLBMathExpr
     initialExpr?: TLBMathExpr
     isField: boolean

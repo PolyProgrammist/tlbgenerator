@@ -185,7 +185,7 @@ export function compareConstructors(a: TLBConstructor, b: TLBConstructor): numbe
 }
 
 export function fillParameterNames(tlbType: TLBType) {
-    let parameterNames: string[] = []
+    let parameterNames: (string | undefined)[] = []
     let argNames: (string | undefined)[] = []
     tlbType.constructors[0]?.parameters.forEach(element => {
         parameterNames.push(element.variable.name);
@@ -193,7 +193,7 @@ export function fillParameterNames(tlbType: TLBType) {
     });
     tlbType.constructors.forEach(constructor => {
         for (let i = 0; i < constructor.parameters.length; i++) {
-            if (parameterNames[i] == '') {
+            if (parameterNames[i] == undefined) {
                 let parameterName = constructor.parameters[i]?.variable.name;
                 if (parameterName != undefined) {
                     parameterNames[i] = parameterName;
@@ -207,14 +207,14 @@ export function fillParameterNames(tlbType: TLBType) {
         }
     });
     for (let i = 0; i < parameterNames.length; i++) {
-        if (parameterNames[i] == '') {
+        if (parameterNames[i] == undefined) {
             parameterNames[i] = 'arg' + i;
         }
     }
     tlbType.constructors.forEach(constructor => {
         for (let i = 0; i < constructor.parameters.length; i++) {
             let parameterName = parameterNames[i]
-            if (parameterName != undefined && constructor.parameters[i]?.variable.name == '') {
+            if (parameterName != undefined && constructor.parameters[i]?.variable.name == undefined) {
                 constructor.parameters[i]!.variable.name = parameterName;
             }
             let argName = argNames[i];
@@ -467,7 +467,7 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
                 fieldIndex++;
             })
             constructor.variables.forEach(variable => {
-                if (variable.name == '') {
+                if (variable.name == undefined) {
                     throw new Error('')
                 }
                 constructor.variablesMap.set(variable.name, variable);
@@ -497,7 +497,7 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
                     if (variable) {
                         parameter = { variable: variable, paramExpr: derivedExpr.derived };
                         parameter.argName = 'arg' + argumentIndex;
-                        if (parameter.variable.name == '') {
+                        if (parameter.variable.name == undefined) {
                             throw new Error('')
                         }
                         parameter.variable.deriveExpr = reorganizeWithArg(convertToMathExpr(element), parameter.argName, parameter.variable.name);
@@ -514,7 +514,7 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
 
                     if (derivedExpr.name == undefined) {
                         if (toBeConst) {
-                            parameter = { variable: { negated: true, const: toBeConst, type: '#', name: '', deriveExpr: derivedExpr.derived, initialExpr: derivedExpr.derived, calculated: false, isField: false }, paramExpr: derivedExpr.derived };
+                            parameter = { variable: { negated: true, const: toBeConst, type: '#', name: undefined, deriveExpr: derivedExpr.derived, initialExpr: derivedExpr.derived, calculated: false, isField: false }, paramExpr: derivedExpr.derived };
                         } else {
                             throw new Error('Cannot identify combinator arg ' + element)
                         }
@@ -530,12 +530,12 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
                         }
                     } 
                 } else if (element instanceof NumberExpr) {
-                    parameter = { variable: { negated: false, const: true, type: '#', name: '', deriveExpr: new TLBNumberExpr(element.num), initialExpr: new TLBNumberExpr(element.num), calculated: false, isField: false }, paramExpr: new TLBNumberExpr(element.num) }
+                    parameter = { variable: { negated: false, const: true, type: '#', name: undefined, deriveExpr: new TLBNumberExpr(element.num), initialExpr: new TLBNumberExpr(element.num), calculated: false, isField: false }, paramExpr: new TLBNumberExpr(element.num) }
                 } else {
                     throw new Error('Cannot identify combinator arg: ' + element)
                 }
                 constructor.parameters.push(parameter);
-                if (parameter.variable.name != '') {
+                if (parameter.variable.name != undefined) {
                     constructor.parametersMap.set(parameter.variable.name, parameter);
                 }
             });
