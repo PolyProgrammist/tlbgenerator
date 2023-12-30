@@ -102,7 +102,7 @@ export function reorganizeExpression(mathExpr: TLBMathExpr, variable: string): T
     throw new Error(`Couldn't reogranize expression: ${mathExpr}`)
 }
 
-export function getVariableName(myMathExpr: TLBMathExpr): string {
+export function getVariableName(myMathExpr: TLBMathExpr): string | undefined {
     if (myMathExpr instanceof TLBVarExpr) {
         return myMathExpr.x;
     }
@@ -113,7 +113,7 @@ export function getVariableName(myMathExpr: TLBMathExpr): string {
             return getVariableName(myMathExpr.right);
         }
     }
-    return '';
+    return undefined;
 }
 
 export function deriveMathExpression(mathExpr: MathExpr | NameExpr | NumberExpr | CompareExpr) {
@@ -175,10 +175,10 @@ function constructorPriority(c: TLBConstructor): number {
 export function compareConstructors(a: TLBConstructor, b: TLBConstructor): number {
     let aPriority = constructorPriority(a);
     let bPriority = constructorPriority(b);
-    if ( aPriority < bPriority ){
+    if (aPriority < bPriority) {
         return 1;
     }
-    if ( aPriority > bPriority ){
+    if (aPriority > bPriority) {
         return -1;
     }
     return 0;
@@ -202,7 +202,7 @@ export function fillParameterNames(tlbType: TLBType) {
                 if (parameterName != undefined) {
                     parameterNames[i] = parameterName;
                 }
-                
+
             }
             let argName = constructor.parameters[i]?.argName
             if (argName) {
@@ -291,30 +291,30 @@ export function getCalculatedExpression(expr: TLBMathExpr, constructor: TLBConst
 }
 
 export function calculateVariable(variable: TLBVariable, constructor: TLBConstructor) {
-  if (variable.calculated) {
-    return;
-  }
-  if (!variable.deriveExpr) {
-    return
-  }
-  variable.calculated = true;
-  variable.deriveExpr = getCalculatedExpression(variable.deriveExpr, constructor);
+    if (variable.calculated) {
+        return;
+    }
+    if (!variable.deriveExpr) {
+        return
+    }
+    variable.calculated = true;
+    variable.deriveExpr = getCalculatedExpression(variable.deriveExpr, constructor);
 }
 
 export function calculateVariables(constructor: TLBConstructor) {
-  constructor.variables.forEach(variable => {
-    calculateVariable(variable, constructor)
-  });
+    constructor.variables.forEach(variable => {
+        calculateVariable(variable, constructor)
+    });
 }
 
 
 export function getConstructorTag(declaration: Declaration, input: string[]): TLBConstructorTag {
     let tag = declaration.constructorDef.tag;
     if (tag == null && declaration.constructorDef.name == '_' || tag && tag.length > 1 && tag[1] == '_') {
-      return {
-        bitLen: 0,
-        binary: ''
-      };
+        return {
+            bitLen: 0,
+            binary: ''
+        };
     }
     if (tag == null) {
         let opCode = calculateOpcode(declaration, input)
@@ -324,19 +324,19 @@ export function getConstructorTag(declaration: Declaration, input: string[]): TL
         }
     }
     if (tag[0] == '$') {
-      return {
-        bitLen: tag?.length - 1,
-        binary: '0b' + tag.slice(1)
-      }
+        return {
+            bitLen: tag?.length - 1,
+            binary: '0b' + tag.slice(1)
+        }
     }
     if (tag[0] == '#') {
-      return {
-        bitLen: (tag?.length - 1) * 4,
-        binary: '0x' + tag.slice(1)
-      }
+        return {
+            bitLen: (tag?.length - 1) * 4,
+            binary: '0x' + tag.slice(1)
+        }
     }
     throw new Error('Unknown tag' + tag);
-  }
+}
 
 function fixConstructorsNaming(tlbType: TLBType) {
     let constructorNames: Set<string> = new Set<string>();
@@ -346,8 +346,8 @@ function fixConstructorsNaming(tlbType: TLBType) {
             while (constructorNames.has(current.name)) {
                 current.name += i.toString();
             }
-            constructorNames.add(current.name); 
-        }  
+            constructorNames.add(current.name);
+        }
     }
 }
 
@@ -372,15 +372,15 @@ function opCodeSetsEqual(a: string[], b: string[]) {
     if (a === b) return true;
     if (a == null || b == null) return false;
     if (a.length !== b.length) return false;
-  
+
     a = a.sort();
     b = b.sort();
-  
+
     for (var i = 0; i < a.length; ++i) {
-      if (a[i] !== b[i]) return false;
+        if (a[i] !== b[i]) return false;
     }
     return true;
-  }
+}
 
 export function fixCurrentVariableName(field: TLBField, variablesSet: Set<string>) {
     let index = 0;
@@ -410,12 +410,12 @@ export function fixVariablesNaming(tlbCode: TLBCode) {
     })
 }
 
-export function checkAndRemovePrimitives(tlbCode: TLBCode, input: string[], typeDeclarations: Map<String, {declaration: Declaration, constructor: TLBConstructor}[]>) {
+export function checkAndRemovePrimitives(tlbCode: TLBCode, input: string[], typeDeclarations: Map<String, { declaration: Declaration, constructor: TLBConstructor }[]>) {
     let toDelete: string[] = []
 
     let typesToDelete = new Map<string, string[]>();
-    typesToDelete.set('Bool', [ '4702fd23', 'f0e8d7f' ]);
-    typesToDelete.set('MsgAddressInt', [ 'd7b672a', '6d593e8a' ])
+    typesToDelete.set('Bool', ['4702fd23', 'f0e8d7f']);
+    typesToDelete.set('MsgAddressInt', ['d7b672a', '6d593e8a'])
 
     typesToDelete.forEach((opCodesExpected: string[], typeName: string) => {
         let typeItems = typeDeclarations.get(typeName);
@@ -430,14 +430,14 @@ export function checkAndRemovePrimitives(tlbCode: TLBCode, input: string[], type
             toDelete.push(typeName)
         }
     })
-    
+
     toDelete.forEach((name: string) => {
         tlbCode.types.delete(name)
     })
 }
 
 export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, input: string[]) {
-    let typeDeclarations = new Map<String, {declaration: Declaration, constructor: TLBConstructor}[]>()
+    let typeDeclarations = new Map<String, { declaration: Declaration, constructor: TLBConstructor }[]>()
     declarations.forEach(declaration => {
         let tlbType: TLBType | undefined = tlbCode.types.get(declaration.combinator.name);
         if (tlbType == undefined) {
@@ -451,11 +451,11 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
         if (!currentDecls) {
             currentDecls = [];
         }
-        currentDecls.push({declaration: declaration, constructor: constructor})
+        currentDecls.push({ declaration: declaration, constructor: constructor })
         typeDeclarations.set(tlbType.name, currentDecls)
     })
 
-    tlbCode.types.forEach((tlbType: TLBType, combinatorName: string) => {
+    tlbCode.types.forEach((tlbType: TLBType) => {
         typeDeclarations.get(tlbType.name)?.forEach((typeItem) => {
             let declaration = typeItem.declaration;
             let constructor = typeItem.constructor;
@@ -491,6 +491,9 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
                     }
                 } else if (element instanceof MathExpr) {
                     let derivedExpr = deriveMathExpression(element);
+                    if (!derivedExpr.name) {
+                        throw new Error('')
+                    }
                     let variable = constructor.variablesMap.get(derivedExpr.name)
                     if (variable) {
                         parameter = { variable: variable, paramExpr: derivedExpr.derived };
@@ -506,17 +509,24 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
                     if (element.expr instanceof NumberExpr) {
                         toBeConst = true;
                     }
-                    let variable = constructor.variablesMap.get(derivedExpr.name)
-                    if (variable) {
-                        variable.negated = true;
-                        variable.const = toBeConst;
-                        variable.initialExpr = derivedExpr.derived
-                        parameter = { variable: variable, paramExpr: derivedExpr.derived}
-                    } else if (derivedExpr.name == '' && toBeConst) {
-                        parameter = { variable: { negated: true, const: toBeConst, type: '#', name: derivedExpr.name, deriveExpr: derivedExpr.derived, initialExpr: derivedExpr.derived, calculated: false, isField: false }, paramExpr: derivedExpr.derived };
+
+                    if (derivedExpr.name == undefined) {
+                        if (toBeConst) {
+                            parameter = { variable: { negated: true, const: toBeConst, type: '#', name: '', deriveExpr: derivedExpr.derived, initialExpr: derivedExpr.derived, calculated: false, isField: false }, paramExpr: derivedExpr.derived };
+                        } else {
+                            throw new Error('Cannot identify combinator arg ' + element)
+                        }
                     } else {
-                        throw new Error('Cannot identify combinator arg')
-                    }
+                        let variable = constructor.variablesMap.get(derivedExpr.name)
+                        if (variable) {
+                            variable.negated = true;
+                            variable.const = toBeConst;
+                            variable.initialExpr = derivedExpr.derived
+                            parameter = { variable: variable, paramExpr: derivedExpr.derived }
+                        } else {
+                            throw new Error('Cannot identify combinator arg ' + element)
+                        }
+                    } 
                 } else if (element instanceof NumberExpr) {
                     parameter = { variable: { negated: false, const: true, type: '#', name: '', deriveExpr: new TLBNumberExpr(element.num), initialExpr: new TLBNumberExpr(element.num), calculated: false, isField: false }, paramExpr: new TLBNumberExpr(element.num) }
                 } else {
@@ -539,70 +549,70 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
     fixVariablesNaming(tlbCode);
 }
 export function isBadVarName(name: string): boolean {
-  let tsReserved = [
-    'abstract', 'arguments', 'await', 'boolean',
-    'break', 'byte', 'case', 'catch',
-    'char', 'class', 'const', 'continue',
-    'debugger', 'default', 'delete', 'do',
-    'double', 'else', 'enum', 'eval',
-    'export', 'extends', 'false', 'final',
-    'finally', 'float', 'for', 'function',
-    'goto', 'if', 'implements', 'import',
-    'in', 'instanceof', 'int', 'interface',
-    'let', 'long', 'native', 'new',
-    'null', 'package', 'private', 'protected',
-    'public', 'return', 'short', 'static',
-    'super', 'switch', 'synchronized', 'this',
-    'throw', 'throws', 'transient', 'true',
-    'try', 'typeof', 'var', 'void',
-    'volatile', 'while', 'with', 'yield'
-  ]
-  if (tsReserved.includes(name)) {
-    return true
-  }
-  if (name.startsWith('slice')) {
-    return true
-  }
-  if (name.startsWith('cell')) {
-    return true
-  }
-  if (name == 'builder') {
-    return true
-  }
-  return false
+    let tsReserved = [
+        'abstract', 'arguments', 'await', 'boolean',
+        'break', 'byte', 'case', 'catch',
+        'char', 'class', 'const', 'continue',
+        'debugger', 'default', 'delete', 'do',
+        'double', 'else', 'enum', 'eval',
+        'export', 'extends', 'false', 'final',
+        'finally', 'float', 'for', 'function',
+        'goto', 'if', 'implements', 'import',
+        'in', 'instanceof', 'int', 'interface',
+        'let', 'long', 'native', 'new',
+        'null', 'package', 'private', 'protected',
+        'public', 'return', 'short', 'static',
+        'super', 'switch', 'synchronized', 'this',
+        'throw', 'throws', 'transient', 'true',
+        'try', 'typeof', 'var', 'void',
+        'volatile', 'while', 'with', 'yield'
+    ]
+    if (tsReserved.includes(name)) {
+        return true
+    }
+    if (name.startsWith('slice')) {
+        return true
+    }
+    if (name.startsWith('cell')) {
+        return true
+    }
+    if (name == 'builder') {
+        return true
+    }
+    return false
 }
 export function goodVariableName(name: string, possibleSuffix: string = '0'): string {
-  if (name.startsWith('slice') || name.startsWith('cell')) {
-    name = '_' + name
-  }
-  while (isBadVarName(name)) {
-    name += possibleSuffix
-  }
-  return name
+    if (name.startsWith('slice') || name.startsWith('cell')) {
+        name = '_' + name
+    }
+    while (isBadVarName(name)) {
+        name += possibleSuffix
+    }
+    return name
 }
 export function getSubStructName(tlbType: TLBType, constructor: TLBConstructor): string {
-  if (tlbType.constructors.length > 1) {
-    return tlbType.name + '_' + constructor.name
-  } else {
-    return tlbType.name
-  }
+    if (tlbType.constructors.length > 1) {
+        return tlbType.name + '_' + constructor.name
+    } else {
+        return tlbType.name
+    }
 }
 export function calculateOpcode(declaration: Declaration, input: string[]): string {
-  let scheme = getStringDeclaration(declaration, input)
-  let constructor = scheme.substring(0, scheme.indexOf(' '))
-  const rest = scheme.substring(scheme.indexOf(' '))
-  if (constructor.includes('#')) {
-    constructor = constructor.substring(0, constructor.indexOf('#'))
-  }
-  scheme =
-    constructor +
-    ' ' +
-    rest
-      .replace(/\(/g, '')
-      .replace(/\)/g, '')
-      .replace(/\s+/g, ' ')
-      .replace(/;/g, '')
-      .trim()
-  return (BigInt(crc32.str(scheme)) & BigInt(2147483647)).toString(16)
+    let scheme = getStringDeclaration(declaration, input)
+    let constructor = scheme.substring(0, scheme.indexOf(' '))
+    const rest = scheme.substring(scheme.indexOf(' '))
+    if (constructor.includes('#')) {
+        constructor = constructor.substring(0, constructor.indexOf('#'))
+    }
+    scheme =
+        constructor +
+        ' ' +
+        rest
+            .replace(/\(/g, '')
+            .replace(/\)/g, '')
+            .replace(/\s+/g, ' ')
+            .replace(/;/g, '')
+            .trim()
+    return (BigInt(crc32.str(scheme)) & BigInt(2147483647)).toString(16)
 }
 
