@@ -1,3 +1,5 @@
+import { TLBVariableBuild } from "./astbuilder/utils";
+
 export class TLBBinaryOp {
     constructor(
         readonly left: TLBMathExpr,
@@ -60,26 +62,6 @@ export class TLBVariableNew {
     }
 }
 
-export type TLBVariable = {
-    isConst: boolean
-    negated: boolean
-    type: TLBVariableType
-    name: string | undefined
-    deriveExpr?: TLBMathExpr
-    initialExpr?: TLBMathExpr
-    isField: boolean
-
-    calculated: boolean
-}
-
-export type TLBNumberType = {
-    kind: 'TLBNumberType'
-    bits: TLBMathExpr
-    signed: boolean
-    storeBits: TLBMathExpr
-    maxBits: number | undefined
-}
-
 export type TLBBitsType = {
     kind: 'TLBBitsType'
     bits: TLBMathExpr
@@ -107,6 +89,14 @@ export type TLBAddressType = {
 export type TLBCellType = {
     kind: 'TLBCellType'
 }
+
+export type TLBNumberType = {
+    kind: 'TLBNumberType';
+    bits: TLBMathExpr;
+    signed: boolean;
+    storeBits: TLBMathExpr;
+    maxBits: number | undefined;
+};
 
 export type TLBNegatedType = {
     kind: 'TLBNegatedType'
@@ -155,7 +145,7 @@ export class TLBParameterNew {
 }
 
 export type TLBParameter = {
-    variable: TLBVariable,
+    variable: TLBVariableBuild,
     paramExpr: TLBMathExpr,
     argName?: string,
 }
@@ -185,8 +175,8 @@ export class TLBConstructorNew {
 
 export type TLBConstructor = {
     parameters: Array<TLBParameter>
-    variables: Array<TLBVariable>
-    variablesMap: Map<string, TLBVariable>
+    variables: Array<TLBVariableBuild>
+    variablesMap: Map<string, TLBVariableBuild>
     parametersMap: Map<string, TLBParameter>
     name: string
     fields: Array<TLBField>

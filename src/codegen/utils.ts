@@ -1,5 +1,6 @@
 import { SimpleExpr, NameExpr, NumberExpr, MathExpr, FieldBuiltinDef, NegateExpr, Declaration, CompareExpr, FieldCurlyExprDef, FieldNamedDef, FieldAnonymousDef, FieldExprDef } from "../ast/nodes";
-import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructorTag, TLBConstructor, TLBParameter, TLBVariable, TLBField, TLBCodeNew, TLBTypeNew, TLBConstructorNew, TLBParameterNew, TLBVariableNew } from "./ast"
+import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructorTag, TLBConstructor, TLBParameter, TLBField, TLBCodeNew, TLBTypeNew, TLBConstructorNew, TLBParameterNew, TLBVariableNew } from "./ast"
+import { TLBVariableBuild } from "./astbuilder/utils";
 import * as crc32 from "crc-32";
 import { fillFields } from "./astbuilder/handle_field";
 
@@ -300,7 +301,7 @@ export function getCalculatedExpression(expr: TLBMathExpr, constructor: TLBConst
     return expr;
 }
 
-export function calculateVariable(variable: TLBVariable, constructor: TLBConstructor) {
+export function calculateVariable(variable: TLBVariableBuild, constructor: TLBConstructor) {
     if (variable.calculated) {
         return;
     }
@@ -456,7 +457,7 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
         if (tlbType == undefined) {
             tlbType = { name: declaration.combinator.name, constructors: [] }
         }
-        let constructor = { parameters: [], parametersMap: new Map<string, TLBParameter>(), name: declaration.constructorDef.name, variables: new Array<TLBVariable>(), variablesMap: new Map<string, TLBVariable>(), tag: getConstructorTag(declaration, input), constraints: [], fields: [], declaration: '', tlbType: tlbType.name }
+        let constructor = { parameters: [], parametersMap: new Map<string, TLBParameter>(), name: declaration.constructorDef.name, variables: new Array<TLBVariableBuild>(), variablesMap: new Map<string, TLBVariableBuild>(), tag: getConstructorTag(declaration, input), constraints: [], fields: [], declaration: '', tlbType: tlbType.name }
         tlbType.constructors.push(constructor);
         tlbCode.types.set(tlbType.name, tlbType);
 
@@ -570,7 +571,7 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
     fixVariablesNaming(tlbCode);
 }
 
-export function converVariable(tlbVariable: TLBVariable): TLBVariableNew {
+export function converVariable(tlbVariable: TLBVariableBuild): TLBVariableNew {
     if (tlbVariable.name == undefined) {
         throw new Error('Variable is undefined')
     }

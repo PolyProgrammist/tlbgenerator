@@ -1,5 +1,6 @@
 import { BuiltinZeroArgs, FieldCurlyExprDef, FieldNamedDef, Program, Declaration, BuiltinOneArgExpr, NumberExpr, NameExpr, CombinatorExpr, FieldBuiltinDef, MathExpr, SimpleExpr, NegateExpr, CellRefExpr, FieldDefinition, FieldAnonymousDef, CondExpr, CompareExpr, Expression as ParserExpression, Constructor } from '../../src/ast/nodes'
-import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructor, TLBParameter, TLBVariable, TLBConstructorTag, TLBCodeNew, TLBTypeNew } from './ast'
+import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructor, TLBParameter, TLBConstructorTag, TLBCodeNew, TLBTypeNew } from './ast'
+import { TLBVariableBuild } from "./astbuilder/utils"
 import { convertToReadonly, fillConstructors } from './utils'
 import { CodeBuilder } from './generators/CodeBuilder'
 import { CodeGenerator, CommonGenDeclaration } from './generators/generator'
