@@ -1,4 +1,4 @@
-import { SimpleExpr, NameExpr, NumberExpr, MathExpr, FieldBuiltinDef, NegateExpr, Declaration, CompareExpr, FieldCurlyExprDef, FieldNamedDef } from "../ast/nodes";
+import { SimpleExpr, NameExpr, NumberExpr, MathExpr, FieldBuiltinDef, NegateExpr, Declaration, CompareExpr, FieldCurlyExprDef, FieldNamedDef, FieldAnonymousDef, FieldExprDef } from "../ast/nodes";
 import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructorTag, TLBConstructor, TLBParameter, TLBVariable, TLBField } from "./ast"
 import * as crc32 from "crc-32";
 import { fillFields } from "./astbuilder/handle_field";
@@ -382,23 +382,22 @@ function opCodeSetsEqual(a: string[], b: string[]) {
     return true;
   }
 
-export function fixCurrentVariableName(variable: TLBVariable, variablesSet: Set<string>) {
+export function fixCurrentVariableName(field: TLBField, variablesSet: Set<string>) {
     let index = 0;
-    while (variablesSet.has(variable.name)) {
-        variable.name = goodVariableName(variable.name + '_' + index)
+    field.name = goodVariableName(field.name)
+    while (variablesSet.has(field.name)) {
+        field.name = goodVariableName(field.name + '_' + index)
         index++;
     }
+    variablesSet.add(field.name)
 }
 
 export function fixVariablesNaming(tlbCode: TLBCode) {
     tlbCode.types.forEach(tlbType => {
         tlbType.constructors.forEach(constructor => {
             let variablesSet = new Set<string>();
-            constructor.variables.forEach(variable => {
-                fixCurrentVariableName(variable, variablesSet)
-            })
-            constructor.parameters.forEach(parameter => {
-                fixCurrentVariableName(parameter.variable, variablesSet)
+            constructor.fields.forEach(field => {
+                fixCurrentVariableName(field, variablesSet)
             })
         })
     })
@@ -453,6 +452,8 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
         typeDeclarations.get(tlbType.name)?.forEach((typeItem) => {
             let declaration = typeItem.declaration;
             let constructor = typeItem.constructor;
+
+            let fieldIndex = 0;
             declaration.fields.forEach(field => {
                 if (field instanceof FieldBuiltinDef) {
                     constructor.variables.push({ name: field.name, const: false, negated: false, type: field.type, calculated: false, isField: false })
@@ -460,6 +461,10 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
                 if (field instanceof FieldNamedDef) {
                     constructor.variables.push({ name: field.name, const: false, negated: false, type: '#', calculated: false, isField: true })
                 }
+                if (field instanceof FieldExprDef) {
+                    constructor.variables.push({ name: 'anon' + fieldIndex, const: false, negated: false, type: '#', calculated: false, isField: true })
+                }
+                fieldIndex++;
             })
             constructor.variables.forEach(variable => {
                 constructor.variablesMap.set(variable.name, variable);
