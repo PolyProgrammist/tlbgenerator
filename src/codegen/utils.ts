@@ -37,7 +37,7 @@ export function convertToMathExpr(mathExpr: SimpleExpr | NameExpr | NumberExpr |
             }
         }
     }
-    return { n: 0, variables: new Set<string>(), hasNeg: false };
+    throw new Error(`Could not convert expression: ${mathExpr}`)
 }
 
 export function getNegatedVariable(mathExpr: TLBMathExpr): string | undefined {
@@ -99,7 +99,7 @@ export function reorganizeExpression(mathExpr: TLBMathExpr, variable: string): T
             return reorganizeExpression(mathExpr, variable);
         }
     }
-    return { n: 0, variables: new Set<string>(), hasNeg: false }
+    throw new Error(`Couldn't reogranize expression: ${mathExpr}`)
 }
 
 export function getVariableName(myMathExpr: TLBMathExpr): string {
