@@ -4,6 +4,22 @@ import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, 
 import { Identifier, BinaryExpression, ASTNode, TypeParametersExpression, ObjectProperty, TypedIdentifier } from './tsgen'
 import { getCalculatedExpression, getSubStructName, fillConstructors, firstLower, getCurrentSlice, bitLen, convertToMathExpr, splitForTypeValue, deriveMathExpression, goodVariableName } from '../../utils'
 
+export type FieldInfoType = {
+  typeParamExpr: TypeExpression | undefined
+  loadExpr: Expression | undefined
+  loadFunctionExpr: Expression | undefined
+  storeExpr: Statement | undefined
+  storeExpr2: Statement | undefined
+  storeFunctionExpr: Expression | undefined
+  negatedVariablesLoads: Array<{ name: string; expression: Expression} >
+}
+export type ExprForParam = {
+  argLoadExpr: Expression | undefined
+  argStoreExpr: Expression | undefined
+  paramType: string
+  fieldLoadSuffix: string
+  fieldStoreSuffix: string
+}
 
 export function sliceLoad(slicePrefix: number[], currentSlice: string) {
   return tExpressionStatement(tDeclareVariable(tIdentifier(getCurrentSlice(slicePrefix, 'slice')),
@@ -122,22 +138,7 @@ export function getCondition(conditions: Array<BinaryExpression>): Expression {
         return tIdentifier('true');
     }
 }
-export type FieldInfoType = {
-  typeParamExpr: TypeExpression | undefined
-  loadExpr: Expression | undefined
-  loadFunctionExpr: Expression | undefined
-  storeExpr: Statement | undefined
-  storeExpr2: Statement | undefined
-  storeFunctionExpr: Expression | undefined
-  negatedVariablesLoads: Array<{ name: string; expression: Expression} >
-}
-export type ExprForParam = {
-  argLoadExpr: Expression | undefined
-  argStoreExpr: Expression | undefined
-  paramType: string
-  fieldLoadSuffix: string
-  fieldStoreSuffix: string
-}
+
 export function isBigInt(fieldType: TLBNumberType) {
   if (fieldType.bits instanceof TLBNumberExpr) {
     if (fieldType.bits.n <= 64) {

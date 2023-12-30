@@ -244,8 +244,7 @@ export class TypescriptGenerator implements CodeGenerator {
             if (field == undefined) {
                 throw new Error('')
             }
-            let thefield: TLBFieldType = field.fieldType
-            let fieldInfo = this.handleType(field, thefield, true, ctx, currentSlice, currentCell, 0);
+            let fieldInfo = this.handleType(field, field.fieldType, true, ctx, currentSlice, currentCell, 0);
             if (fieldInfo.loadExpr) {
                 addLoadProperty(field.name, fieldInfo.loadExpr, fieldInfo.typeParamExpr, ctx.constructorLoadStatements, ctx.subStructLoadProperties);
             }
