@@ -6,6 +6,7 @@ import { BinaryExpression, FunctionDeclaration, GenDeclaration, ObjectProperty, 
 import { addLoadProperty, convertToAST, getCondition, getParamVarExpr, getTypeParametersExpression, sliceLoad } from "./utils";
 import { handleType } from "./handle_type";
 
+
 export class TypescriptGenerator implements CodeGenerator {
     jsCodeDeclarations: GenDeclaration[] = []
     jsCodeConstructorDeclarations: GenDeclaration[] = []
@@ -24,7 +25,7 @@ export class TypescriptGenerator implements CodeGenerator {
             tExpressionStatement(tIdentifier('return n.toString(2).length;'))
         ]))
     }
-    addTlbType(tlbType: TLBType, tlbCode: TLBCode): void {
+    addTlbType(tlbType: TLBType): void {
         let variableCombinatorName = goodVariableName(firstLower(tlbType.name), '0')
         let subStructsUnion: TypeExpression[] = []
         let subStructDeclarations: StructDeclaration[] = []
@@ -37,7 +38,6 @@ export class TypescriptGenerator implements CodeGenerator {
         tlbType.constructors.forEach(constructor => {
             let constructorLoadStatements: Statement[] = []
             let subStructName: string = getSubStructName(tlbType, constructor);
-
             let variableSubStructName = goodVariableName(firstLower(subStructName), '_' + constructor.name)
 
             let subStructProperties: TypedIdentifier[] = [tTypedIdentifier(tIdentifier('kind'), tStringLiteral(subStructName))]

@@ -11,7 +11,7 @@ export function generate(tree: Program, input: string) {
   let splittedInput = input.split('\n')
 
   fillConstructors(tree.declarations, tlbCode, splittedInput);
-  
+
   let codeGenerator: CodeGenerator = new TypescriptGenerator(tlbCode);
   
   codeGenerator.addTonCoreClassUsage('Builder')
@@ -28,7 +28,7 @@ export function generate(tree: Program, input: string) {
     jsCodeDeclarations.push(declaration)
   })
 
-  tlbCode.types.forEach((tlbType: TLBType) => { codeGenerator.addTlbType(tlbType, tlbCode) });
+  tlbCode.types.forEach((tlbType: TLBType) => { codeGenerator.addTlbType(tlbType) });
 
   let generatedCode = ''
 
