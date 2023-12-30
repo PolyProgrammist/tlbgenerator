@@ -443,7 +443,7 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
         if (tlbType == undefined) {
             tlbType = { name: declaration.combinator.name, constructors: [] }
         }
-        let constructor = { parameters: [], parametersMap: new Map<string, TLBParameter>(), name: declaration.constructorDef.name, variables: new Array<TLBVariable>(), variablesMap: new Map<string, TLBVariable>(), tag: getConstructorTag(declaration, input), constraints: [], fields: [], declaration: '' }
+        let constructor = { parameters: [], parametersMap: new Map<string, TLBParameter>(), name: declaration.constructorDef.name, variables: new Array<TLBVariable>(), variablesMap: new Map<string, TLBVariable>(), tag: getConstructorTag(declaration, input), constraints: [], fields: [], declaration: '', tlbType: tlbType.name }
         tlbType.constructors.push(constructor);
         tlbCode.types.set(tlbType.name, tlbType);
 

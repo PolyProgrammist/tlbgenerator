@@ -150,6 +150,7 @@ export type TLBConstructor = {
     tag: TLBConstructorTag
     constraints: Array<TLBMathExpr>
     declaration: string
+    tlbType: string
 }
 
 export type TLBType = {

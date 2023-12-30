@@ -39,7 +39,7 @@ export function getParamVarExpr(param: TLBParameter, constructor: TLBConstructor
   if (param.variable.deriveExpr) {
     return convertToAST(param.variable.deriveExpr, constructor);
   } else {
-    return tIdentifier('')
+    throw new Error(`Could not get expression for param ${param.variable.name} for constructor ${constructor.name} of type ${constructor.tlbType}`)
   }
 }
 
@@ -113,7 +113,7 @@ export function convertToAST(mathExpr: TLBMathExpr, constructor: TLBConstructor,
     }
     return tUnaryOpExpression(mathExpr.operation, convertToAST(mathExpr.value, constructor, calculate, objectId))
   }
-  return tIdentifier('');
+  throw new Error(`Type ${constructor.tlbType}, constructor ${constructor.name}: couldn't convert to math expression: ${mathExpr}`)
 }
 
 export function getTypeParametersExpression(parameters: Array<TLBParameter>) {
