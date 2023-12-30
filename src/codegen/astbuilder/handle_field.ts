@@ -1,6 +1,6 @@
 
 import { BuiltinOneArgExpr, BuiltinZeroArgs, CellRefExpr, CombinatorExpr, CondExpr, Declaration, FieldAnonymousDef, FieldDefinition, FieldExprDef, FieldNamedDef, MathExpr, NameExpr } from "../../ast/nodes";
-import { TLBCode, TLBConstructor, TLBField, TLBNumberType, TLBType } from "../ast";
+import { TLBCode, TLBConstructor, TLBField, TLBNumberType, TLBType, TLBTypeNew } from "../ast";
 import { GenDeclaration, ObjectProperty, Statement, TypedIdentifier } from "../generators/typescript/tsgen";
 import { firstLower, getSubStructName, goodVariableName } from "../utils";
 import { getType } from "./handle_type";

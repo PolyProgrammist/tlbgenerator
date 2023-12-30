@@ -1,5 +1,5 @@
 import { SimpleExpr, NameExpr, NumberExpr, MathExpr, FieldBuiltinDef, NegateExpr, Declaration, CompareExpr, FieldCurlyExprDef, FieldNamedDef, FieldAnonymousDef, FieldExprDef } from "../ast/nodes";
-import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructorTag, TLBConstructor, TLBParameter, TLBVariable, TLBField, TLBCodeNew, TLBTypeNew } from "./ast"
+import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructorTag, TLBConstructor, TLBParameter, TLBVariable, TLBField, TLBCodeNew, TLBTypeNew, TLBConstructorNew } from "./ast"
 import * as crc32 from "crc-32";
 import { fillFields } from "./astbuilder/handle_field";
 
@@ -568,7 +568,34 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
 }
 
 export function convertToReadonly(tlbCode: TLBCode): TLBCodeNew {
-    return new TLBCodeNew(tlbCode.types)
+    let newTypes = new Map<string, TLBTypeNew>()
+    tlbCode.types.forEach((value, key) => {
+        let newConstructors = new Array<TLBConstructorNew>()
+        value.constructors.forEach((value) => {
+            let newConstructor = new TLBConstructorNew(
+                value.parameters,
+                value.variables,
+                value.variablesMap,
+                value.parametersMap,
+                value.name,
+                value.fields,
+                value.tag,
+                value.constraints,
+                value.declaration,
+                value.tlbType
+            )
+            newConstructors.push(newConstructor)
+        })
+        let newType = new TLBTypeNew(
+            value.name,
+            value.constructors,
+        )
+        newTypes.set(key, newType)
+        
+    })
+    return new TLBCodeNew(
+        newTypes
+    )
 }
 
 export function isBadVarName(name: string): boolean {
@@ -613,7 +640,7 @@ export function goodVariableName(name: string, possibleSuffix: string = '0'): st
     }
     return name
 }
-export function getSubStructName(tlbType: TLBTypeNew, constructor: TLBConstructor): string {
+export function getSubStructName(tlbType: TLBTypeNew | TLBType, constructor: TLBConstructorNew): string {
     if (tlbType.constructors.length > 1) {
         return tlbType.name + '_' + constructor.name
     } else {

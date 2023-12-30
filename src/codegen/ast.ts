@@ -200,7 +200,7 @@ export type TLBConstructor = {
 export class TLBTypeNew {
     constructor(
         readonly name: string,
-        readonly constructors: Array<TLBConstructorNew>
+        readonly constructors: Array<TLBConstructorNew>,
     ) {
 
     }

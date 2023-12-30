@@ -1,5 +1,5 @@
 import { BuiltinZeroArgs, FieldCurlyExprDef, FieldNamedDef, Program, Declaration, BuiltinOneArgExpr, NumberExpr, NameExpr, CombinatorExpr, FieldBuiltinDef, MathExpr, SimpleExpr, NegateExpr, CellRefExpr, FieldDefinition, FieldAnonymousDef, CondExpr, CompareExpr, Expression as ParserExpression, Constructor } from '../../src/ast/nodes'
-import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructor, TLBParameter, TLBVariable, TLBConstructorTag, TLBCodeNew } from './ast'
+import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructor, TLBParameter, TLBVariable, TLBConstructorTag, TLBCodeNew, TLBTypeNew } from './ast'
 import { convertToReadonly, fillConstructors } from './utils'
 import { CodeBuilder } from './generators/CodeBuilder'
 import { CodeGenerator, CommonGenDeclaration } from './generators/generator'
@@ -29,7 +29,7 @@ export function generate(tree: Program, input: string) {
     jsCodeDeclarations.push(declaration)
   })
 
-  tlbCode.types.forEach((tlbType: TLBType) => { codeGenerator.addTlbType(tlbType) });
+  tlbCode.types.forEach((tlbType: TLBTypeNew) => { codeGenerator.addTlbType(tlbType) });
 
   let generatedCode = ''
 

@@ -1,4 +1,4 @@
-import { TLBCode, TLBCodeNew, TLBConstructor, TLBField, TLBFieldType, TLBType, TLBTypeNew } from "../../ast";
+import { TLBCode, TLBCodeNew, TLBConstructor, TLBConstructorNew, TLBField, TLBFieldType, TLBType, TLBTypeNew } from "../../ast";
 import { firstLower, getCurrentSlice, getStringDeclaration, getSubStructName, goodVariableName } from "../../utils";
 import { CodeBuilder } from "../CodeBuilder";
 import { CodeGenerator } from "../generator";
@@ -10,7 +10,7 @@ import { FieldInfoType } from './utils';
 
 
 type ConstructorContext = {
-    constructor: TLBConstructor
+    constructor: TLBConstructorNew
     constructorLoadStatements: Statement[]
     subStructStoreStatements: Statement[]
     subStructProperties: TypedIdentifier[]
