@@ -59,9 +59,7 @@ export function getField(field: FieldDefinition, slicePrefix: Array<number>, con
   return undefined
 }
 
-export function fillFields(tlbCode: TLBCode, typeDeclarations: Map<String, {declaration: Declaration, constructor: TLBConstructor}[]>) {
-  tlbCode.types.forEach(tlbType => {
-    typeDeclarations.get(tlbType.name)?.forEach(typeItem => {
+export function fillFields(typeItem: {declaration: Declaration, constructor: TLBConstructor}, tlbType: TLBType) {
       let constructor = typeItem.constructor;
       let declaration = typeItem.declaration;
 
@@ -78,6 +76,4 @@ export function fillFields(tlbCode: TLBCode, typeDeclarations: Map<String, {decl
           constructor.fields.push(field)
         }
       })
-    })
-  })
 }

@@ -383,9 +383,6 @@ function opCodeSetsEqual(a: string[], b: string[]) {
   }
 
 export function fixCurrentVariableName(variable: TLBVariable, variablesSet: Set<string>) {
-    if (variable.name == 'anon0') {
-        console.log(variable)
-    }
     let index = 0;
     while (variablesSet.has(variable.name)) {
         variable.name = goodVariableName(variable.name + '_' + index)
@@ -522,13 +519,13 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
             constructor.declaration = getStringDeclaration(declaration, input)
             fillConstraintsAndNegationVars(constructor, declaration);
             calculateVariables(constructor);
+            fillFields(typeItem, tlbType);
         });
         checkConstructors(tlbType);
         fillParameterNames(tlbType);
         fixConstructorsNaming(tlbType);
         tlbType.constructors.sort(compareConstructors)
     });
-    fillFields(tlbCode, typeDeclarations);
     checkAndRemovePrimitives(tlbCode, input, typeDeclarations);
     fixVariablesNaming(tlbCode);
 }
