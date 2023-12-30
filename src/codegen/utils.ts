@@ -184,10 +184,6 @@ export function compareConstructors(a: TLBConstructor, b: TLBConstructor): numbe
     return 0;
 }
 
-export function checkConstructors(tlbType: TLBType) {
-    // TODO
-}
-
 export function fillParameterNames(tlbType: TLBType) {
     let parameterNames: string[] = []
     let argNames: (string | undefined)[] = []
@@ -471,6 +467,9 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
                 fieldIndex++;
             })
             constructor.variables.forEach(variable => {
+                if (variable.name == '') {
+                    throw new Error('')
+                }
                 constructor.variablesMap.set(variable.name, variable);
             })
             let argumentIndex = -1;
@@ -498,6 +497,9 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
                     if (variable) {
                         parameter = { variable: variable, paramExpr: derivedExpr.derived };
                         parameter.argName = 'arg' + argumentIndex;
+                        if (parameter.variable.name == '') {
+                            throw new Error('')
+                        }
                         parameter.variable.deriveExpr = reorganizeWithArg(convertToMathExpr(element), parameter.argName, parameter.variable.name);
                         parameter.variable.initialExpr = new TLBVarExpr(parameter.variable.name)
                     } else {
@@ -533,14 +535,15 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
                     throw new Error('Cannot identify combinator arg: ' + element)
                 }
                 constructor.parameters.push(parameter);
-                constructor.parametersMap.set(parameter.variable.name, parameter);
+                if (parameter.variable.name != '') {
+                    constructor.parametersMap.set(parameter.variable.name, parameter);
+                }
             });
             constructor.declaration = getStringDeclaration(declaration, input)
             fillConstraintsAndNegationVars(constructor, declaration);
             calculateVariables(constructor);
             fillFields(typeItem, tlbType);
         });
-        checkConstructors(tlbType);
         fillParameterNames(tlbType);
         fixConstructorsNaming(tlbType);
         tlbType.constructors.sort(compareConstructors)
