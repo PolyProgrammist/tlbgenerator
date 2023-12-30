@@ -185,7 +185,7 @@ export function compareConstructors(a: TLBConstructor, b: TLBConstructor): numbe
 }
 
 export function fillParameterNames(tlbType: TLBType) {
-    let parameterNames: (string | undefined)[] = []
+    let parameterNames: string[] = []
     let argNames: (string | undefined)[] = []
     tlbType.constructors[0]?.parameters.forEach(element => {
         parameterNames.push(element.variable.name);
@@ -467,7 +467,7 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
                 fieldIndex++;
             })
             constructor.variables.forEach(variable => {
-                if (variable.name == undefined) {
+                if (variable.name == '') {
                     throw new Error('')
                 }
                 constructor.variablesMap.set(variable.name, variable);
@@ -497,7 +497,7 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
                     if (variable) {
                         parameter = { variable: variable, paramExpr: derivedExpr.derived };
                         parameter.argName = 'arg' + argumentIndex;
-                        if (parameter.variable.name == undefined) {
+                        if (parameter.variable.name == '') {
                             throw new Error('')
                         }
                         parameter.variable.deriveExpr = reorganizeWithArg(convertToMathExpr(element), parameter.argName, parameter.variable.name);
@@ -535,7 +535,7 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
                     throw new Error('Cannot identify combinator arg: ' + element)
                 }
                 constructor.parameters.push(parameter);
-                if (parameter.variable.name) {
+                if (parameter.variable.name != '') {
                     constructor.parametersMap.set(parameter.variable.name, parameter);
                 }
             });

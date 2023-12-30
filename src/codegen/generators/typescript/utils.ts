@@ -60,7 +60,7 @@ export function getNegationDerivationFunctionBody(tlbCode: TLBCode, typeName: st
   tlbType.constructors.forEach(constructor => {
     let parameter = constructor.parameters[parameterIndex];
     if (parameter) {
-      if (parameter.variable.name == undefined) {
+      if (parameter.variable.name == '') {
         throw new Error('')
       }
       let getExpression: Expression;
@@ -123,7 +123,7 @@ export function getTypeParametersExpression(parameters: Array<TLBParameter>) {
   let structTypeParameters: Array<Identifier> = [];
   parameters.forEach(element => {
     if (element.variable.type == 'Type') {
-      if (element.variable.name == undefined) {
+      if (element.variable.name == '') {
         throw new Error('')
       }
 

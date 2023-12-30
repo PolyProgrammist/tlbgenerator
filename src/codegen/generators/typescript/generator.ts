@@ -67,7 +67,7 @@ export class TypescriptGenerator implements CodeGenerator {
             constructor.variables.forEach((variable) => {
                 if (variable.negated) {
                     if (variable.deriveExpr) {
-                        if (variable.name == undefined) {
+                        if (variable.name == '') {
                             throw new Error('')
                         }
                         subStructLoadProperties.push(tObjectProperty(tIdentifier(variable.name), convertToAST(variable.deriveExpr, constructor)));
@@ -77,7 +77,7 @@ export class TypescriptGenerator implements CodeGenerator {
 
             constructor.variables.forEach(variable => {
                 if (variable.type == '#' && !variable.isField) {
-                    if (variable.name == undefined) {
+                    if (variable.name == '') {
                         throw new Error('')
                     }
                     subStructProperties.push(tTypedIdentifier(tIdentifier(variable.name), tIdentifier('number')));
@@ -126,7 +126,7 @@ export class TypescriptGenerator implements CodeGenerator {
                 constructor.parameters.forEach(param => {
                     if (param.variable.const && !param.variable.negated) {
                         let argName = param.variable.name;
-                        if (argName == undefined) {
+                        if (argName == '') {
                             throw new Error('')
                         }
                         if (param.argName) {
@@ -178,7 +178,7 @@ export class TypescriptGenerator implements CodeGenerator {
         let anyConstructor = tlbType.constructors[0];
         if (anyConstructor) {
             anyConstructor.parameters.forEach(element => {
-                if (element.variable.name == undefined) {
+                if (element.variable.name == '') {
                     throw new Error('')
                 }
                 if (element.variable.type == 'Type') {
