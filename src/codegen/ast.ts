@@ -147,7 +147,7 @@ export type TLBField = {
 
 export class TLBParameterNew {
     constructor(
-        readonly variable: TLBVariable,
+        readonly variable: TLBVariableNew,
         readonly paramExpr: TLBMathExpr,
         readonly argName?: string,
     ) {
