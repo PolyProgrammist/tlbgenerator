@@ -60,9 +60,6 @@ export function getNegationDerivationFunctionBody(tlbCode: TLBCodeNew, typeName:
   tlbType.constructors.forEach(constructor => {
     let parameter = constructor.parameters[parameterIndex];
     if (parameter) {
-      if (parameter.variable.name == undefined) {
-        throw new Error('')
-      }
       let getExpression: Expression;
       getExpression = convertToAST(parameter.paramExpr, constructor);
       let statements = [];
@@ -116,14 +113,10 @@ export function convertToAST(mathExpr: TLBMathExpr, constructor: TLBConstructorN
   throw new Error(`Type ${constructor.tlbType}, constructor ${constructor.name}: couldn't convert to math expression: ${mathExpr}`)
 }
 
-export function getTypeParametersExpression(parameters: Array<TLBParameterNew> | Array<TLBParameter>) {
+export function getTypeParametersExpression(parameters: Array<TLBParameterNew>) {
   let structTypeParameters: Array<Identifier> = [];
   parameters.forEach(element => {
     if (element.variable.type == 'Type') {
-      if (element.variable.name == undefined) {
-        throw new Error('')
-      }
-
       structTypeParameters.push(tIdentifier(element.variable.name));
     }
   });

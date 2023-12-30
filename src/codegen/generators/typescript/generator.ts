@@ -67,9 +67,6 @@ export class TypescriptGenerator implements CodeGenerator {
             constructor.variables.forEach((variable) => {
                 if (variable.negated) {
                     if (variable.deriveExpr) {
-                        if (variable.name == undefined) {
-                            throw new Error('')
-                        }
                         subStructLoadProperties.push(tObjectProperty(tIdentifier(variable.name), convertToAST(variable.deriveExpr, constructor)));
                     }
                 }
@@ -77,9 +74,6 @@ export class TypescriptGenerator implements CodeGenerator {
 
             constructor.variables.forEach(variable => {
                 if (variable.type == '#' && !variable.isField) {
-                    if (variable.name == undefined) {
-                        throw new Error('')
-                    }
                     subStructProperties.push(tTypedIdentifier(tIdentifier(variable.name), tIdentifier('number')));
                     let parameter = constructor.parametersMap.get(variable.name)
                     if (parameter && !parameter.variable.isConst && !parameter.variable.negated) {
@@ -126,9 +120,6 @@ export class TypescriptGenerator implements CodeGenerator {
                 constructor.parameters.forEach(param => {
                     if (param.variable.isConst && !param.variable.negated) {
                         let argName = param.variable.name;
-                        if (argName == undefined) {
-                            throw new Error('')
-                        }
                         if (param.argName) {
                             argName = param.argName
                         }
@@ -178,9 +169,6 @@ export class TypescriptGenerator implements CodeGenerator {
         let anyConstructor = tlbType.constructors[0];
         if (anyConstructor) {
             anyConstructor.parameters.forEach(element => {
-                if (element.variable.name == undefined) {
-                    throw new Error('')
-                }
                 if (element.variable.type == 'Type') {
                     loadFunctionParameters.push(tTypedIdentifier(tIdentifier('load' + element.variable.name), tArrowFunctionType([tTypedIdentifier(tIdentifier('slice'), tIdentifier('Slice'))], tIdentifier(element.variable.name))))
 
