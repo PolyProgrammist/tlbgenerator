@@ -35,9 +35,9 @@ export function handleField(field: TLBField, slicePrefix: Array<number>, tlbCode
         tFunctionCall(tMemberExpression(
           tIdentifier(currentSlice), tIdentifier('loadRef')
         ), []),)))
-    addLoadProperty(goodVariableName(field.name), tIdentifier(getCurrentSlice(slicePrefix, 'cell')), undefined, constructorLoadStatements, subStructLoadProperties)
-    subStructProperties.push(tTypedIdentifier(tIdentifier(goodVariableName(field.name)), tIdentifier('Cell')));
-    subStructStoreStatements.push(tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('storeRef')), [tMemberExpression(tIdentifier(variableCombinatorName), tIdentifier(goodVariableName(field.name)))])))
+    addLoadProperty(field.name, tIdentifier(getCurrentSlice(slicePrefix, 'cell')), undefined, constructorLoadStatements, subStructLoadProperties)
+    subStructProperties.push(tTypedIdentifier(tIdentifier(field.name), tIdentifier('Cell')));
+    subStructStoreStatements.push(tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('storeRef')), [tMemberExpression(tIdentifier(variableCombinatorName), tIdentifier(field.name))])))
     slicePrefix.pop();
   } else if (field?.subFields.length == 0) {
     if (field == undefined) {
@@ -46,16 +46,16 @@ export function handleField(field: TLBField, slicePrefix: Array<number>, tlbCode
     let thefield: TLBFieldType = field.fieldType
     let fieldInfo = handleType(field, thefield, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, 0, tlbCode);
     if (fieldInfo.loadExpr) {
-      addLoadProperty(goodVariableName(field.name), fieldInfo.loadExpr, fieldInfo.typeParamExpr, constructorLoadStatements, subStructLoadProperties);
+      addLoadProperty(field.name, fieldInfo.loadExpr, fieldInfo.typeParamExpr, constructorLoadStatements, subStructLoadProperties);
     }
     if (fieldInfo.typeParamExpr) {
-      subStructProperties.push(tTypedIdentifier(tIdentifier(goodVariableName(field.name)), fieldInfo.typeParamExpr));
+      subStructProperties.push(tTypedIdentifier(tIdentifier(field.name), fieldInfo.typeParamExpr));
     }
     if (fieldInfo.storeExpr) {
       subStructStoreStatements.push(fieldInfo.storeExpr)
     }
     fieldInfo.negatedVariablesLoads.forEach(element => {
-      addLoadProperty(goodVariableName(element.name), element.expression, undefined, constructorLoadStatements, subStructLoadProperties)
+      addLoadProperty(element.name, element.expression, undefined, constructorLoadStatements, subStructLoadProperties)
     });
   }
 }

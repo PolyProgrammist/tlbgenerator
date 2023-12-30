@@ -392,13 +392,20 @@ export function fixCurrentVariableName(field: TLBField, variablesSet: Set<string
     variablesSet.add(field.name)
 }
 
+function fixVarNamsField(fields: TLBField[], variablesSet: Set<string>) {
+    fields.forEach(field => {
+        if (field.subFields.length == 0) {
+            fixCurrentVariableName(field, variablesSet)
+        }
+        fixVarNamsField(field.subFields, variablesSet)
+    })
+}
+
 export function fixVariablesNaming(tlbCode: TLBCode) {
     tlbCode.types.forEach(tlbType => {
         tlbType.constructors.forEach(constructor => {
             let variablesSet = new Set<string>();
-            constructor.fields.forEach(field => {
-                fixCurrentVariableName(field, variablesSet)
-            })
+            fixVarNamsField(constructor.fields, variablesSet)
         })
     })
 }
@@ -460,9 +467,6 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
                 }
                 if (field instanceof FieldNamedDef) {
                     constructor.variables.push({ name: field.name, const: false, negated: false, type: '#', calculated: false, isField: true })
-                }
-                if (field instanceof FieldExprDef) {
-                    constructor.variables.push({ name: 'anon' + fieldIndex, const: false, negated: false, type: '#', calculated: false, isField: true })
                 }
                 fieldIndex++;
             })
@@ -566,7 +570,8 @@ export function isBadVarName(name: string): boolean {
     return true
   }
   return false
-}export function goodVariableName(name: string, possibleSuffix: string = '0'): string {
+}
+export function goodVariableName(name: string, possibleSuffix: string = '0'): string {
   if (name.startsWith('slice') || name.startsWith('cell')) {
     name = '_' + name
   }

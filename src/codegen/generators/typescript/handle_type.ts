@@ -51,7 +51,7 @@ export function handleType(field: TLBField, fieldType: TLBFieldType, isField: bo
 
   let insideStoreParameters: Expression[];
 
-  insideStoreParameters = [tMemberExpression(tIdentifier(variableCombinatorName), tIdentifier(goodVariableName(fieldName)))]; // TODO: use only field
+  insideStoreParameters = [tMemberExpression(tIdentifier(variableCombinatorName), tIdentifier(fieldName))]; // TODO: use only field
   let insideStoreParameters2: Expression[] = [tIdentifier('arg')]
 
   if (fieldType.kind == 'TLBNumberType') {
@@ -87,7 +87,7 @@ export function handleType(field: TLBField, fieldType: TLBFieldType, isField: bo
       let fieldTypeName = field.fieldType.name
       jsCodeFunctionsDeclarations.push(tFunctionDeclaration(getParameterFunctionId, tTypeParametersExpression([]), tIdentifier('number'), [tTypedIdentifier(tIdentifier(goodVariableName(fieldName)), tIdentifier(fieldTypeName))], getNegationDerivationFunctionBody(tlbCode, fieldTypeName, argIndex, fieldName)))
     }
-    result.negatedVariablesLoads.push({ name: fieldType.variableName, expression: tFunctionCall(getParameterFunctionId, [tIdentifier(goodVariableName(fieldName))]) })
+    result.negatedVariablesLoads.push({ name: fieldType.variableName, expression: tFunctionCall(getParameterFunctionId, [tIdentifier(fieldName)]) })
   } else if (fieldType.kind == 'TLBNamedType' && fieldType.arguments.length == 0) {
     let typeName = fieldType.name;
     result.typeParamExpr = tIdentifier(typeName);

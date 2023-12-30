@@ -49,17 +49,17 @@ export class TypescriptGenerator implements CodeGenerator {
             constructor.variables.forEach((variable) => {
                 if (variable.negated) {
                     if (variable.deriveExpr) {
-                        subStructLoadProperties.push(tObjectProperty(tIdentifier(goodVariableName(variable.name)), convertToAST(variable.deriveExpr, constructor)));
+                        subStructLoadProperties.push(tObjectProperty(tIdentifier(variable.name), convertToAST(variable.deriveExpr, constructor)));
                     }
                 }
             })
 
             constructor.variables.forEach(variable => {
                 if (variable.type == '#' && !variable.isField) {
-                    subStructProperties.push(tTypedIdentifier(tIdentifier(goodVariableName(variable.name)), tIdentifier('number')));
+                    subStructProperties.push(tTypedIdentifier(tIdentifier(variable.name), tIdentifier('number')));
                     let parameter = constructor.parametersMap.get(variable.name)
                     if (parameter && !parameter.variable.const && !parameter.variable.negated) {
-                      subStructLoadProperties.push(tObjectProperty(tIdentifier(goodVariableName(variable.name)), getParamVarExpr(parameter, constructor)))
+                      subStructLoadProperties.push(tObjectProperty(tIdentifier(variable.name), getParamVarExpr(parameter, constructor)))
                     }
                 }
             })
@@ -91,7 +91,7 @@ export class TypescriptGenerator implements CodeGenerator {
                 }
                 constructor.parameters.forEach(param => {
                     if (param.variable.const && !param.variable.negated) {
-                        let argName = goodVariableName(param.variable.name);
+                        let argName = param.variable.name;
                         if (param.argName) {
                             argName = param.argName
                         }
@@ -142,19 +142,19 @@ export class TypescriptGenerator implements CodeGenerator {
         if (anyConstructor) {
             anyConstructor.parameters.forEach(element => {
                 if (element.variable.type == 'Type') {
-                    loadFunctionParameters.push(tTypedIdentifier(tIdentifier('load' + element.variable.name), tArrowFunctionType([tTypedIdentifier(tIdentifier('slice'), tIdentifier('Slice'))], tIdentifier(goodVariableName(element.variable.name)))))
+                    loadFunctionParameters.push(tTypedIdentifier(tIdentifier('load' + element.variable.name), tArrowFunctionType([tTypedIdentifier(tIdentifier('slice'), tIdentifier('Slice'))], tIdentifier(element.variable.name))))
 
                     storeFunctionParameters.push(
                         tTypedIdentifier(tIdentifier('store' + element.variable.name),
                             tArrowFunctionType(
-                                [tTypedIdentifier(tIdentifier(goodVariableName(firstLower(element.variable.name), '0')), tIdentifier(goodVariableName(element.variable.name)))],
+                                [tTypedIdentifier(tIdentifier(firstLower(element.variable.name)), tIdentifier(element.variable.name))],
                                 tArrowFunctionType([tTypedIdentifier(tIdentifier('builder'), tIdentifier('Builder'))], tIdentifier('void')))))
                 }
                 if (element.variable.type == '#' && !element.variable.negated) {
                     if (element.argName) {
                         loadFunctionParameters.push(tTypedIdentifier(tIdentifier(element.argName), tIdentifier('number')))
                     } else {
-                        loadFunctionParameters.push(tTypedIdentifier(tIdentifier(goodVariableName(element.variable.name)), tIdentifier('number')))
+                        loadFunctionParameters.push(tTypedIdentifier(tIdentifier(element.variable.name), tIdentifier('number')))
                     }
                 }
             });

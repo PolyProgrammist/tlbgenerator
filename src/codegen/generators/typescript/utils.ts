@@ -75,7 +75,6 @@ export function convertToAST(mathExpr: TLBMathExpr, constructor: TLBConstructor,
     }
     if (mathExpr instanceof TLBVarExpr) {
         let varName = mathExpr.x;
-        varName = goodVariableName(varName, '0');
         if (objectId != undefined) {
             return tMemberExpression(objectId, tIdentifier(varName));
         }
