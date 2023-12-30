@@ -54,8 +54,8 @@ export class TLBVariableNew {
         readonly name: string | undefined,
         readonly isField: boolean,
         readonly calculated: boolean,
-        readonly deriveExpr: TLBMathExpr | undefined,
-        readonly initialExpr: TLBMathExpr | undefined
+        readonly deriveExpr?: TLBMathExpr,
+        readonly initialExpr?: TLBMathExpr
     ) {
 
     }
@@ -171,7 +171,7 @@ export class TLBConstructorNew {
     constructor(
         readonly parameters: Array<TLBParameterNew>,
         readonly variables: Array<TLBVariable>,
-        readonly variablesMap: Map<string, TLBVariable>,
+        readonly variablesMap: Map<string, TLBVariableNew>,
         readonly parametersMap: Map<string, TLBParameterNew>,
         readonly name: string,
         readonly fields: Array<TLBField>,

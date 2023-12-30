@@ -282,7 +282,7 @@ export function reorganizeWithArg(myMathExpr: TLBMathExpr, argName: string, varN
     throw new Error('')
 }
 
-export function getCalculatedExpression(expr: TLBMathExpr, constructor: TLBConstructor | TLBConstructorNew): TLBMathExpr {
+export function getCalculatedExpression(expr: TLBMathExpr, constructor: TLBConstructor): TLBMathExpr {
     if (expr instanceof TLBVarExpr) {
         let variable = constructor.variablesMap.get(expr.x);
         if (variable) {
@@ -300,7 +300,7 @@ export function getCalculatedExpression(expr: TLBMathExpr, constructor: TLBConst
     return expr;
 }
 
-export function calculateVariable(variable: TLBVariable, constructor: TLBConstructor | TLBConstructorNew) {
+export function calculateVariable(variable: TLBVariable, constructor: TLBConstructor) {
     if (variable.calculated) {
         return;
     }
