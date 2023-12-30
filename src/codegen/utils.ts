@@ -338,7 +338,7 @@ export function getConstructorTag(declaration: Declaration, input: string[]): TL
     throw new Error('Unknown tag' + tag);
   }
 
-function fixNaming(tlbType: TLBType) {
+function fixConstructorsNaming(tlbType: TLBType) {
     let constructorNames: Set<string> = new Set<string>();
     for (let i = 0; i < tlbType.constructors.length; i++) {
         let current = tlbType.constructors[i];
@@ -381,6 +381,31 @@ function opCodeSetsEqual(a: string[], b: string[]) {
     }
     return true;
   }
+
+export function fixCurrentVariableName(variable: TLBVariable, variablesSet: Set<string>) {
+    if (variable.name == 'anon0') {
+        console.log(variable)
+    }
+    let index = 0;
+    while (variablesSet.has(variable.name)) {
+        variable.name = goodVariableName(variable.name + '_' + index)
+        index++;
+    }
+}
+
+export function fixVariablesNaming(tlbCode: TLBCode) {
+    tlbCode.types.forEach(tlbType => {
+        tlbType.constructors.forEach(constructor => {
+            let variablesSet = new Set<string>();
+            constructor.variables.forEach(variable => {
+                fixCurrentVariableName(variable, variablesSet)
+            })
+            constructor.parameters.forEach(parameter => {
+                fixCurrentVariableName(parameter.variable, variablesSet)
+            })
+        })
+    })
+}
 
 export function checkAndRemovePrimitives(tlbCode: TLBCode, input: string[], typeDeclarations: Map<String, {declaration: Declaration, constructor: TLBConstructor}[]>) {
     let toDelete: string[] = []
@@ -500,11 +525,12 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
         });
         checkConstructors(tlbType);
         fillParameterNames(tlbType);
-        fixNaming(tlbType);
+        fixConstructorsNaming(tlbType);
         tlbType.constructors.sort(compareConstructors)
     });
     fillFields(tlbCode, typeDeclarations);
     checkAndRemovePrimitives(tlbCode, input, typeDeclarations);
+    fixVariablesNaming(tlbCode);
 }
 export function isBadVarName(name: string): boolean {
   let tsReserved = [

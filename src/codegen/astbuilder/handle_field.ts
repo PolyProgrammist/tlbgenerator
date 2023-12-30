@@ -5,13 +5,13 @@ import { GenDeclaration, ObjectProperty, Statement, TypedIdentifier } from "../g
 import { firstLower, getSubStructName, goodVariableName } from "../utils";
 import { getType } from "./handle_type";
 
-export function getField(field: FieldDefinition, slicePrefix: Array<number>, tlbCode: TLBCode, constructor: TLBConstructor, constructorLoadStatements: Statement[], subStructStoreStatements: Statement[], subStructProperties: TypedIdentifier[], subStructLoadProperties: ObjectProperty[], variableCombinatorName: string, variableSubStructName: string, jsCodeFunctionsDeclarations: GenDeclaration[], fieldIndex: string): TLBField | undefined {
+export function getField(field: FieldDefinition, slicePrefix: Array<number>, constructor: TLBConstructor, constructorLoadStatements: Statement[], subStructStoreStatements: Statement[], subStructProperties: TypedIdentifier[], subStructLoadProperties: ObjectProperty[], variableCombinatorName: string, variableSubStructName: string, jsCodeFunctionsDeclarations: GenDeclaration[], fieldIndex: string): TLBField | undefined {
   if (field instanceof FieldAnonymousDef) {
     let result: TLBField = { name: '', anonymous: true, fieldType: { kind: 'TLBBoolType' }, subFields: [] };
     let currentFieldIndex = 0;
     field.fields.forEach(field => {
       let theFieldIndex = fieldIndex + '_' + currentFieldIndex.toString();
-      let subfield = getField(field, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, theFieldIndex);
+      let subfield = getField(field, slicePrefix, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, theFieldIndex);
       if (subfield) {
         result.subFields.push(subfield)
       }
@@ -36,7 +36,7 @@ export function getField(field: FieldDefinition, slicePrefix: Array<number>, tlb
         return { name: fieldName, anonymous: true, fieldType: { kind: 'TLBExoticType' }, subFields: [] };
       } else {
         let theFieldIndex = fieldIndex + '_' + '0';
-        let subfield = getField(new FieldNamedDef(fieldName, field.expr.expr), slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, theFieldIndex)
+        let subfield = getField(new FieldNamedDef(fieldName, field.expr.expr), slicePrefix, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations, theFieldIndex)
         if (subfield) {
           let result: TLBField = { name: fieldName, anonymous: true, fieldType: { kind: 'TLBBoolType' }, subFields: [subfield] };
           return result;
@@ -52,7 +52,7 @@ export function getField(field: FieldDefinition, slicePrefix: Array<number>, tlb
       } else {
         tmpTypeName = field.expr.name;
       }
-      let fieldInfo = getType(field.expr, fieldName, true, false, variableCombinatorName, variableSubStructName, constructor, tmpTypeName, 0, tlbCode);
+      let fieldInfo = getType(field.expr, fieldName, true, false, variableCombinatorName, variableSubStructName, constructor, tmpTypeName, 0);
       return { name: fieldName, anonymous: !(field instanceof FieldNamedDef), fieldType: fieldInfo, subFields: [] };
     }
   }
@@ -73,7 +73,7 @@ export function fillFields(tlbCode: TLBCode, typeDeclarations: Map<String, {decl
 
       declaration.fields.forEach(fieldDecl => {
         fieldIndex++;
-        let field = getField(fieldDecl, slicePrefix, tlbCode, constructor, [], [], [], [], variableCombinatorName, variableSubStructName, [], fieldIndex.toString())
+        let field = getField(fieldDecl, slicePrefix, constructor, [], [], [], [], variableCombinatorName, variableSubStructName, [], fieldIndex.toString())
         if (field != undefined) {
           constructor.fields.push(field)
         }

@@ -435,6 +435,7 @@ export interface LoadFromNegationOutsideExpr {
 export interface AnonymousData {
     readonly kind: 'AnonymousData';
     readonly anon0: number;
+    readonly anon0: number;
 }
 
 export interface FalseAnonField {
@@ -2280,12 +2281,14 @@ export function storeLoadFromNegationOutsideExpr(loadFromNegationOutsideExpr: Lo
 
 }
 
-// bit$_ (## 1) = AnonymousData;
+// bit$_ (## 1) anon0:# = AnonymousData;
 
 export function loadAnonymousData(slice: Slice): AnonymousData {
     let anon0: number = slice.loadUint(1);
+    let anon0: number = slice.loadUint(32);
     return {
         kind: 'AnonymousData',
+        anon0: anon0,
         anon0: anon0,
     }
 
@@ -2294,6 +2297,7 @@ export function loadAnonymousData(slice: Slice): AnonymousData {
 export function storeAnonymousData(anonymousData: AnonymousData): (builder: Builder) => void {
     return ((builder: Builder) => {
         builder.storeUint(anonymousData.anon0, 1);
+        builder.storeUint(anonymousData.anon0, 32);
     })
 
 }
