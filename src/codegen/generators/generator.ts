@@ -4,10 +4,12 @@ import { GenDeclaration as TSGenDeclaration, TheNode } from "./typescript/tsgen"
 
 export interface CodeGenerator {
     jsCodeDeclarations: CommonGenDeclaration[]
+    jsCodeConstructorDeclarations: CommonGenDeclaration[]
+    jsCodeFunctionsDeclarations: CommonGenDeclaration[]
 
     addTonCoreClassUsage(name: string): void
     addBitLenFunction(): void
-    addTlbType(tlbType: TLBType, tlbCode: TLBCode, input: string[], jsCodeConstructorDeclarations: CommonGenDeclaration[], jsCodeFunctionsDeclarations: CommonGenDeclaration[]): void
+    addTlbType(tlbType: TLBType, tlbCode: TLBCode): void
     toCode(node: TheNode, code: CodeBuilder): CodeBuilder
 }
 

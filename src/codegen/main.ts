@@ -22,9 +22,6 @@ export function generate(tree: Program, input: string) {
     jsCodeDeclarations.push(declaration)
   })
 
-  let jsCodeConstructorDeclarations: CommonGenDeclaration[] = []
-  let jsCodeFunctionsDeclarations: CommonGenDeclaration[] = []
-
 
   let tlbCode: TLBCode = { types: new Map<string, TLBType>() }
 
@@ -32,15 +29,15 @@ export function generate(tree: Program, input: string) {
 
   fillConstructors(tree.declarations, tlbCode, splittedInput);
 
-  tlbCode.types.forEach((tlbType: TLBType) => { codeGenerator.addTlbType(tlbType, tlbCode, splittedInput, jsCodeConstructorDeclarations, jsCodeFunctionsDeclarations) });
+  tlbCode.types.forEach((tlbType: TLBType) => { codeGenerator.addTlbType(tlbType, tlbCode) });
 
   let generatedCode = ''
 
-  jsCodeConstructorDeclarations.forEach(element => {
+  codeGenerator.jsCodeConstructorDeclarations.forEach(element => {
     jsCodeDeclarations.push(element)
   });
 
-  jsCodeFunctionsDeclarations.forEach(element => {
+  codeGenerator.jsCodeFunctionsDeclarations.forEach(element => {
     jsCodeDeclarations.push(element)
   });
 

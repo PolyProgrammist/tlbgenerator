@@ -5,10 +5,11 @@ import { CodeBuilder } from "../CodeBuilder";
 import { CodeGenerator } from "../generator";
 import { BinaryExpression, GenDeclaration, ObjectProperty, Statement, StructDeclaration, TheNode, TypeExpression, TypeParametersExpression, TypedIdentifier, tArrowFunctionExpression, tArrowFunctionType, tBinaryExpression, tComment, tExpressionStatement, tFunctionCall, tFunctionDeclaration, tIdentifier, tIfStatement, tImportDeclaration, tMemberExpression, tNumericLiteral, tObjectExpression, tObjectProperty, tReturnStatement, tStringLiteral, tStructDeclaration, tTypeParametersExpression, tTypeWithParameters, tTypedIdentifier, tUnaryOpExpression, tUnionTypeDeclaration, tUnionTypeExpression, toCode } from "./tsgen";
 import { convertToAST, getCondition, getParamVarExpr, getTypeParametersExpression } from "./utils";
-import { BuiltinOneArgExpr, BuiltinZeroArgs, CombinatorExpr, CondExpr, FieldBuiltinDef, FieldExprDef, FieldNamedDef, MathExpr, NameExpr } from "../../../ast/nodes";
 
 export class TypescriptGenerator implements CodeGenerator {
     jsCodeDeclarations: GenDeclaration[] = []
+    jsCodeConstructorDeclarations: GenDeclaration[] = []
+    jsCodeFunctionsDeclarations: GenDeclaration[] = []
 
     addTonCoreClassUsage(name: string) {
         this.jsCodeDeclarations.push(tImportDeclaration(tIdentifier(name), tStringLiteral('ton')))
@@ -18,7 +19,7 @@ export class TypescriptGenerator implements CodeGenerator {
             tExpressionStatement(tIdentifier('return n.toString(2).length;'))
         ]))
     }
-    addTlbType(tlbType: TLBType, tlbCode: TLBCode, input: string[], jsCodeConstructorDeclarations: GenDeclaration[], jsCodeFunctionsDeclarations: GenDeclaration[]): void {
+    addTlbType(tlbType: TLBType, tlbCode: TLBCode): void {
         let variableCombinatorName = goodVariableName(firstLower(tlbType.name), '0')
         let subStructsUnion: TypeExpression[] = []
         let subStructDeclarations: StructDeclaration[] = []
@@ -65,7 +66,7 @@ export class TypescriptGenerator implements CodeGenerator {
             })
 
             constructor.fields.forEach(field => {
-                handleField(field, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, jsCodeFunctionsDeclarations); 
+                handleField(field, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, this.jsCodeFunctionsDeclarations); 
             })
 
             subStructsUnion.push(tTypeWithParameters(tIdentifier(subStructName), structTypeParametersExpr));
@@ -115,7 +116,7 @@ export class TypescriptGenerator implements CodeGenerator {
 
             subStructDeclarations.push(structX)
 
-            jsCodeFunctionsDeclarations.push(tComment(constructor.declaration))
+            this.jsCodeFunctionsDeclarations.push(tComment(constructor.declaration))
 
         });
 
@@ -166,14 +167,14 @@ export class TypescriptGenerator implements CodeGenerator {
 
         if (tlbType.constructors.length > 1) {
             let unionTypeDecl = tUnionTypeDeclaration(tTypeWithParameters(tIdentifier(tlbType.name), structTypeParametersExpr), tUnionTypeExpression(subStructsUnion))
-            jsCodeConstructorDeclarations.push(unionTypeDecl)
+            this.jsCodeConstructorDeclarations.push(unionTypeDecl)
         }
         subStructDeclarations.forEach(element => {
-            jsCodeConstructorDeclarations.push(element)
+            this.jsCodeConstructorDeclarations.push(element)
         });
 
-        jsCodeFunctionsDeclarations.push(loadFunction)
-        jsCodeFunctionsDeclarations.push(storeFunction)
+        this.jsCodeFunctionsDeclarations.push(loadFunction)
+        this.jsCodeFunctionsDeclarations.push(storeFunction)
     }
 
     toCode(node: TheNode, code: CodeBuilder = new CodeBuilder()): CodeBuilder {
