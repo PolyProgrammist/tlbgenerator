@@ -4,7 +4,9 @@ import { CodeBuilder } from "../CodeBuilder";
 import { CodeGenerator } from "../generator";
 import { BinaryExpression, Expression, FunctionDeclaration, GenDeclaration, ObjectProperty, Statement, StructDeclaration, TheNode, TypeExpression, TypeParametersExpression, TypedIdentifier, tArrowFunctionExpression, tArrowFunctionType, tBinaryExpression, tComment, tDeclareVariable, tExpressionStatement, tFunctionCall, tFunctionDeclaration, tIdentifier, tIfStatement, tImportDeclaration, tMemberExpression, tMultiStatement, tNumericLiteral, tObjectExpression, tObjectProperty, tReturnStatement, tStringLiteral, tStructDeclaration, tTernaryExpression, tTypeParametersExpression, tTypeWithParameters, tTypedIdentifier, tUnaryOpExpression, tUnionTypeDeclaration, tUnionTypeExpression, toCode } from "./tsgen";
 import { addLoadProperty, convertToAST, getCondition, getNegationDerivationFunctionBody, getParamVarExpr, getTypeParametersExpression, sliceLoad } from "./utils";
-import { ExprForParam, FieldInfoType, isBigInt } from "./handle_type";
+import { isBigInt } from './utils';
+import { ExprForParam } from './utils';
+import { FieldInfoType } from './utils';
 
 
 type ConstructorContext = {

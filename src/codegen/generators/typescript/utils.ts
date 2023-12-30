@@ -1,7 +1,7 @@
 import { BuiltinZeroArgs, FieldCurlyExprDef, FieldNamedDef, Program, BuiltinOneArgExpr, NumberExpr, NameExpr, CombinatorExpr, FieldBuiltinDef, MathExpr, SimpleExpr, NegateExpr, CellRefExpr, FieldDefinition, FieldAnonymousDef, CondExpr, CompareExpr, Expression as ParserExpression } from '../../../ast/nodes'
-import { tIdentifier, tArrowFunctionExpression, tArrowFunctionType, tBinaryExpression, tBinaryNumericLiteral, tDeclareVariable, tExpressionStatement, tFunctionCall, tFunctionDeclaration, tIfStatement, tImportDeclaration, tMemberExpression, tNumericLiteral, tObjectExpression, tObjectProperty, tReturnStatement, tStringLiteral, tStructDeclaration, tTypeWithParameters, tTypedIdentifier, tUnionTypeDeclaration, toCode, TypeWithParameters, ArrowFunctionExpression, tForCycle, tTypeParametersExpression, tUnaryOpExpression } from './tsgen'
-import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructor, TLBParameter, TLBVariable, TLBUnaryOp } from '../../ast'
-import { Expression, Statement, Identifier, BinaryExpression, ASTNode, TypeExpression, TypeParametersExpression, ObjectProperty, TypedIdentifier } from './tsgen'
+import { tIdentifier, tArrowFunctionExpression, tArrowFunctionType, tBinaryExpression, tBinaryNumericLiteral, tDeclareVariable, tExpressionStatement, tFunctionCall, tFunctionDeclaration, tIfStatement, tImportDeclaration, tMemberExpression, tNumericLiteral, tObjectExpression, tObjectProperty, tReturnStatement, tStringLiteral, tStructDeclaration, tTypeWithParameters, tTypedIdentifier, tUnionTypeDeclaration, toCode, TypeWithParameters, ArrowFunctionExpression, tForCycle, tTypeParametersExpression, tUnaryOpExpression, Expression, Statement, TypeExpression } from './tsgen'
+import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructor, TLBParameter, TLBVariable, TLBUnaryOp, TLBNumberType } from '../../ast'
+import { Identifier, BinaryExpression, ASTNode, TypeParametersExpression, ObjectProperty, TypedIdentifier } from './tsgen'
 import { getCalculatedExpression, getSubStructName, fillConstructors, firstLower, getCurrentSlice, bitLen, convertToMathExpr, splitForTypeValue, deriveMathExpression, goodVariableName } from '../../utils'
 
 
@@ -122,3 +122,31 @@ export function getCondition(conditions: Array<BinaryExpression>): Expression {
         return tIdentifier('true');
     }
 }
+export type FieldInfoType = {
+  typeParamExpr: TypeExpression | undefined
+  loadExpr: Expression | undefined
+  loadFunctionExpr: Expression | undefined
+  storeExpr: Statement | undefined
+  storeExpr2: Statement | undefined
+  storeFunctionExpr: Expression | undefined
+  negatedVariablesLoads: Array<{ name: string; expression: Expression} >
+}
+export type ExprForParam = {
+  argLoadExpr: Expression | undefined
+  argStoreExpr: Expression | undefined
+  paramType: string
+  fieldLoadSuffix: string
+  fieldStoreSuffix: string
+}
+export function isBigInt(fieldType: TLBNumberType) {
+  if (fieldType.bits instanceof TLBNumberExpr) {
+    if (fieldType.bits.n <= 64) {
+      return false
+    }
+  }
+  if (fieldType.maxBits && fieldType.maxBits <= 64) {
+    return false
+  }
+  return true
+}
+
