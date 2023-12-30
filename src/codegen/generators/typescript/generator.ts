@@ -243,7 +243,7 @@ export class TypescriptGenerator implements CodeGenerator {
                 throw new Error('')
             }
             let thefield: TLBFieldType = field.fieldType
-            let fieldInfo = this.handleType(field, thefield, true, ctx.variableCombinatorName, ctx.variableSubStructName, currentSlice, currentCell, ctx.constructor, this.jsCodeFunctionsDeclarations, 0, this.tlbCode);
+            let fieldInfo = this.handleType(field, thefield, true, ctx.variableCombinatorName, ctx.variableSubStructName, currentSlice, currentCell, ctx.constructor, 0);
             if (fieldInfo.loadExpr) {
                 addLoadProperty(field.name, fieldInfo.loadExpr, fieldInfo.typeParamExpr, ctx.constructorLoadStatements, ctx.subStructLoadProperties);
             }
@@ -260,7 +260,7 @@ export class TypescriptGenerator implements CodeGenerator {
     }
 
 
-    handleType(field: TLBField, fieldType: TLBFieldType, isField: boolean, variableCombinatorName: string, variableSubStructName: string, currentSlice: string, currentCell: string, constructor: TLBConstructor, jsCodeFunctionsDeclarations: GenDeclaration[], argIndex: number, tlbCode: TLBCode): FieldInfoType {
+    handleType(field: TLBField, fieldType: TLBFieldType, isField: boolean, variableCombinatorName: string, variableSubStructName: string, currentSlice: string, currentCell: string, constructor: TLBConstructor, argIndex: number): FieldInfoType {
         let fieldName = field.name
         let theSlice = 'slice'; // TODO: use slice from field
         let theCell = 'builder';
@@ -310,7 +310,7 @@ export class TypescriptGenerator implements CodeGenerator {
             let getParameterFunctionId = tIdentifier(variableSubStructName + '_get_' + fieldType.variableName)
             if (field.fieldType.kind == 'TLBNamedType') {
                 let fieldTypeName = field.fieldType.name
-                jsCodeFunctionsDeclarations.push(tFunctionDeclaration(getParameterFunctionId, tTypeParametersExpression([]), tIdentifier('number'), [tTypedIdentifier(tIdentifier(goodVariableName(fieldName)), tIdentifier(fieldTypeName))], getNegationDerivationFunctionBody(tlbCode, fieldTypeName, argIndex, fieldName)))
+                this.jsCodeFunctionsDeclarations.push(tFunctionDeclaration(getParameterFunctionId, tTypeParametersExpression([]), tIdentifier('number'), [tTypedIdentifier(tIdentifier(goodVariableName(fieldName)), tIdentifier(fieldTypeName))], getNegationDerivationFunctionBody(this.tlbCode, fieldTypeName, argIndex, fieldName)))
             }
             result.negatedVariablesLoads.push({ name: fieldType.variableName, expression: tFunctionCall(getParameterFunctionId, [tIdentifier(fieldName)]) })
         } else if (fieldType.kind == 'TLBNamedType' && fieldType.arguments.length == 0) {
@@ -327,7 +327,7 @@ export class TypescriptGenerator implements CodeGenerator {
         } else if (fieldType.kind == 'TLBCondType') {
             let subExprInfo: FieldInfoType
             let conditionExpr: Expression;
-            subExprInfo = this.handleType(field, fieldType.value, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, argIndex, tlbCode);
+            subExprInfo = this.handleType(field, fieldType.value, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, argIndex);
             conditionExpr = convertToAST(fieldType.condition, constructor, true)
             if (subExprInfo.typeParamExpr) {
                 result.typeParamExpr = tUnionTypeExpression([subExprInfo.typeParamExpr, tIdentifier('undefined')])
@@ -345,7 +345,7 @@ export class TypescriptGenerator implements CodeGenerator {
             let arrayLength: Expression
             let subExprInfo: FieldInfoType
             arrayLength = convertToAST(fieldType.times, constructor, true);
-            subExprInfo = this.handleType(field, fieldType.value, false, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, argIndex, tlbCode);
+            subExprInfo = this.handleType(field, fieldType.value, false, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, argIndex);
             let currentParam = insideStoreParameters[0]
             let currentParam2 = insideStoreParameters2[0]
             if (subExprInfo.loadExpr) {
@@ -365,7 +365,7 @@ export class TypescriptGenerator implements CodeGenerator {
             let currentCell = getCurrentSlice([1, 0], 'cell');
 
             let subExprInfo: FieldInfoType;
-            subExprInfo = this.handleType(field, fieldType.value, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, argIndex, tlbCode)
+            subExprInfo = this.handleType(field, fieldType.value, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, argIndex)
             if (subExprInfo.loadExpr) {
                 result.typeParamExpr = subExprInfo.typeParamExpr;
                 result.storeExpr = subExprInfo.storeExpr;
@@ -397,7 +397,7 @@ export class TypescriptGenerator implements CodeGenerator {
             if (fieldType.kind == 'TLBNamedType') {
                 fieldType.arguments.forEach(arg => {
                     argIndex++;
-                    let subExprInfo = this.handleType(field, arg, false, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, jsCodeFunctionsDeclarations, argIndex, tlbCode);
+                    let subExprInfo = this.handleType(field, arg, false, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, argIndex);
                     if (subExprInfo.typeParamExpr) {
                         typeExpression.typeParameters.push(subExprInfo.typeParamExpr);
                     }
