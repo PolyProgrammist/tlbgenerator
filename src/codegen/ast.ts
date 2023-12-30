@@ -51,9 +51,8 @@ export class TLBVariableNew {
         readonly isConst: boolean,
         readonly negated: boolean,
         readonly type: TLBVariableType,
-        readonly name: string | undefined,
+        readonly name: string,
         readonly isField: boolean,
-        readonly calculated: boolean,
         readonly deriveExpr?: TLBMathExpr,
         readonly initialExpr?: TLBMathExpr
     ) {

@@ -571,13 +571,15 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
 }
 
 export function converVariable(tlbVariable: TLBVariable): TLBVariableNew {
+    if (tlbVariable.name == undefined) {
+        throw new Error('Variable is undefined')
+    }
     return new TLBVariableNew(
         tlbVariable.isConst,
         tlbVariable.negated,
         tlbVariable.type,
         tlbVariable.name,
         tlbVariable.isField,
-        tlbVariable.calculated,
         tlbVariable.deriveExpr,
         tlbVariable.initialExpr,
     )
@@ -620,7 +622,7 @@ export function convertToReadonly(tlbCode: TLBCode): TLBCodeNew {
         })
         let newType = new TLBTypeNew(
             value.name,
-            value.constructors,
+            newConstructors,
         )
         newTypes.set(key, newType)
         
@@ -672,7 +674,7 @@ export function goodVariableName(name: string, possibleSuffix: string = '0'): st
     }
     return name
 }
-export function getSubStructName(tlbType: TLBTypeNew | TLBType, constructor: TLBConstructorNew): string {
+export function getSubStructName(tlbType: TLBTypeNew | TLBType, constructor: TLBConstructor | TLBConstructorNew): string {
     if (tlbType.constructors.length > 1) {
         return tlbType.name + '_' + constructor.name
     } else {
