@@ -1,5 +1,5 @@
 import { SimpleExpr, NameExpr, NumberExpr, MathExpr, FieldBuiltinDef, NegateExpr, Declaration, CompareExpr, FieldCurlyExprDef, FieldNamedDef, FieldAnonymousDef, FieldExprDef } from "../ast/nodes";
-import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructorTag, TLBConstructor, TLBParameter, TLBVariable, TLBField } from "./ast"
+import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructorTag, TLBConstructor, TLBParameter, TLBVariable, TLBField, TLBCodeNew, TLBTypeNew } from "./ast"
 import * as crc32 from "crc-32";
 import { fillFields } from "./astbuilder/handle_field";
 
@@ -165,7 +165,7 @@ function constructorPriority(c: TLBConstructor): number {
         result++;
     }
     c.parameters.forEach(parameter => {
-        if (parameter.variable.const) {
+        if (parameter.variable.isConst) {
             result++;
         }
     })
@@ -473,10 +473,10 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
             let fieldIndex = 0;
             declaration.fields.forEach(field => {
                 if (field instanceof FieldBuiltinDef) {
-                    constructor.variables.push({ name: field.name, const: false, negated: false, type: field.type, calculated: false, isField: false })
+                    constructor.variables.push({ name: field.name, isConst: false, negated: false, type: field.type, calculated: false, isField: false })
                 }
                 if (field instanceof FieldNamedDef) {
-                    constructor.variables.push({ name: field.name, const: false, negated: false, type: '#', calculated: false, isField: true })
+                    constructor.variables.push({ name: field.name, isConst: false, negated: false, type: '#', calculated: false, isField: true })
                 }
                 fieldIndex++;
             })
@@ -528,7 +528,7 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
 
                     if (derivedExpr.name == undefined) {
                         if (toBeConst) {
-                            parameter = { variable: { negated: true, const: toBeConst, type: '#', name: undefined, deriveExpr: derivedExpr.derived, initialExpr: derivedExpr.derived, calculated: false, isField: false }, paramExpr: derivedExpr.derived };
+                            parameter = { variable: { negated: true, isConst: toBeConst, type: '#', name: undefined, deriveExpr: derivedExpr.derived, initialExpr: derivedExpr.derived, calculated: false, isField: false }, paramExpr: derivedExpr.derived };
                         } else {
                             throw new Error('Cannot identify combinator arg ' + element)
                         }
@@ -536,7 +536,7 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
                         let variable = constructor.variablesMap.get(derivedExpr.name)
                         if (variable) {
                             variable.negated = true;
-                            variable.const = toBeConst;
+                            variable.isConst = toBeConst;
                             variable.initialExpr = derivedExpr.derived
                             parameter = { variable: variable, paramExpr: derivedExpr.derived }
                         } else {
@@ -544,7 +544,7 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
                         }
                     } 
                 } else if (element instanceof NumberExpr) {
-                    parameter = { variable: { negated: false, const: true, type: '#', name: undefined, deriveExpr: new TLBNumberExpr(element.num), initialExpr: new TLBNumberExpr(element.num), calculated: false, isField: false }, paramExpr: new TLBNumberExpr(element.num) }
+                    parameter = { variable: { negated: false, isConst: true, type: '#', name: undefined, deriveExpr: new TLBNumberExpr(element.num), initialExpr: new TLBNumberExpr(element.num), calculated: false, isField: false }, paramExpr: new TLBNumberExpr(element.num) }
                 } else {
                     throw new Error('Cannot identify combinator arg: ' + element)
                 }
@@ -566,6 +566,11 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
     checkAndRemovePrimitives(tlbCode, input, typeDeclarations);
     fixVariablesNaming(tlbCode);
 }
+
+export function convertToReadonly(tlbCode: TLBCode): TLBCodeNew {
+    return new TLBCodeNew(tlbCode.types)
+}
+
 export function isBadVarName(name: string): boolean {
     let tsReserved = [
         'abstract', 'arguments', 'await', 'boolean',
@@ -608,7 +613,7 @@ export function goodVariableName(name: string, possibleSuffix: string = '0'): st
     }
     return name
 }
-export function getSubStructName(tlbType: TLBType, constructor: TLBConstructor): string {
+export function getSubStructName(tlbType: TLBTypeNew, constructor: TLBConstructor): string {
     if (tlbType.constructors.length > 1) {
         return tlbType.name + '_' + constructor.name
     } else {

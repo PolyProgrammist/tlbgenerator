@@ -1,4 +1,4 @@
-import { TLBCode, TLBConstructor, TLBField, TLBFieldType, TLBType } from "../../ast";
+import { TLBCode, TLBCodeNew, TLBConstructor, TLBField, TLBFieldType, TLBType, TLBTypeNew } from "../../ast";
 import { firstLower, getCurrentSlice, getStringDeclaration, getSubStructName, goodVariableName } from "../../utils";
 import { CodeBuilder } from "../CodeBuilder";
 import { CodeGenerator } from "../generator";
@@ -23,9 +23,9 @@ export class TypescriptGenerator implements CodeGenerator {
     jsCodeDeclarations: GenDeclaration[] = []
     jsCodeConstructorDeclarations: GenDeclaration[] = []
     jsCodeFunctionsDeclarations: GenDeclaration[] = []
-    tlbCode: TLBCode
+    tlbCode: TLBCodeNew
 
-    constructor(tlbCode: TLBCode) {
+    constructor(tlbCode: TLBCodeNew) {
         this.tlbCode = tlbCode
     }
 
@@ -37,7 +37,7 @@ export class TypescriptGenerator implements CodeGenerator {
             tExpressionStatement(tIdentifier('return n.toString(2).length;'))
         ]))
     }
-    addTlbType(tlbType: TLBType): void {
+    addTlbType(tlbType: TLBTypeNew): void {
         let variableCombinatorName = goodVariableName(firstLower(tlbType.name), '0')
         let subStructsUnion: TypeExpression[] = []
         let subStructDeclarations: StructDeclaration[] = []
@@ -82,7 +82,7 @@ export class TypescriptGenerator implements CodeGenerator {
                     }
                     subStructProperties.push(tTypedIdentifier(tIdentifier(variable.name), tIdentifier('number')));
                     let parameter = constructor.parametersMap.get(variable.name)
-                    if (parameter && !parameter.variable.const && !parameter.variable.negated) {
+                    if (parameter && !parameter.variable.isConst && !parameter.variable.negated) {
                         subStructLoadProperties.push(tObjectProperty(tIdentifier(variable.name), getParamVarExpr(parameter, constructor)))
                     }
                 }
@@ -124,7 +124,7 @@ export class TypescriptGenerator implements CodeGenerator {
                     constructorLoadStatements = loadBitsStatement.concat(constructorLoadStatements);
                 }
                 constructor.parameters.forEach(param => {
-                    if (param.variable.const && !param.variable.negated) {
+                    if (param.variable.isConst && !param.variable.negated) {
                         let argName = param.variable.name;
                         if (argName == undefined) {
                             throw new Error('')

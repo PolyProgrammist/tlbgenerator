@@ -1,6 +1,6 @@
 import { BuiltinZeroArgs, FieldCurlyExprDef, FieldNamedDef, Program, BuiltinOneArgExpr, NumberExpr, NameExpr, CombinatorExpr, FieldBuiltinDef, MathExpr, SimpleExpr, NegateExpr, CellRefExpr, FieldDefinition, FieldAnonymousDef, CondExpr, CompareExpr, Expression as ParserExpression } from '../../../ast/nodes'
 import { tIdentifier, tArrowFunctionExpression, tArrowFunctionType, tBinaryExpression, tBinaryNumericLiteral, tDeclareVariable, tExpressionStatement, tFunctionCall, tFunctionDeclaration, tIfStatement, tImportDeclaration, tMemberExpression, tNumericLiteral, tObjectExpression, tObjectProperty, tReturnStatement, tStringLiteral, tStructDeclaration, tTypeWithParameters, tTypedIdentifier, tUnionTypeDeclaration, toCode, TypeWithParameters, ArrowFunctionExpression, tForCycle, tTypeParametersExpression, tUnaryOpExpression, Expression, Statement, TypeExpression } from './tsgen'
-import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructor, TLBParameter, TLBVariable, TLBUnaryOp, TLBNumberType } from '../../ast'
+import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructor, TLBParameter, TLBVariable, TLBUnaryOp, TLBNumberType, TLBCodeNew } from '../../ast'
 import { Identifier, BinaryExpression, ASTNode, TypeParametersExpression, ObjectProperty, TypedIdentifier } from './tsgen'
 import { getCalculatedExpression, getSubStructName, fillConstructors, firstLower, getCurrentSlice, bitLen, convertToMathExpr, splitForTypeValue, deriveMathExpression, goodVariableName } from '../../utils'
 
@@ -51,7 +51,7 @@ export function getVarExprByName(name: string, constructor: TLBConstructor): Exp
   return tIdentifier(name)
 }
 
-export function getNegationDerivationFunctionBody(tlbCode: TLBCode, typeName: string, parameterIndex: number, parameterName: string): Statement[] {
+export function getNegationDerivationFunctionBody(tlbCode: TLBCodeNew, typeName: string, parameterIndex: number, parameterName: string): Statement[] {
   let result: Statement[] = [];
   let tlbType: TLBType | undefined = tlbCode.types.get(typeName);
   if (!tlbType) {
@@ -66,7 +66,7 @@ export function getNegationDerivationFunctionBody(tlbCode: TLBCode, typeName: st
       let getExpression: Expression;
       getExpression = convertToAST(parameter.paramExpr, constructor);
       let statements = [];
-      if (!parameter.variable.const) {
+      if (!parameter.variable.isConst) {
         statements.push(tExpressionStatement(tDeclareVariable(tIdentifier(parameter.variable.name), tMemberExpression(tIdentifier(parameterName), tIdentifier(parameter.variable.name)))));
       }
       statements.push(tReturnStatement(getExpression));
