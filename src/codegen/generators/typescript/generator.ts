@@ -107,8 +107,8 @@ export class TypescriptGenerator implements CodeGenerator {
             let structX = tStructDeclaration(tIdentifier(subStructName), subStructProperties, structTypeParametersExpr);
 
             constructor.constraints.forEach(constraint => {
-                let loadConstraintAST = convertToAST(constraint, constructor, true);
-                let storeConstraintAST = convertToAST(constraint, constructor, true, tIdentifier(variableCombinatorName));
+                let loadConstraintAST = convertToAST(constraint, constructor);
+                let storeConstraintAST = convertToAST(constraint, constructor, tIdentifier(variableCombinatorName));
                 let exceptionCommentLastPart = ` is not satisfied while loading "${getSubStructName(tlbType, constructor)}" for type "${tlbType.name}"`
                 constructorLoadStatements.push(tIfStatement(tUnaryOpExpression('!', loadConstraintAST), [tExpressionStatement(tIdentifier("throw new Error('Condition " + toCode(loadConstraintAST).code + exceptionCommentLastPart + "')"))]));
                 subStructStoreStatements.push(tIfStatement(tUnaryOpExpression('!', storeConstraintAST), [tExpressionStatement(tIdentifier("throw new Error('Condition " + toCode(storeConstraintAST).code + exceptionCommentLastPart + "')"))]))
@@ -294,8 +294,8 @@ export class TypescriptGenerator implements CodeGenerator {
 
         if (fieldType.kind == 'TLBNumberType') {
             exprForParam = {
-                argLoadExpr: convertToAST(fieldType.bits, ctx.constructor, true),
-                argStoreExpr: convertToAST(fieldType.storeBits, ctx.constructor, false, tIdentifier(ctx.variableCombinatorName)),
+                argLoadExpr: convertToAST(fieldType.bits, ctx.constructor),
+                argStoreExpr: convertToAST(fieldType.storeBits, ctx.constructor, tIdentifier(ctx.variableCombinatorName)),
                 paramType: 'number',
                 fieldLoadSuffix: fieldType.signed ? 'Int' : 'Uint',
                 fieldStoreSuffix: fieldType.signed ? 'Int' : 'Uint'
@@ -307,7 +307,7 @@ export class TypescriptGenerator implements CodeGenerator {
         } else if (fieldType.kind == 'TLBBitsType') {
             exprForParam = {
                 argLoadExpr: convertToAST(fieldType.bits, ctx.constructor),
-                argStoreExpr: convertToAST(fieldType.bits, ctx.constructor, false, tIdentifier(ctx.variableSubStructName)),
+                argStoreExpr: convertToAST(fieldType.bits, ctx.constructor, tIdentifier(ctx.variableSubStructName)),
                 paramType: 'BitString', fieldLoadSuffix: 'Bits', fieldStoreSuffix: 'Bits'
             }
         } else if (fieldType.kind == 'TLBCellType') {
@@ -317,7 +317,7 @@ export class TypescriptGenerator implements CodeGenerator {
         } else if (fieldType.kind == 'TLBAddressType') {
             exprForParam = { argLoadExpr: undefined, argStoreExpr: undefined, paramType: 'Address', fieldLoadSuffix: 'Address', fieldStoreSuffix: 'Address' }
         } else if (fieldType.kind == 'TLBExprMathType') {
-            result.loadExpr = convertToAST(fieldType.expr, ctx.constructor, true);
+            result.loadExpr = convertToAST(fieldType.expr, ctx.constructor);
             result.storeExpr = tExpressionStatement(result.loadExpr)
         } else if (fieldType.kind == 'TLBNegatedType') {
             let getParameterFunctionId = tIdentifier(ctx.variableSubStructName + '_get_' + fieldType.variableName)
@@ -341,7 +341,7 @@ export class TypescriptGenerator implements CodeGenerator {
             let subExprInfo: FieldInfoType
             let conditionExpr: Expression;
             subExprInfo = this.handleType(field, fieldType.value, true, ctx, currentSlice, currentCell, argIndex);
-            conditionExpr = convertToAST(fieldType.condition, ctx.constructor, true)
+            conditionExpr = convertToAST(fieldType.condition, ctx.constructor)
             if (subExprInfo.typeParamExpr) {
                 result.typeParamExpr = tUnionTypeExpression([subExprInfo.typeParamExpr, tIdentifier('undefined')])
             }
@@ -357,7 +357,7 @@ export class TypescriptGenerator implements CodeGenerator {
         } else if (fieldType.kind == 'TLBMultipleType') {
             let arrayLength: Expression
             let subExprInfo: FieldInfoType
-            arrayLength = convertToAST(fieldType.times, ctx.constructor, true);
+            arrayLength = convertToAST(fieldType.times, ctx.constructor);
             subExprInfo = this.handleType(field, fieldType.value, false, ctx, currentSlice, currentCell, argIndex);
             let currentParam = insideStoreParameters[0]
             let currentParam2 = insideStoreParameters2[0]

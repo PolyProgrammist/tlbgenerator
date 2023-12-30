@@ -89,7 +89,7 @@ export function addLoadProperty(name: string, loadExpr: Expression, typeExpr: Ty
   subStructLoadProperties.push(tObjectProperty(nameId, nameId))
 }
 
-export function convertToAST(mathExpr: TLBMathExpr, constructor: TLBConstructorNew, calculate: boolean = true, objectId?: Identifier): Expression {
+export function convertToAST(mathExpr: TLBMathExpr, constructor: TLBConstructorNew, objectId?: Identifier): Expression {
   if (mathExpr instanceof TLBVarExpr) {
     let varName = mathExpr.x;
     if (objectId != undefined) {
@@ -105,13 +105,13 @@ export function convertToAST(mathExpr: TLBMathExpr, constructor: TLBConstructorN
     if (operation == '=') {
       operation = '==';
     }
-    return tBinaryExpression(convertToAST(mathExpr.left, constructor, calculate, objectId), operation, convertToAST(mathExpr.right, constructor, calculate, objectId));
+    return tBinaryExpression(convertToAST(mathExpr.left, constructor, objectId), operation, convertToAST(mathExpr.right, constructor, objectId));
   }
   if (mathExpr instanceof TLBUnaryOp) {
     if (mathExpr.operation == '.') {
-      return tFunctionCall(tIdentifier('bitLen'), [convertToAST(mathExpr.value, constructor, calculate, objectId)])
+      return tFunctionCall(tIdentifier('bitLen'), [convertToAST(mathExpr.value, constructor, objectId)])
     }
-    return tUnaryOpExpression(mathExpr.operation, convertToAST(mathExpr.value, constructor, calculate, objectId))
+    return tUnaryOpExpression(mathExpr.operation, convertToAST(mathExpr.value, constructor, objectId))
   }
   throw new Error(`Type ${constructor.tlbType}, constructor ${constructor.name}: couldn't convert to math expression: ${mathExpr}`)
 }
