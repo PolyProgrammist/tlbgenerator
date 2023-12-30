@@ -11,7 +11,7 @@ export type FieldInfoType = {
   storeExpr: Statement | undefined
   storeExpr2: Statement | undefined
   storeFunctionExpr: Expression | undefined
-  negatedVariablesLoads: Array<{ name: string; expression: Expression} >
+  negatedVariablesLoads: Array<{ name: string; expression: Expression }>
 }
 export type ExprForParam = {
   argLoadExpr: Expression | undefined
@@ -31,7 +31,7 @@ export function sliceLoad(slicePrefix: number[], currentSlice: string) {
     ), []),))
 }
 
-export function simpleCycle(varName: string, finish: Expression) : Statement {
+export function simpleCycle(varName: string, finish: Expression): Statement {
   return tForCycle(tDeclareVariable(tIdentifier(varName), tNumericLiteral(0)), tBinaryExpression(tIdentifier(varName), '<', finish), tNumericLiteral(5), [])
 }
 
@@ -54,27 +54,28 @@ export function getVarExprByName(name: string, constructor: TLBConstructor): Exp
 export function getNegationDerivationFunctionBody(tlbCode: TLBCode, typeName: string, parameterIndex: number, parameterName: string): Statement[] {
   let result: Statement[] = [];
   let tlbType: TLBType | undefined = tlbCode.types.get(typeName);
-  tlbType?.constructors.forEach(constructor => {
-    if (tlbType != undefined) {
-      let parameter = constructor.parameters[parameterIndex];
-      if (parameter) {
-        let getExpression: Expression;
-        getExpression = convertToAST(parameter.paramExpr, constructor);
-        let statements = [];
-        if (!parameter.variable.const) {
-          statements.push(tExpressionStatement(tDeclareVariable(tIdentifier(parameter.variable.name), tMemberExpression(tIdentifier(parameterName), tIdentifier(parameter.variable.name)))));
-        }
-        statements.push(tReturnStatement(getExpression));
+  if (!tlbType) {
+    throw new Error(`Can not find type ${typeName}`)
+  }
+  tlbType.constructors.forEach(constructor => {
+    let parameter = constructor.parameters[parameterIndex];
+    if (parameter) {
+      let getExpression: Expression;
+      getExpression = convertToAST(parameter.paramExpr, constructor);
+      let statements = [];
+      if (!parameter.variable.const) {
+        statements.push(tExpressionStatement(tDeclareVariable(tIdentifier(parameter.variable.name), tMemberExpression(tIdentifier(parameterName), tIdentifier(parameter.variable.name)))));
+      }
+      statements.push(tReturnStatement(getExpression));
+      if (tlbType) {
         result.push(tIfStatement(tBinaryExpression(tMemberExpression(tIdentifier(parameterName), tIdentifier('kind')), '==', tStringLiteral(getSubStructName(tlbType, constructor))), statements))
       }
     }
   });
 
-  if (tlbType) {
-    let exceptionTypesComment = tlbType.constructors.map(constructor => {return `"${tlbType ? getSubStructName(tlbType, constructor) : ''}"`}).join(', ')
-    let exceptionComment = tExpressionStatement(tIdentifier("throw new Error('" + `Expected one of ${exceptionTypesComment} for type "${tlbType.name}" while getting "${parameterName}", but data does not satisfy any constructor` + "')"))
-    result.push(exceptionComment)
-  }
+  let exceptionTypesComment = tlbType.constructors.map(constructor => { return `"${tlbType ? getSubStructName(tlbType, constructor) : ''}"` }).join(', ')
+  let exceptionComment = tExpressionStatement(tIdentifier("throw new Error('" + `Expected one of ${exceptionTypesComment} for type "${tlbType.name}" while getting "${parameterName}", but data does not satisfy any constructor` + "')"))
+  result.push(exceptionComment)
 
   return result;
 }
@@ -86,57 +87,57 @@ export function addLoadProperty(name: string, loadExpr: Expression, typeExpr: Ty
 }
 
 export function convertToAST(mathExpr: TLBMathExpr, constructor: TLBConstructor, calculate: boolean = true, objectId?: Identifier): Expression {
-    if (calculate) {
-        mathExpr = getCalculatedExpression(mathExpr, constructor);
+  if (calculate) {
+    mathExpr = getCalculatedExpression(mathExpr, constructor);
+  }
+  if (mathExpr instanceof TLBVarExpr) {
+    let varName = mathExpr.x;
+    if (objectId != undefined) {
+      return tMemberExpression(objectId, tIdentifier(varName));
     }
-    if (mathExpr instanceof TLBVarExpr) {
-        let varName = mathExpr.x;
-        if (objectId != undefined) {
-            return tMemberExpression(objectId, tIdentifier(varName));
-        }
-        return tIdentifier(varName);
+    return tIdentifier(varName);
+  }
+  if (mathExpr instanceof TLBNumberExpr) {
+    return tNumericLiteral(mathExpr.n);
+  }
+  if (mathExpr instanceof TLBBinaryOp) {
+    let operation: string = mathExpr.operation;
+    if (operation == '=') {
+      operation = '==';
     }
-    if (mathExpr instanceof TLBNumberExpr) {
-        return tNumericLiteral(mathExpr.n);
+    return tBinaryExpression(convertToAST(mathExpr.left, constructor, calculate, objectId), operation, convertToAST(mathExpr.right, constructor, calculate, objectId));
+  }
+  if (mathExpr instanceof TLBUnaryOp) {
+    if (mathExpr.operation == '.') {
+      return tFunctionCall(tIdentifier('bitLen'), [convertToAST(mathExpr.value, constructor, calculate, objectId)])
     }
-    if (mathExpr instanceof TLBBinaryOp) {
-        let operation: string = mathExpr.operation;
-        if (operation == '=') {
-            operation = '==';
-        }
-        return tBinaryExpression(convertToAST(mathExpr.left, constructor, calculate, objectId), operation, convertToAST(mathExpr.right, constructor, calculate, objectId));
-    }
-    if (mathExpr instanceof TLBUnaryOp) {
-      if (mathExpr.operation == '.') {
-        return tFunctionCall(tIdentifier('bitLen'), [convertToAST(mathExpr.value, constructor, calculate, objectId)])
-      }
-      return tUnaryOpExpression(mathExpr.operation, convertToAST(mathExpr.value, constructor, calculate, objectId))
-    }
-    return tIdentifier('');
+    return tUnaryOpExpression(mathExpr.operation, convertToAST(mathExpr.value, constructor, calculate, objectId))
+  }
+  return tIdentifier('');
 }
 
 export function getTypeParametersExpression(parameters: Array<TLBParameter>) {
-    let structTypeParameters: Array<Identifier> = [];
-    parameters.forEach(element => {
-        if (element.variable.type == 'Type') {
-            structTypeParameters.push(tIdentifier(element.variable.name));
-        }
-    });
-    let structTypeParametersExpr = tTypeParametersExpression(structTypeParameters);
-    return structTypeParametersExpr;
+  let structTypeParameters: Array<Identifier> = [];
+  parameters.forEach(element => {
+    if (element.variable.type == 'Type') {
+      structTypeParameters.push(tIdentifier(element.variable.name));
+    }
+  });
+  let structTypeParametersExpr = tTypeParametersExpression(structTypeParameters);
+  return structTypeParametersExpr;
 }
 
 export function getCondition(conditions: Array<BinaryExpression>): Expression {
-    let cnd = conditions[0];
-    if (cnd) {
-        if (conditions.length > 1) {
-            return tBinaryExpression(cnd, '&&', getCondition(conditions.slice(1)));
-        } else {
-            return cnd;
-        }
+  let cnd = conditions[0];
+  if (cnd) {
+    if (conditions.length > 1) {
+      return tBinaryExpression(cnd, '&&', getCondition(conditions.slice(1)));
     } else {
-        return tIdentifier('true');
+      return cnd;
     }
+  } else {
+    return tIdentifier('true');
+  }
 }
 
 export function isBigInt(fieldType: TLBNumberType) {
