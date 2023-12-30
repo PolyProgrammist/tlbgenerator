@@ -6,7 +6,13 @@ import { CodeGenerator, CommonGenDeclaration } from './generators/generator'
 import { TypescriptGenerator } from './generators/typescript/generator'
 
 export function generate(tree: Program, input: string) {
-  let codeGenerator: CodeGenerator = new TypescriptGenerator();
+  let tlbCode: TLBCode = { types: new Map<string, TLBType>() }
+
+  let splittedInput = input.split('\n')
+
+  fillConstructors(tree.declarations, tlbCode, splittedInput);
+  
+  let codeGenerator: CodeGenerator = new TypescriptGenerator(tlbCode);
   
   codeGenerator.addTonCoreClassUsage('Builder')
   codeGenerator.addTonCoreClassUsage('Slice')
@@ -21,13 +27,6 @@ export function generate(tree: Program, input: string) {
   codeGenerator.jsCodeDeclarations.forEach(declaration => {
     jsCodeDeclarations.push(declaration)
   })
-
-
-  let tlbCode: TLBCode = { types: new Map<string, TLBType>() }
-
-  let splittedInput = input.split('\n')
-
-  fillConstructors(tree.declarations, tlbCode, splittedInput);
 
   tlbCode.types.forEach((tlbType: TLBType) => { codeGenerator.addTlbType(tlbType, tlbCode) });
 

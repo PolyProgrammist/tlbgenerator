@@ -1,15 +1,20 @@
-import { TLBCode, TLBField, TLBType } from "../../ast";
-import { handleField } from "./handle_field";
-import { firstLower, getStringDeclaration, getSubStructName, goodVariableName } from "../../utils";
+import { TLBCode, TLBConstructor, TLBField, TLBFieldType, TLBType } from "../../ast";
+import { firstLower, getCurrentSlice, getStringDeclaration, getSubStructName, goodVariableName } from "../../utils";
 import { CodeBuilder } from "../CodeBuilder";
 import { CodeGenerator } from "../generator";
-import { BinaryExpression, GenDeclaration, ObjectProperty, Statement, StructDeclaration, TheNode, TypeExpression, TypeParametersExpression, TypedIdentifier, tArrowFunctionExpression, tArrowFunctionType, tBinaryExpression, tComment, tExpressionStatement, tFunctionCall, tFunctionDeclaration, tIdentifier, tIfStatement, tImportDeclaration, tMemberExpression, tNumericLiteral, tObjectExpression, tObjectProperty, tReturnStatement, tStringLiteral, tStructDeclaration, tTypeParametersExpression, tTypeWithParameters, tTypedIdentifier, tUnaryOpExpression, tUnionTypeDeclaration, tUnionTypeExpression, toCode } from "./tsgen";
-import { convertToAST, getCondition, getParamVarExpr, getTypeParametersExpression } from "./utils";
+import { BinaryExpression, FunctionDeclaration, GenDeclaration, ObjectProperty, Statement, StructDeclaration, TheNode, TypeExpression, TypeParametersExpression, TypedIdentifier, tArrowFunctionExpression, tArrowFunctionType, tBinaryExpression, tComment, tDeclareVariable, tExpressionStatement, tFunctionCall, tFunctionDeclaration, tIdentifier, tIfStatement, tImportDeclaration, tMemberExpression, tNumericLiteral, tObjectExpression, tObjectProperty, tReturnStatement, tStringLiteral, tStructDeclaration, tTypeParametersExpression, tTypeWithParameters, tTypedIdentifier, tUnaryOpExpression, tUnionTypeDeclaration, tUnionTypeExpression, toCode } from "./tsgen";
+import { addLoadProperty, convertToAST, getCondition, getParamVarExpr, getTypeParametersExpression, sliceLoad } from "./utils";
+import { handleType } from "./handle_type";
 
 export class TypescriptGenerator implements CodeGenerator {
     jsCodeDeclarations: GenDeclaration[] = []
     jsCodeConstructorDeclarations: GenDeclaration[] = []
     jsCodeFunctionsDeclarations: GenDeclaration[] = []
+    tlbCode: TLBCode
+
+    constructor(tlbCode: TLBCode) {
+        this.tlbCode = tlbCode
+    }
 
     addTonCoreClassUsage(name: string) {
         this.jsCodeDeclarations.push(tImportDeclaration(tIdentifier(name), tStringLiteral('ton')))
@@ -60,13 +65,13 @@ export class TypescriptGenerator implements CodeGenerator {
                     subStructProperties.push(tTypedIdentifier(tIdentifier(variable.name), tIdentifier('number')));
                     let parameter = constructor.parametersMap.get(variable.name)
                     if (parameter && !parameter.variable.const && !parameter.variable.negated) {
-                      subStructLoadProperties.push(tObjectProperty(tIdentifier(variable.name), getParamVarExpr(parameter, constructor)))
+                        subStructLoadProperties.push(tObjectProperty(tIdentifier(variable.name), getParamVarExpr(parameter, constructor)))
                     }
                 }
             })
 
             constructor.fields.forEach(field => {
-                handleField(field, slicePrefix, tlbCode, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName, this.jsCodeFunctionsDeclarations); 
+                this.handleField(field, slicePrefix, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName);
             })
 
             subStructsUnion.push(tTypeWithParameters(tIdentifier(subStructName), structTypeParametersExpr));
@@ -179,5 +184,58 @@ export class TypescriptGenerator implements CodeGenerator {
 
     toCode(node: TheNode, code: CodeBuilder = new CodeBuilder()): CodeBuilder {
         return toCode(node, code);
+    }
+
+    handleField(field: TLBField, slicePrefix: Array<number>, constructor: TLBConstructor, constructorLoadStatements: Statement[], subStructStoreStatements: Statement[], subStructProperties: TypedIdentifier[], subStructLoadProperties: ObjectProperty[], variableCombinatorName: string, variableSubStructName: string) {
+        let currentSlice = getCurrentSlice(slicePrefix, 'slice');
+        let currentCell = getCurrentSlice(slicePrefix, 'cell');
+
+        if (field && field.subFields.length > 0) {
+            slicePrefix[slicePrefix.length - 1]++;
+            slicePrefix.push(0)
+
+            constructorLoadStatements.push(sliceLoad(slicePrefix, currentSlice))
+            subStructStoreStatements.push(tExpressionStatement(tDeclareVariable(tIdentifier(getCurrentSlice(slicePrefix, 'cell')), tFunctionCall(tIdentifier('beginCell'), []))))
+
+            field.subFields.forEach(fieldDef => {
+                this.handleField(fieldDef, slicePrefix, constructor, constructorLoadStatements, subStructStoreStatements, subStructProperties, subStructLoadProperties, variableCombinatorName, variableSubStructName)
+            });
+
+            subStructStoreStatements.push(tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('storeRef')), [tIdentifier(getCurrentSlice(slicePrefix, 'cell'))])))
+
+            slicePrefix.pop();
+        }
+
+        if (field?.fieldType.kind == 'TLBExoticType') {
+            slicePrefix[slicePrefix.length - 1]++;
+            slicePrefix.push(0);
+            constructorLoadStatements.push(
+                tExpressionStatement(tDeclareVariable(tIdentifier(getCurrentSlice(slicePrefix, 'cell')),
+                    tFunctionCall(tMemberExpression(
+                        tIdentifier(currentSlice), tIdentifier('loadRef')
+                    ), []),)))
+            addLoadProperty(field.name, tIdentifier(getCurrentSlice(slicePrefix, 'cell')), undefined, constructorLoadStatements, subStructLoadProperties)
+            subStructProperties.push(tTypedIdentifier(tIdentifier(field.name), tIdentifier('Cell')));
+            subStructStoreStatements.push(tExpressionStatement(tFunctionCall(tMemberExpression(tIdentifier(currentCell), tIdentifier('storeRef')), [tMemberExpression(tIdentifier(variableCombinatorName), tIdentifier(field.name))])))
+            slicePrefix.pop();
+        } else if (field?.subFields.length == 0) {
+            if (field == undefined) {
+                throw new Error('')
+            }
+            let thefield: TLBFieldType = field.fieldType
+            let fieldInfo = handleType(field, thefield, true, variableCombinatorName, variableSubStructName, currentSlice, currentCell, constructor, this.jsCodeFunctionsDeclarations, 0, this.tlbCode);
+            if (fieldInfo.loadExpr) {
+                addLoadProperty(field.name, fieldInfo.loadExpr, fieldInfo.typeParamExpr, constructorLoadStatements, subStructLoadProperties);
+            }
+            if (fieldInfo.typeParamExpr) {
+                subStructProperties.push(tTypedIdentifier(tIdentifier(field.name), fieldInfo.typeParamExpr));
+            }
+            if (fieldInfo.storeExpr) {
+                subStructStoreStatements.push(fieldInfo.storeExpr)
+            }
+            fieldInfo.negatedVariablesLoads.forEach(element => {
+                addLoadProperty(element.name, element.expression, undefined, constructorLoadStatements, subStructLoadProperties)
+            });
+        }
     }
 }
