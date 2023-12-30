@@ -1,5 +1,5 @@
 import { SimpleExpr, NameExpr, NumberExpr, MathExpr, FieldBuiltinDef, NegateExpr, Declaration, CompareExpr, FieldCurlyExprDef, FieldNamedDef, FieldAnonymousDef, FieldExprDef } from "../ast/nodes";
-import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructorTag, TLBConstructor, TLBParameter, TLBVariable, TLBField, TLBCodeNew, TLBTypeNew, TLBConstructorNew } from "./ast"
+import { TLBMathExpr, TLBVarExpr, TLBNumberExpr, TLBBinaryOp, TLBCode, TLBType, TLBConstructorTag, TLBConstructor, TLBParameter, TLBVariable, TLBField, TLBCodeNew, TLBTypeNew, TLBConstructorNew, TLBParameterNew, TLBVariableNew } from "./ast"
 import * as crc32 from "crc-32";
 import { fillFields } from "./astbuilder/handle_field";
 
@@ -570,16 +570,45 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
     fixVariablesNaming(tlbCode);
 }
 
+export function converVariable(tlbVariable: TLBVariable): TLBVariableNew {
+    return new TLBVariableNew(
+        tlbVariable.isConst,
+        tlbVariable.negated,
+        tlbVariable.type,
+        tlbVariable.name,
+        tlbVariable.isField,
+        tlbVariable.calculated,
+        tlbVariable.deriveExpr,
+        tlbVariable.initialExpr,
+    )
+}
+
+export function convertParameter(tlbParameter: TLBParameter): TLBParameterNew {
+    return new TLBParameterNew(
+        converVariable(tlbParameter.variable),
+        tlbParameter.paramExpr,
+        tlbParameter.argName
+    )
+}
+
 export function convertToReadonly(tlbCode: TLBCode): TLBCodeNew {
     let newTypes = new Map<string, TLBTypeNew>()
     tlbCode.types.forEach((value, key) => {
         let newConstructors = new Array<TLBConstructorNew>()
         value.constructors.forEach((value) => {
+            let newVariablesMap = new Map<string, TLBVariableNew>()
+            value.variablesMap.forEach((value, key) => {
+                newVariablesMap.set(key, converVariable(value));
+            })
+            let newParametersMap = new Map<string, TLBParameterNew>()
+            value.parametersMap.forEach((value, key) => {
+                newParametersMap.set(key, convertParameter(value));
+            })
             let newConstructor = new TLBConstructorNew(
-                value.parameters,
-                value.variables,
-                value.variablesMap,
-                value.parametersMap,
+                value.parameters.map(convertParameter),
+                value.variables.map(converVariable),
+                newVariablesMap,
+                newParametersMap,
                 value.name,
                 value.fields,
                 value.tag,

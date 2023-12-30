@@ -170,7 +170,7 @@ export type TLBConstructorTag = {
 export class TLBConstructorNew {
     constructor(
         readonly parameters: Array<TLBParameterNew>,
-        readonly variables: Array<TLBVariable>,
+        readonly variables: Array<TLBVariableNew>,
         readonly variablesMap: Map<string, TLBVariableNew>,
         readonly parametersMap: Map<string, TLBParameterNew>,
         readonly name: string,
