@@ -277,14 +277,12 @@ export function fillConstraintsAndNegationVars(constructor: TLBConstructorBuild,
     })
 }
 
-export function reorganizeWithArg(myMathExpr: TLBMathExpr, argName: string, varName: string): TLBMathExpr {
-    let tmpset = new Set<string>();
-    tmpset.add(argName);
-    let reorganized = reorganizeExpression(new TLBBinaryOp(new TLBVarExpr(argName, tmpset, false), myMathExpr, '=', new Set<string>(), false), varName)
+export function reorganizeWithArg(mathExpr: TLBMathExpr, argName: string, varName: string): TLBMathExpr {
+    let reorganized = reorganizeExpression(new TLBBinaryOp(new TLBVarExpr(argName), mathExpr, '=', new Set<string>(), false), varName)
     if (reorganized instanceof TLBBinaryOp) {
         return reorganized.right;
     }
-    throw new Error('')
+    throw new Error(`Couldn't reorganize expression ${mathExpr}`)
 }
 
 export function getCalculatedExpression(expr: TLBMathExpr, constructor: TLBConstructorBuild): TLBMathExpr {
@@ -358,15 +356,14 @@ export function getConstructorTag(declaration: Declaration, input: string[]): TL
 
 function fixConstructorsNaming(tlbType: TLBTypeBuild) {
     let constructorNames: Set<string> = new Set<string>();
-    for (let i = 0; i < tlbType.constructors.length; i++) {
-        let current = tlbType.constructors[i];
-        if (current) {
-            while (constructorNames.has(current.name)) {
-                current.name += i.toString();
-            }
-            constructorNames.add(current.name);
+    let constructorIndex = 0;
+    tlbType.constructors.forEach(current => {
+        while (constructorNames.has(current.name)) {
+            current.name += constructorIndex.toString();
         }
-    }
+        constructorNames.add(current.name);
+        constructorIndex++;
+    });
 }
 
 export function getStringDeclaration(declaration: Declaration, input: string[]): string {
