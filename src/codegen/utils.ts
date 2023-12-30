@@ -315,6 +315,9 @@ export function calculateVariables(constructor: TLBConstructor) {
     constructor.variables.forEach(variable => {
         calculateVariable(variable, constructor)
     });
+    constructor.parameters.forEach(parameter => {
+        calculateVariable(parameter.variable, constructor);
+    })
 }
 
 
@@ -555,8 +558,8 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
             });
             constructor.declaration = getStringDeclaration(declaration, input)
             fillConstraintsAndNegationVars(constructor, declaration);
-            calculateVariables(constructor);
             fillFields(typeItem, tlbType);
+            calculateVariables(constructor);
         });
         fillParameterNames(tlbType);
         fillArgNames(tlbType)

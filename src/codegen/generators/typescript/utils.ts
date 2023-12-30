@@ -90,9 +90,6 @@ export function addLoadProperty(name: string, loadExpr: Expression, typeExpr: Ty
 }
 
 export function convertToAST(mathExpr: TLBMathExpr, constructor: TLBConstructorNew, calculate: boolean = true, objectId?: Identifier): Expression {
-  if (calculate) {
-    mathExpr = getCalculatedExpression(mathExpr, constructor);
-  }
   if (mathExpr instanceof TLBVarExpr) {
     let varName = mathExpr.x;
     if (objectId != undefined) {

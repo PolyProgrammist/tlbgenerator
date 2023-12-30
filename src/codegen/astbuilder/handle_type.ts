@@ -1,6 +1,6 @@
 import { BuiltinOneArgExpr, BuiltinZeroArgs, CellRefExpr, CombinatorExpr, CondExpr, MathExpr, NameExpr, NegateExpr, NumberExpr, Expression as ParserExpression } from "../../ast/nodes";
 import { TLBBinaryOp, TLBCode, TLBConstructor, TLBFieldType, TLBMathExpr, TLBNumberExpr, TLBUnaryOp, TLBVarExpr } from "../ast";
-import { convertToMathExpr, splitForTypeValue } from "../utils";
+import { convertToMathExpr, getCalculatedExpression, splitForTypeValue } from "../utils";
 
 
 export function getType(expr: ParserExpression, fieldName: string, isField: boolean, needArg: boolean, variableCombinatorName: string, variableSubStructName: string, constructor: TLBConstructor, fieldTypeName: string, argIndex: number): TLBFieldType {
@@ -20,26 +20,26 @@ export function getType(expr: ParserExpression, fieldName: string, isField: bool
         if (!parameter || !parameter.variable.deriveExpr || !parameter.variable.initialExpr) {
           throw new Error('');
         }
-        return { kind: 'TLBNumberType', bits: parameter.variable.deriveExpr, storeBits: parameter.variable.initialExpr, signed: false, maxBits: undefined };
+        return { kind: 'TLBNumberType', bits: getCalculatedExpression(parameter.variable.deriveExpr, constructor), storeBits: parameter.variable.initialExpr, signed: false, maxBits: undefined };
       } // TODO: handle other cases
     } else if (expr.name == '#<') {
       if (expr.arg instanceof NumberExpr || expr.arg instanceof NameExpr) {
-        let bits = new TLBUnaryOp(new TLBBinaryOp(convertToMathExpr(expr.arg), new TLBNumberExpr(1), '-'), '.');
+        let bits = new TLBUnaryOp(new TLBBinaryOp(getCalculatedExpression(convertToMathExpr(expr.arg), constructor), new TLBNumberExpr(1), '-'), '.');
         return { kind: 'TLBNumberType', bits: bits, storeBits: bits, signed: false, maxBits: 32 };
       } // TODO: handle other cases
     } else if (expr.name == '#<=') {
       if (expr.arg instanceof NumberExpr || expr.arg instanceof NameExpr) {
-        let bits = new TLBUnaryOp(convertToMathExpr(expr.arg), '.');
+        let bits = new TLBUnaryOp(getCalculatedExpression(convertToMathExpr(expr.arg), constructor), '.');
         return { kind: 'TLBNumberType', bits: bits, storeBits: bits, signed: false, maxBits: 32 };
       } // TODO: handle other cases
     }
   } else if (expr instanceof CombinatorExpr) {
     if (expr.name == 'int' && expr.args.length == 1 && (expr.args[0] instanceof MathExpr || expr.args[0] instanceof NumberExpr || expr.args[0] instanceof NameExpr)) {
-      return { kind: 'TLBNumberType', bits: convertToMathExpr(expr.args[0]), storeBits: convertToMathExpr(expr.args[0]), signed: true, maxBits: undefined };
+      return { kind: 'TLBNumberType', bits: getCalculatedExpression(convertToMathExpr(expr.args[0]), constructor), storeBits: convertToMathExpr(expr.args[0]), signed: true, maxBits: undefined };
     } else if (expr.name == 'uint' && expr.args.length == 1 && (expr.args[0] instanceof MathExpr || expr.args[0] instanceof NumberExpr || expr.args[0] instanceof NameExpr)) {
-      return { kind: 'TLBNumberType', bits: convertToMathExpr(expr.args[0]), storeBits: convertToMathExpr(expr.args[0]), signed: false, maxBits: undefined };
+      return { kind: 'TLBNumberType', bits: getCalculatedExpression(convertToMathExpr(expr.args[0]), constructor), storeBits: convertToMathExpr(expr.args[0]), signed: false, maxBits: undefined };
     } else if (expr.name == 'bits' && expr.args.length == 1 && (expr.args[0] instanceof MathExpr || expr.args[0] instanceof NumberExpr || expr.args[0] instanceof NameExpr)) {
-      return { kind: 'TLBBitsType', bits: convertToMathExpr(expr.args[0]) };
+      return { kind: 'TLBBitsType', bits: getCalculatedExpression(convertToMathExpr(expr.args[0]), constructor) };
     } else {
       let argumentTypes: TLBFieldType[] = [];
       expr.args.forEach((arg) => {
@@ -72,7 +72,7 @@ export function getType(expr: ParserExpression, fieldName: string, isField: bool
       return { kind: 'TLBAddressType' };
     } else {
       if (constructor.variablesMap.get(expr.name)?.type == '#') {
-        return { kind: 'TLBExprMathType', expr: new TLBVarExpr(expr.name) };
+        return { kind: 'TLBExprMathType', expr: getCalculatedExpression(new TLBVarExpr(expr.name), constructor) };
       } else {
         return { kind: 'TLBNamedType', name: expr.name, arguments: [] };
       }
@@ -88,17 +88,17 @@ export function getType(expr: ParserExpression, fieldName: string, isField: bool
     if (fieldTypeName == '') {
       if (expr.op == '*') {
         let subExprInfo = getType(expr.right, fieldName, false, needArg, variableCombinatorName, variableSubStructName, constructor, fieldTypeName, argIndex);
-        return { kind: 'TLBMultipleType', times: convertToMathExpr(expr.left), value: subExprInfo };
+        return { kind: 'TLBMultipleType', times: getCalculatedExpression(convertToMathExpr(expr.left), constructor), value: subExprInfo };
       } else {
         throw new Error('');
       }
     } else {
-      return { kind: 'TLBExprMathType', expr: convertToMathExpr(expr) };
+      return { kind: 'TLBExprMathType', expr: getCalculatedExpression(convertToMathExpr(expr), constructor) };
     }
   } else if (expr instanceof CondExpr) {
     let subExprInfo = getType(expr.condExpr, fieldName, true, false, variableCombinatorName, variableSubStructName, constructor, fieldTypeName, argIndex);
     if (expr.left instanceof NameExpr) {
-      let condition: TLBMathExpr = convertToMathExpr(expr.left);
+      let condition: TLBMathExpr = getCalculatedExpression(convertToMathExpr(expr.left), constructor);
       if (expr.dotExpr != null) {
         condition = new TLBBinaryOp(condition, new TLBBinaryOp(new TLBNumberExpr(1), new TLBNumberExpr(expr.dotExpr), '<<'), '&');
       }
