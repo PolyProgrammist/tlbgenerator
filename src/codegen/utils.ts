@@ -184,12 +184,39 @@ export function compareConstructors(a: TLBConstructor, b: TLBConstructor): numbe
     return 0;
 }
 
-export function fillParameterNames(tlbType: TLBType) {
-    let parameterNames: (string | undefined)[] = []
+export function fillArgNames(tlbType: TLBType) {
     let argNames: (string | undefined)[] = []
     tlbType.constructors[0]?.parameters.forEach(element => {
-        parameterNames.push(element.variable.name);
         argNames.push(undefined);
+    });
+    
+    tlbType.constructors.forEach(constructor => {
+        for (let i = 0; i < constructor.parameters.length; i++) {
+            let argName = constructor.parameters[i]?.argName
+            if (argName) {
+                argNames[i] = argName
+            }
+        }
+    });
+    tlbType.constructors.forEach(constructor => {
+        for (let i = 0; i < constructor.parameters.length; i++) {
+            let argName = argNames[i];
+            let parameter = constructor.parameters[i]
+            if (argName != undefined && parameter != undefined) {
+                parameter.argName = argName;
+                if (parameter.paramExpr instanceof TLBVarExpr) {
+                    parameter.variable.deriveExpr = new TLBVarExpr(parameter.argName)
+                    parameter.paramExpr = parameter.variable.deriveExpr
+                }
+            }
+        }
+    })
+}
+
+export function fillParameterNames(tlbType: TLBType) {
+    let parameterNames: (string | undefined)[] = []
+    tlbType.constructors[0]?.parameters.forEach(element => {
+        parameterNames.push(element.variable.name);
     });
     tlbType.constructors.forEach(constructor => {
         for (let i = 0; i < constructor.parameters.length; i++) {
@@ -199,10 +226,6 @@ export function fillParameterNames(tlbType: TLBType) {
                     parameterNames[i] = parameterName;
                 }
 
-            }
-            let argName = constructor.parameters[i]?.argName
-            if (argName) {
-                argNames[i] = argName
             }
         }
     });
@@ -216,15 +239,6 @@ export function fillParameterNames(tlbType: TLBType) {
             let parameterName = parameterNames[i]
             if (parameterName != undefined && constructor.parameters[i]?.variable.name == undefined) {
                 constructor.parameters[i]!.variable.name = parameterName;
-            }
-            let argName = argNames[i];
-            let parameter = constructor.parameters[i]
-            if (argName != undefined && parameter != undefined) {
-                parameter.argName = argName;
-                if (parameter.paramExpr instanceof TLBVarExpr) {
-                    parameter.variable.deriveExpr = new TLBVarExpr(parameter.argName)
-                    parameter.paramExpr = parameter.variable.deriveExpr
-                }
             }
         }
     })
@@ -545,6 +559,7 @@ export function fillConstructors(declarations: Declaration[], tlbCode: TLBCode, 
             fillFields(typeItem, tlbType);
         });
         fillParameterNames(tlbType);
+        fillArgNames(tlbType)
         fixConstructorsNaming(tlbType);
         tlbType.constructors.sort(compareConstructors)
     });
